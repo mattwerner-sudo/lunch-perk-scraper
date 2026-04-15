@@ -84,7 +84,7 @@ def send_new_companies_alert(new_companies: list[dict], stats: dict) -> bool:
         role_label = f"{role_count} role{'s' if role_count != 1 else ''} mentioning food perks"
 
         text = (
-            f"*<{url}|{co['name']}>*  `score: {score}`\n"
+            f"*<{url}|{co['company']}>*  `score: {score}`\n"
             f"{source_label}\n"
             f":pushpin: _{role_label}_ — `{keywords}`\n"
         )
