@@ -1,0 +1,4 @@
+.env
+lunch_perks.db
+__pycache__/
+.venv/

@@ -1,0 +1,58 @@
+name: Weekly NYC Lunch Perk Scrape
+
+on:
+  schedule:
+    - cron: '0 9 * * 1'   # Every Monday at 9am UTC (5am ET)
+  workflow_dispatch:        # Also allows manual trigger from GitHub UI
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Restore database from previous run
+        uses: actions/cache@v4
+        with:
+          path: lunch_perks.db
+          key: lunch-perks-db-${{ github.run_number }}
+          restore-keys: |
+            lunch-perks-db-
+
+      - name: Run scraper
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          APIFY_API_TOKEN:   ${{ secrets.APIFY_API_TOKEN }}
+        run: python3 scrape.py --no-verify
+
+      - name: Save outputs as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: scrape-results-${{ github.run_number }}
+          path: |
+            lunch_perk_jobs.csv
+            lunch_perk_jobs_enriched.csv
+            dashboard_data.js
+          retention-days: 30
+
+      - name: Commit dashboard data back to repo
+        run: |
+          git config user.name  "Lunch Perk Bot"
+          git config user.email "bot@lunch-perk-scraper"
+          git add dashboard_data.js lunch_perk_jobs_enriched.csv || true
+          git diff --staged --quiet || git commit -m "chore: weekly scrape $(date +'%Y-%m-%d')"
+          git push || true
