@@ -15,15 +15,47 @@ from utils import get, find_food_keywords, is_nyc, excerpt, clean_text
 log = logging.getLogger(__name__)
 
 LEVER_SLUGS = [
-    # ── Verified valid 2024 ───────────────────────────────────────────────
-    "gettyimages",   # large NYC media company, known food perks
+    # ── Verified valid ────────────────────────────────────────────────────
+    "gettyimages",   # NYC media, known food perks
     "gopuff",        # food delivery, NYC office
+    "arcadia",       # climate tech, NYC
 
-    # ── Kept for coverage (low hit rate but worth checking) ───────────────
+    # ── Tech / SaaS ───────────────────────────────────────────────────────
     "ro", "hims", "cerebral",
-    "vimeo", "squarespace",
-    "canva", "miro", "asana",
+    "vimeo", "canva", "miro", "asana",
     "seatgeek", "eventbrite",
+    "webflow", "coda", "loom",
+    "benchling",                     # life-sciences SaaS (ICP Pharma/Biotech)
+    "ironclad",                      # legal tech
+    "procore",                       # construction tech (ICP Construction)
+
+    # ── Finance / FinTech ─────────────────────────────────────────────────
+    "brex", "mercury", "ramp",
+    "nerdwallet", "stash", "acorns",
+    "pipe", "capchase",
+    "mosaic",                        # FP&A / finance analytics
+
+    # ── Healthcare ────────────────────────────────────────────────────────
+    "garner",                        # benefits/healthcare nav
+    "virta",                         # chronic disease
+    "omada",                         # digital health
+    "brightline",                    # mental health
+
+    # ── Education ─────────────────────────────────────────────────────────
+    "newsela",                       # K-12 ed tech
+    "panorama",                      # K-12 analytics
+
+    # ── Sports / Entertainment ────────────────────────────────────────────
+    "draftkings",
+    "fanatics",
+
+    # ── Real Estate ───────────────────────────────────────────────────────
+    "compass",
+    "opendoor",
+
+    # ── HR Tech ───────────────────────────────────────────────────────────
+    "lattice", "leapsome", "betterworks",
+    "remote", "deel",
 ]
 
 

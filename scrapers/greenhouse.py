@@ -22,57 +22,76 @@ log = logging.getLogger(__name__)
 # These are companies known to use Greenhouse AND have NYC offices.
 # Extend this list — slugs are the subdomain/path in their Greenhouse URL.
 GREENHOUSE_SLUGS = [
-    # ── Verified valid ────────────────────────────────────────────────────
-
-    # Tech / SaaS
+    # ── Tech / SaaS ───────────────────────────────────────────────────────
     "figma", "airtable", "stripe", "hubspot", "twilio", "amplitude",
-    "mixpanel", "klaviyo", "intercom", "zendesk", "gong",
-    "zoominfo", "demandbase", "g2", "mongodb", "datadog", "braze",
+    "mixpanel", "klaviyo", "intercom", "mongodb", "datadog", "braze",
     "movableink", "yotpo", "sisense", "appsflyer", "taboola",
     "pinterest", "reddit", "lyft", "airbnb", "dropbox", "squarespace",
     "kickstarter", "duolingo", "pagerduty", "cloudflare", "fastly",
     "elastic", "databricks", "seatgeek", "tripadvisor", "opendoor",
     "mindbody", "cision", "similarweb",
-
-    # Finance / Investing
-    "point72", "apollo", "betterment", "robinhood", "plaid", "wealthfront",
-    "virtu", "iex", "creditkarma", "cleo", "galileo",
-
-    # Media / Content
-    "buzzfeed", "voxmedia", "forbes", "axios", "semafor",
-
-    # Pharma / Biotech / Life Sciences (ezcater ICP Tier 1)
-    "icon", "natera", "beamtherapeutics",
-
-    # Food & Delivery
-    "doordash", "goldbelly", "misfitsmarket", "hungryroot",
-    "touchbistro", "revel", "agilysys",
-
-    # E-commerce / Logistics / Supply Chain
-    "glossier", "allbirds", "brooklinen", "renttherunway", "rebag",
-    "narvar", "aftership", "flexport", "shipmonk",
-
-    # Real Estate / PropTech
-    "costar", "vts", "crexi",
-
-    # Health / Wellness
-    "zocdoc", "ritual", "calm", "peloton", "classpass",
-    "oscar", "cerebral",
-
-    # Professional Services / Consulting
-    "alixpartners",
-
-    # Agency / Services
-    "ogilvy", "wpp",
-
-    # ── Kept for coverage ─────────────────────────────────────────────────
+    "okta", "newrelic", "sumologic",                   # identity / observability
+    "contentful", "storyblok", "pendo",                # CMS / product analytics
+    "zuora", "marqeta",                                # billing / payments infra
+    "fivetran", "starburst", "dremio", "clickhouse",   # data / analytics infra
     "monday", "notion", "lattice", "greenhouse",
-    "salesforce", "segment", "sendbird",
-    "freshworks", "drift", "chorus",
+    "segment", "sendbird", "freshworks", "drift",
     "outreach", "salesloft", "terminus", "rollworks", "bombora",
     "trustradius", "capterra",
+
+    # ── Ad Tech / MarTech ─────────────────────────────────────────────────
+    "doubleverify", "pubmatic", "northbeam",           # NYC-heavy ad tech
+
+    # ── Finance / Investing ───────────────────────────────────────────────
+    "point72", "apollo", "betterment", "robinhood", "plaid", "wealthfront",
+    "virtu", "iex", "creditkarma", "cleo", "galileo",
+    "coinbase", "gemini", "ripple", "fireblocks", "alchemy", "consensys",  # crypto
+    "sofi", "chime", "alloy", "lithic", "highnote", "marqeta",             # fintech
+    "schonfeld",                                                             # hedge fund
+
+    # ── Pharma / Biotech / Life Sciences (ICP Tier 1) ─────────────────────
+    "icon", "natera", "beamtherapeutics",
+    "10xgenomics", "veracyte",                         # genomics / diagnostics
+
+    # ── Healthcare / Health Tech ──────────────────────────────────────────
+    "zocdoc", "ritual", "calm", "peloton", "classpass",
+    "oscar", "cerebral", "waymark",
+    "cityblock",
+
+    # ── HR Tech / People Ops ──────────────────────────────────────────────
+    "gusto", "justworks", "cultureamp",                # payroll / people ops
+
+    # ── Media / Content ───────────────────────────────────────────────────
+    "buzzfeed", "voxmedia", "forbes", "axios", "semafor", "fandom",
+
+    # ── Sports / Gaming ───────────────────────────────────────────────────
+    "fanduel", "octagon", "geniussports",
+
+    # ── Education ─────────────────────────────────────────────────────────
+    "coursera", "masterclass", "udemy", "2u",
+
+    # ── E-commerce / DTC ─────────────────────────────────────────────────
+    "glossier", "allbirds", "brooklinen", "renttherunway", "rebag",
+    "harrys", "mejuri", "everlane",
     "etsy", "poshmark",
-    "cityblock", "instacart", "sweetgreen",
+
+    # ── Logistics / Supply Chain ──────────────────────────────────────────
+    "narvar", "aftership", "flexport", "shipmonk",
+    "project44", "fourkites",
+
+    # ── Real Estate / PropTech ────────────────────────────────────────────
+    "costar", "vts", "crexi", "orchard",
+
+    # ── Food & Delivery ───────────────────────────────────────────────────
+    "doordash", "goldbelly", "misfitsmarket", "hungryroot",
+    "touchbistro", "revel", "agilysys",
+    "instacart", "sweetgreen",
+
+    # ── Professional Services / Consulting ────────────────────────────────
+    "alixpartners",
+
+    # ── Agency / Services ─────────────────────────────────────────────────
+    "ogilvy", "wpp",
 ]
 
 
