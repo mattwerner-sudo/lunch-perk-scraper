@@ -188,7 +188,16 @@ def scrape() -> Iterator[dict]:
             runs.append((run_id, dataset_id, keyword))
         time.sleep(0.5)  # slight stagger to avoid burst
 
-    log.info(f"Apify: {len(runs)} runs started — waiting for completion...")
+        log.info(f"Apify: {len(runs)} runs started — waiting for completion...")
+
+    if not runs:                                          # ← ADD THIS
+        log.warning("Apify: no runs succeeded, skipping fetch")  # ← ADD THIS
+        return                                            # ← ADD THIS
+
+    # Collect all results in parallel
+    seen_urls = set()
+    with concurrent.futures.ThreadPoolExecutor(max_workers=len(runs)) as pool:
+
 
     # Collect all results in parallel
     seen_urls = set()
