@@ -38,7 +38,12 @@ jobs:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
           APIFY_API_TOKEN:   ${{ secrets.APIFY_API_TOKEN }}
         # Skip glassdoor (403 in cloud) — run it locally if needed
-        run: python3 scrape.py --sources gh lv ab bn wd js ap wf --no-verify
+        # Tee output to scraper.log so we can surface the tail on failure
+        run: python3 scrape.py --sources gh lv ab bn wd js ap wf --no-verify 2>&1 | tee scraper.log; test ${PIPESTATUS[0]} -eq 0
+
+      - name: Show last 150 lines of log on failure
+        if: failure()
+        run: tail -n 150 scraper.log || true
 
       - name: Save outputs as artifact
         uses: actions/upload-artifact@v4
@@ -48,6 +53,7 @@ jobs:
             lunch_perk_jobs.csv
             lunch_perk_jobs_enriched.csv
             dashboard_data.js
+            scraper.log
           retention-days: 30
 
       - name: Commit dashboard data back to repo

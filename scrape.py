@@ -51,11 +51,14 @@ def scrape_all(selected_sources: list[str], dry_run: bool) -> list[dict]:
             log.error(f"Failed to load {label}: {e}")
             continue
         count = 0
-        for record in fn():
-            raw.append(record)
-            count += 1
-            if dry_run and count >= 5:
-                break
+        try:
+            for record in fn():
+                raw.append(record)
+                count += 1
+                if dry_run and count >= 5:
+                    break
+        except Exception as e:
+            log.error(f"  {label} crashed mid-scrape: {e}", exc_info=True)
         log.info(f"  {label}: {count} keyword matches")
     return raw
 
