@@ -37,7 +37,8 @@ jobs:
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
           APIFY_API_TOKEN:   ${{ secrets.APIFY_API_TOKEN }}
-        run: python3 scrape.py --no-verify
+        # Skip glassdoor (403 in cloud) — run it locally if needed
+        run: python3 scrape.py --sources gh lv ab bn wd js ap wf --no-verify
 
       - name: Save outputs as artifact
         uses: actions/upload-artifact@v4

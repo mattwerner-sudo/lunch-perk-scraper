@@ -16,7 +16,7 @@ from typing import Iterator
 
 from bs4 import BeautifulSoup
 
-from utils import get, find_food_keywords, is_nyc, excerpt, clean_text
+from utils import get, find_food_keywords, is_nyc, excerpt, clean_text, SESSION
 
 log = logging.getLogger(__name__)
 
@@ -57,7 +57,15 @@ def _scrape_jobs() -> Iterator[dict]:
             "per_page": per_page,
             "sort": "date",
         }
-        resp = get(BUILTIN_API, params=params)
+        # Built In API requires POST with JSON body, not GET with query params
+        import time as _time
+        _time.sleep(1)
+        try:
+            resp = SESSION.post(BUILTIN_API, json=params, timeout=20)
+            resp.raise_for_status()
+        except Exception as e:
+            log.warning(f"Built In NYC POST failed: {e}")
+            resp = None
         if not resp:
             break
 
@@ -137,7 +145,14 @@ def _scrape_companies_with_food_perks() -> Iterator[dict]:
             "perks": perk_slug,
             "per_page": 100,
         }
-        resp = get(COMPANY_API, params=params)
+        import time as _time
+        _time.sleep(1)
+        try:
+            resp = SESSION.post(COMPANY_API, json=params, timeout=20)
+            resp.raise_for_status()
+        except Exception as e:
+            log.warning(f"Built In NYC company API failed for {perk_slug}: {e}")
+            resp = None
         if not resp:
             continue
         try:
