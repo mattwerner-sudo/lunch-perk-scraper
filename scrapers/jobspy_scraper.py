@@ -21,10 +21,10 @@ log = logging.getLogger(__name__)
 JOBSPY_SOURCES = ["indeed", "google"]
 
 # How many results to request per search term per site
-RESULTS_PER_QUERY = 50
+RESULTS_PER_QUERY = 100
 
 # Hours old — only pull recent listings (7 days)
-HOURS_OLD = 168
+HOURS_OLD = 336
 
 
 def scrape() -> Iterator[dict]:
