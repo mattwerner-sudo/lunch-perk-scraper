@@ -47,69 +47,6 @@ LINKEDIN_SEARCHES = [
 ]
 
 
-def _run_actor(search: dict) -> list[dict]:
-    """
-    Trigger one Apify actor run, poll until complete, return results.
-    """
-    if not API_TOKEN:
-        log.error("APIFY_API_TOKEN not set in .env")
-        return []
-
-    input_payload = {
-        "title":        search["keyword"],
-        "location":     search["location"],
-        "rows":         RESULTS_LIMIT,
-        "proxy":        {"useApifyProxy": True},
-        "scrapeCompany": True,
-    }
-
-    # Start the run
-    run_url = f"{BASE_URL}/acts/{ACTOR_ID}/runs?token={API_TOKEN}"
-    try:
-        resp = requests.post(run_url, json=input_payload, timeout=30)
-        resp.raise_for_status()
-        run_data = resp.json()
-        run_id      = run_data["data"]["id"]
-        dataset_id  = run_data["data"]["defaultDatasetId"]
-        log.info(f"Apify run started: {run_id} (keyword={search['keyword']})")
-    except Exception as e:
-        log.error(f"Apify: failed to start run for '{search['keyword']}': {e}")
-        return []
-
-    # Poll until finished
-    status_url = f"{BASE_URL}/actor-runs/{run_id}?token={API_TOKEN}"
-    waited = 0
-    while waited < MAX_WAIT:
-        time.sleep(POLL_INTERVAL)
-        waited += POLL_INTERVAL
-        try:
-            status_resp = requests.get(status_url, timeout=15)
-            status = status_resp.json()["data"]["status"]
-            if status == "SUCCEEDED":
-                break
-            if status in {"FAILED", "ABORTED", "TIMED-OUT"}:
-                log.error(f"Apify run {run_id} ended with status: {status}")
-                return []
-            log.info(f"Apify run {run_id}: {status} ({waited}s elapsed)")
-        except Exception as e:
-            log.warning(f"Apify status check failed: {e}")
-
-    # Fetch results from dataset
-    dataset_url = (
-        f"{BASE_URL}/datasets/{dataset_id}/items"
-        f"?token={API_TOKEN}&format=json&clean=true"
-    )
-    try:
-        results_resp = requests.get(dataset_url, timeout=30)
-        results_resp.raise_for_status()
-        items = results_resp.json()
-        log.info(f"Apify: {len(items)} results for '{search['keyword']}'")
-        return items
-    except Exception as e:
-        log.error(f"Apify: failed to fetch dataset {dataset_id}: {e}")
-        return []
-
-
 def _start_run(search: dict) -> tuple[str, str, str]:
     """Start one Apify run. Returns (run_id, dataset_id, keyword)."""
     keyword = search["keyword"]
@@ -189,18 +126,18 @@ def scrape() -> Iterator[dict]:
     # Start all runs at once
     log.info(f"Apify: launching {len(LINKEDIN_SEARCHES)} parallel runs...")
     runs = []
-        for search in LINKEDIN_SEARCHES:
+    for search in LINKEDIN_SEARCHES:
         run_id, dataset_id, keyword = _start_run(search)
         if run_id:
             runs.append((run_id, dataset_id, keyword))
         time.sleep(0.5)
 
-    log.info(f"Apify: {len(runs)} runs started — waiting for completion...")  # ← here, not inside loop
+    log.info(f"Apify: {len(runs)} runs started — waiting for completion...")
 
 
-    if not runs:                                          # ← ADD THIS
-        log.warning("Apify: no runs succeeded, skipping fetch")  # ← ADD THIS
-        return                                            # ← ADD THIS
+    if not runs:                                          
+        log.warning("Apify: no runs succeeded, skipping fetch")
+        return                                            
 
     # Collect all results in parallel
     seen_urls = set()
