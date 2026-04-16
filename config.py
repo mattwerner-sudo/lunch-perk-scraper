@@ -72,6 +72,13 @@ SEARCH_QUERIES = [
     "meal credit",
     "stocked kitchen",
     "daily lunch",
+    # ── added ──
+    "free food",
+    "lunch provided",
+    "fully stocked kitchen",
+    "company lunch",
+    "ezCater",
+    "snacks and meals",
 ]
 
 # ── Output ──────────────────────────────────────────────────────────────────
