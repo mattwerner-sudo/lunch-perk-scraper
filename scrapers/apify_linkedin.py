@@ -116,12 +116,18 @@ def _start_run(search: dict) -> tuple[str, str, str]:
     if not API_TOKEN:
         return "", "", keyword
 
+    encoded_keyword = keyword.replace(" ", "+")
+    linkedin_url = (
+        f"https://www.linkedin.com/jobs/search/"
+        f"?keywords={encoded_keyword}"
+        f"&location=New+York+City%2C+New+York"
+        f"&position=1&pageNum=0"
+    )
     input_payload = {
-        "title":    keyword,
-        "location": search["location"],
-        "rows":     RESULTS_LIMIT,
-        "proxy":    {"useApifyProxy": True},
-        "scrapeCompany": True,
+        "count":           RESULTS_LIMIT,
+        "scrapeCompany":   True,
+        "splitByLocation": False,
+        "urls":            [linkedin_url],
     }
     run_url = f"{BASE_URL}/acts/{ACTOR_ID}/runs?token={API_TOKEN}"
     try:
@@ -133,6 +139,7 @@ def _start_run(search: dict) -> tuple[str, str, str]:
     except Exception as e:
         log.error(f"Apify: failed to start run for '{keyword}': {e}")
         return "", "", keyword
+
 
 
 def _wait_and_fetch(run_id: str, dataset_id: str, keyword: str) -> list[dict]:
