@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NYC Lunch Perk Companies — ezcater</title>
+  <style>
+    :root {
+      --brand:  #1a3a5c;
+      --accent: #e8a020;
+      --bg:     #f5f6f8;
+      --card:   #ffffff;
+      --border: #dde1e7;
+      --text:   #1c2330;
+      --muted:  #6b7280;
+      --green:  #065f46;
+      --green-bg: #d1fae5;
+      --blue:   #1e3a8a;
+      --blue-bg: #dbeafe;
+      --yellow: #92400e;
+      --yellow-bg: #fef3c7;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: var(--bg); color: var(--text); }
+
+    header {
+      background: var(--brand);
+      color: #fff;
+      padding: 48px 40px 40px;
+    }
+    header .eyebrow { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--accent); margin-bottom: 10px; }
+    header h1 { font-size: 32px; font-weight: 700; line-height: 1.2; }
+    header p  { margin-top: 10px; font-size: 15px; color: #a8bdd0; max-width: 640px; }
+    header .meta { margin-top: 16px; font-size: 13px; color: #a8bdd0; }
+
+    .stats-bar {
+      background: var(--accent);
+      display: flex; flex-wrap: wrap;
+    }
+    .stat {
+      flex: 1; min-width: 120px;
+      padding: 16px 24px;
+      border-right: 1px solid rgba(255,255,255,.3);
+    }
+    .stat:last-child { border-right: none; }
+    .stat .num { font-size: 26px; font-weight: 800; color: var(--brand); }
+    .stat .lbl { font-size: 11px; color: var(--brand); opacity: .72; margin-top: 2px; }
+
+    main { max-width: 1400px; margin: 0 auto; padding: 40px 24px; }
+
+    .section-title {
+      font-size: 12px; font-weight: 700; letter-spacing: 1.5px;
+      text-transform: uppercase; color: var(--muted); margin-bottom: 18px;
+    }
+
+    .table-header {
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 12px; margin-bottom: 14px;
+    }
+    .controls { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+    .controls input, .controls select {
+      font-size: 13px; padding: 8px 11px;
+      border: 1px solid var(--border); border-radius: 6px;
+      background: var(--card); color: var(--text);
+    }
+    .controls input { width: 220px; }
+    .download-btn {
+      background: var(--accent); color: var(--brand);
+      font-weight: 700; font-size: 13px;
+      padding: 8px 18px; border: none; border-radius: 6px;
+      cursor: pointer; text-decoration: none; display: inline-block;
+    }
+    .download-btn:hover { opacity: .88; }
+
+    .table-wrap {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 10px; overflow: hidden;
+    }
+    .table-scroll { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    thead th {
+      background: var(--brand); color: #fff;
+      padding: 11px 13px; text-align: left;
+      font-size: 11px; font-weight: 600; letter-spacing: .4px;
+      white-space: nowrap; cursor: pointer; user-select: none;
+    }
+    thead th:hover { background: #24527a; }
+    thead th.sorted-asc::after  { content: " ▲"; opacity: .7; }
+    thead th.sorted-desc::after { content: " ▼"; opacity: .7; }
+    tbody tr { border-bottom: 1px solid var(--border); }
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: #f0f4f8; }
+    tbody td { padding: 10px 13px; vertical-align: top; }
+
+    .score-pill {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 32px; height: 32px; border-radius: 50%;
+      font-size: 13px; font-weight: 800;
+      background: var(--brand); color: #fff;
+    }
+    .score-pill.high  { background: #065f46; }
+    .score-pill.med   { background: #1d4ed8; }
+    .score-pill.low   { background: var(--muted); }
+
+    .badge {
+      display: inline-block; font-size: 11px; font-weight: 700;
+      padding: 3px 7px; border-radius: 4px; white-space: nowrap;
+    }
+    .badge-viable  { background: var(--green-bg); color: var(--green); }
+    .badge-monitor { background: var(--blue-bg); color: var(--blue); }
+    .badge-high    { background: var(--green-bg); color: var(--green); }
+    .badge-medium  { background: var(--yellow-bg); color: var(--yellow); }
+    .badge-low     { background: #f3f4f6; color: var(--muted); }
+    .badge-new     { background: #fce7f3; color: #9d174d; }
+
+    .source-tag {
+      display: inline-block; font-size: 10px; font-weight: 600;
+      padding: 2px 6px; border-radius: 3px;
+      background: #e0e7ff; color: #3730a3; margin-right: 3px;
+    }
+
+    .keyword-list { font-size: 12px; color: var(--muted); }
+    .keyword-list strong { color: var(--text); }
+
+    .excerpt-cell {
+      font-size: 12px; color: var(--muted);
+      max-width: 280px; line-height: 1.4;
+    }
+    .company-cell .name { font-weight: 700; font-size: 14px; }
+    .company-cell .domain { font-size: 11px; color: var(--muted); margin-top: 2px; }
+    .company-cell .loc { font-size: 11px; color: var(--muted); margin-top: 1px; }
+
+    .job-link { color: var(--brand); text-decoration: none; font-size: 12px; }
+    .job-link:hover { text-decoration: underline; }
+
+    .count-label { font-size: 13px; color: var(--muted); }
+    .no-results { text-align: center; padding: 48px; color: var(--muted); }
+    footer { text-align: center; padding: 36px 24px; font-size: 12px; color: var(--muted); }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="eyebrow">ezcater — NYC Sales Intelligence</div>
+  <h1>NYC Lunch Perk Companies</h1>
+  <p>Companies actively advertising food perks (catered meals, DoorDash, stipends, stocked kitchens) in NYC job postings — scored and ranked for outreach priority.</p>
+  <div class="meta" id="last-run">Last run: —</div>
+</header>
+
+<div class="stats-bar">
+  <div class="stat"><div class="num" id="stat-total">—</div><div class="lbl">Total companies</div></div>
+  <div class="stat"><div class="num" id="stat-new">—</div><div class="lbl">New this run</div></div>
+  <div class="stat"><div class="num" id="stat-viable">—</div><div class="lbl">Viable ICP tier</div></div>
+  <div class="stat"><div class="num" id="stat-runs">—</div><div class="lbl">Total scrape runs</div></div>
+</div>
+
+<main>
+  <div class="table-header">
+    <div>
+      <p class="section-title" style="margin-bottom:4px">Company list</p>
+      <span class="count-label" id="count-label">Loading…</span>
+    </div>
+    <div class="controls">
+      <input type="text" id="search" placeholder="Search company, keyword, location…" />
+      <select id="tier-filter">
+        <option value="">All ICP tiers</option>
+        <option value="Viable">Viable</option>
+        <option value="Monitor">Monitor</option>
+      </select>
+      <select id="confidence-filter">
+        <option value="">All confidence</option>
+        <option value="High">High</option>
+        <option value="Medium">Medium</option>
+        <option value="Low">Low</option>
+      </select>
+      <select id="source-filter">
+        <option value="">All sources</option>
+        <option value="Greenhouse">Greenhouse</option>
+        <option value="Ashby">Ashby</option>
+        <option value="Lever">Lever</option>
+        <option value="Workday">Workday</option>
+        <option value="JobSpy">JobSpy</option>
+        <option value="Apify">Apify/LinkedIn</option>
+      </select>
+      <a class="download-btn" id="download-btn" href="#">↓ Download CSV</a>
+    </div>
+  </div>
+
+  <div class="table-wrap">
+    <div class="table-scroll">
+      <table id="main-table">
+        <thead>
+          <tr>
+            <th data-col="gtm_score">Score</th>
+            <th data-col="icp_tier">ICP Tier</th>
+            <th data-col="confidence">Confidence</th>
+            <th data-col="company">Company</th>
+            <th data-col="top_keywords">Top Keywords</th>
+            <th data-col="unique_roles_with_perk">Roles</th>
+            <th data-col="best_source">Source</th>
+            <th data-col="sample_title">Sample Job</th>
+            <th data-col="perk_excerpt">Perk Excerpt</th>
+            <th data-col="date_first_seen">First Seen</th>
+          </tr>
+        </thead>
+        <tbody id="table-body"></tbody>
+      </table>
+    </div>
+  </div>
+</main>
+
+<footer>Auto-generated by lunch-perk-scraper &nbsp;|&nbsp; ezcater Sales Intelligence</footer>
+
+<script src="dashboard_data.js"></script>
+<script>
+// ── Populate stats ──────────────────────────────────────────────────────────
+const stats = DASHBOARD_STATS;
+document.getElementById("stat-total").textContent = stats.total_companies ?? DASHBOARD_DATA.length;
+document.getElementById("stat-new").textContent   = stats.last_run_new ?? stats.new_today ?? "—";
+document.getElementById("stat-viable").textContent = DASHBOARD_DATA.filter(c => c.icp_tier === "Viable").length;
+document.getElementById("stat-runs").textContent  = stats.total_runs ?? "—";
+document.getElementById("last-run").textContent   = `Last run: ${stats.run_date ?? stats.last_run_date ?? "—"}`;
+
+// ── Sort state ──────────────────────────────────────────────────────────────
+let sortCol = "gtm_score";
+let sortDir = "desc";
+let filtered = [...DASHBOARD_DATA];
+
+// ── Rendering helpers ───────────────────────────────────────────────────────
+function scorePill(score) {
+  const n = +score;
+  const cls = n >= 20 ? "high" : n >= 12 ? "med" : "low";
+  return `<span class="score-pill ${cls}">${score}</span>`;
+}
+
+function tierBadge(tier) {
+  const cls = tier === "Viable" ? "badge-viable" : "badge-monitor";
+  return `<span class="badge ${cls}">${tier}</span>`;
+}
+
+function confidenceBadge(conf) {
+  const cls = conf === "High" ? "badge-high" : conf === "Medium" ? "badge-medium" : "badge-low";
+  return `<span class="badge ${cls}">${conf}</span>`;
+}
+
+function sourceTags(src) {
+  return (src || "").split(",").map(s => `<span class="source-tag">${s.trim()}</span>`).join("");
+}
+
+function cleanExcerpt(raw) {
+  return raw.replace(/<[^>]+>/g, "").replace(/&amp;/g,"&").replace(/&lt;/g,"<").replace(/&gt;/g,">").replace(/&nbsp;/g," ").replace(/\s+/g," ").trim().slice(0, 160);
+}
+
+// ── Render table ────────────────────────────────────────────────────────────
+function render() {
+  const tbody = document.getElementById("table-body");
+  if (filtered.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="10" class="no-results">No companies match your filters.</td></tr>`;
+    document.getElementById("count-label").textContent = "0 companies";
+    return;
+  }
+
+  tbody.innerHTML = filtered.map(c => {
+    const isNew = c.is_new === 1 || c.is_new === true;
+    const newBadge = isNew ? ` <span class="badge badge-new">NEW</span>` : "";
+    const excerpt = cleanExcerpt(c.perk_excerpt || "");
+    const jobLink = c.sample_url
+      ? `<a class="job-link" href="${c.sample_url}" target="_blank">${c.sample_title || "View job"}</a>`
+      : (c.sample_title || "—");
+
+    return `<tr>
+      <td style="text-align:center">${scorePill(c.gtm_score)}</td>
+      <td>${tierBadge(c.icp_tier)}</td>
+      <td>${confidenceBadge(c.confidence)}</td>
+      <td>
+        <div class="company-cell">
+          <div class="name">${c.company}${newBadge}</div>
+          <div class="domain">${c.inferred_domain || ""}</div>
+          <div class="loc">${(c.location || "").split(";")[0].trim()}</div>
+        </div>
+      </td>
+      <td class="keyword-list">${(c.top_keywords || "").split(",").map(k => `<strong>${k.trim()}</strong>`).join("<br>")}</td>
+      <td style="text-align:center;font-weight:700">${c.unique_roles_with_perk ?? c.role_count ?? "—"}</td>
+      <td>${sourceTags(c.all_sources || c.best_source)}</td>
+      <td style="max-width:180px">${jobLink}</td>
+      <td class="excerpt-cell">${excerpt}</td>
+      <td style="white-space:nowrap;font-size:12px;color:var(--muted)">${c.date_first_seen || "—"}</td>
+    </tr>`;
+  }).join("");
+
+  const total = DASHBOARD_DATA.length;
+  const shown = filtered.length;
+  document.getElementById("count-label").textContent =
+    shown === total ? `Showing all ${total} companies` : `Showing ${shown} of ${total} companies`;
+}
+
+// ── Filter + sort ───────────────────────────────────────────────────────────
+function applyFilters() {
+  const q      = document.getElementById("search").value.toLowerCase();
+  const tier   = document.getElementById("tier-filter").value;
+  const conf   = document.getElementById("confidence-filter").value;
+  const source = document.getElementById("source-filter").value;
+
+  filtered = DASHBOARD_DATA.filter(c => {
+    const text = [c.company, c.top_keywords, c.location, c.best_source, c.all_sources, c.perk_excerpt].join(" ").toLowerCase();
+    if (q      && !text.includes(q))                          return false;
+    if (tier   && c.icp_tier !== tier)                        return false;
+    if (conf   && c.confidence !== conf)                      return false;
+    if (source && !(c.all_sources || "").includes(source))    return false;
+    return true;
+  });
+
+  sortData();
+  render();
+}
+
+function sortData() {
+  filtered.sort((a, b) => {
+    let av = a[sortCol] ?? "", bv = b[sortCol] ?? "";
+    if (sortCol === "gtm_score" || sortCol === "unique_roles_with_perk") { av = +av; bv = +bv; }
+    if (av < bv) return sortDir === "asc" ? -1 : 1;
+    if (av > bv) return sortDir === "asc" ?  1 : -1;
+    return 0;
+  });
+}
+
+// ── Column sort clicks ──────────────────────────────────────────────────────
+document.querySelectorAll("thead th[data-col]").forEach(th => {
+  th.addEventListener("click", () => {
+    const col = th.dataset.col;
+    sortDir = sortCol === col ? (sortDir === "asc" ? "desc" : "asc") : (col === "gtm_score" ? "desc" : "asc");
+    sortCol = col;
+    document.querySelectorAll("thead th").forEach(t => t.classList.remove("sorted-asc","sorted-desc"));
+    th.classList.add(sortDir === "asc" ? "sorted-asc" : "sorted-desc");
+    sortData();
+    render();
+  });
+});
+
+// ── Filter listeners ────────────────────────────────────────────────────────
+document.getElementById("search").addEventListener("input", applyFilters);
+document.getElementById("tier-filter").addEventListener("change", applyFilters);
+document.getElementById("confidence-filter").addEventListener("change", applyFilters);
+document.getElementById("source-filter").addEventListener("change", applyFilters);
+
+// ── CSV download ────────────────────────────────────────────────────────────
+document.getElementById("download-btn").addEventListener("click", e => {
+  e.preventDefault();
+  const fields = ["company","inferred_domain","gtm_score","confidence","icp_tier",
+    "unique_roles_with_perk","top_keywords","best_source","all_sources",
+    "location","remote","sample_title","sample_url","date_first_seen"];
+  const header = fields.join(",");
+  const rows = filtered.map(c =>
+    fields.map(f => {
+      const v = (c[f] ?? "").toString().replace(/"/g, '""');
+      return v.includes(",") || v.includes("\n") || v.includes('"') ? `"${v}"` : v;
+    }).join(",")
+  );
+  const csv  = [header, ...rows].join("\n");
+  const blob = new Blob([csv], { type: "text/csv" });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement("a");
+  a.href = url; a.download = "nyc_lunch_perk_companies.csv"; a.click();
+  URL.revokeObjectURL(url);
+});
+
+// ── Init ────────────────────────────────────────────────────────────────────
+document.querySelector(`thead th[data-col="gtm_score"]`).classList.add("sorted-desc");
+sortData();
+render();
+</script>
+</body>
+</html>

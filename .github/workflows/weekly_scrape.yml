@@ -5,6 +5,11 @@ on:
     - cron: '0 9 * * 1'   # Every Monday at 9am UTC (5am ET)
   workflow_dispatch:        # Also allows manual trigger from GitHub UI
 
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
 jobs:
   scrape:
     runs-on: ubuntu-latest
@@ -63,3 +68,11 @@ jobs:
           git add dashboard_data.js lunch_perk_jobs_enriched.csv || true
           git diff --staged --quiet || git commit -m "chore: weekly scrape $(date +'%Y-%m-%d')"
           git push || true
+
+      - name: Deploy dashboard to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: .
+          include_files: index.html,dashboard_data.js
+          commit_message: "deploy: dashboard update $(date +'%Y-%m-%d')"
