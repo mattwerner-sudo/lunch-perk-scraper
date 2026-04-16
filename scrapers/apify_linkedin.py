@@ -189,20 +189,20 @@ def scrape() -> Iterator[dict]:
     # Start all runs at once
     log.info(f"Apify: launching {len(LINKEDIN_SEARCHES)} parallel runs...")
     runs = []
-    for search in LINKEDIN_SEARCHES:
+        for search in LINKEDIN_SEARCHES:
         run_id, dataset_id, keyword = _start_run(search)
         if run_id:
             runs.append((run_id, dataset_id, keyword))
-        time.sleep(0.5)  # slight stagger to avoid burst
+        time.sleep(0.5)
 
-        log.info(f"Apify: {len(runs)} runs started — waiting for completion...")
+    log.info(f"Apify: {len(runs)} runs started — waiting for completion...")  # ← here, not inside loop
+
 
     if not runs:                                          # ← ADD THIS
         log.warning("Apify: no runs succeeded, skipping fetch")  # ← ADD THIS
         return                                            # ← ADD THIS
 
     # Collect all results in parallel
-    seen_urls = set()
     seen_urls = set()
     with concurrent.futures.ThreadPoolExecutor(max_workers=len(runs)) as pool:
         futures = {
