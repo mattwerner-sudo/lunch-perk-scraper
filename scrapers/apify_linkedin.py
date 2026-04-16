@@ -196,10 +196,6 @@ def scrape() -> Iterator[dict]:
 
     # Collect all results in parallel
     seen_urls = set()
-    with concurrent.futures.ThreadPoolExecutor(max_workers=len(runs)) as pool:
-
-
-    # Collect all results in parallel
     seen_urls = set()
     with concurrent.futures.ThreadPoolExecutor(max_workers=len(runs)) as pool:
         futures = {
