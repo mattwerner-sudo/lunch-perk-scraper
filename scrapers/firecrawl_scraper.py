@@ -1,20 +1,15 @@
 """
-Firecrawl careers-page scraper.
+Firecrawl ATS job posting scraper.
 
-Two modes:
-  1. DISCOVERY — Firecrawl's /search endpoint finds URLs across the web
-     matching a query, then scrapes each page for perk keywords.
-  2. VERIFICATION — given a company domain, scrape their /careers or
-     /benefits page directly and check for food perks.
-
-Mode 1 runs as part of the weekly scrape pipeline.
-Mode 2 is called by enrich.py to verify companies found by other scrapers.
+Searches within ATS domains only — every result is a real job posting
+from a real employer. No articles, blogs, or catering vendor sites.
 
 Requires: FIRECRAWL_API_KEY secret in GitHub Actions / .env
 API docs: https://docs.firecrawl.dev/
 """
 import logging
 import os
+import re
 import time
 from typing import Iterator
 
@@ -27,44 +22,61 @@ log = logging.getLogger(__name__)
 API_KEY  = os.getenv("FIRECRAWL_API_KEY", "")
 BASE_URL = "https://api.firecrawl.dev/v1"
 
-SEARCH_RESULTS_PER_QUERY = 5   # Firecrawl search is expensive — keep low
-SCRAPE_TIMEOUT           = 45  # seconds; JS-heavy pages take longer
+SEARCH_RESULTS_PER_QUERY = 5
+SCRAPE_TIMEOUT           = 45
 
-# Discovery queries — Firecrawl searches AND scrapes in one call.
-# Focused on finding careers/benefits pages, not blog posts.
+# Queries scoped tightly to ATS domains — finds job postings we missed
+# in our hardcoded slug lists
 FIRECRAWL_QUERIES = [
-    "site:greenhouse.io OR site:lever.co OR site:ashbyhq.com \"catered lunch\" OR \"free meals\" New York",
-    "\"meal stipend\" OR \"food stipend\" OR \"catered meals\" jobs New York City site:careers",
-    "\"DoorDash\" OR \"Forkable\" OR \"Sharebite\" employee benefit New York office careers",
-    "\"stocked kitchen\" OR \"free lunch\" OR \"daily lunch\" New York company benefits",
-    "\"lunch provided\" OR \"meals provided\" New York office hiring",
+    'site:greenhouse.io "catered lunch" OR "catered meals" "New York"',
+    'site:greenhouse.io "meal stipend" OR "food stipend" "New York"',
+    'site:greenhouse.io "DoorDash" OR "Sharebite" OR "Forkable" "New York"',
+    'site:lever.co "catered lunch" OR "catered meals" "New York"',
+    'site:lever.co "meal stipend" OR "food stipend" "New York"',
+    'site:ashbyhq.com "catered lunch" OR "meal stipend" "New York"',
+    'site:ashbyhq.com "DoorDash" OR "Sharebite" "New York"',
+    'site:myworkdayjobs.com "catered lunch" OR "meal stipend" "New York"',
+    'site:smartrecruiters.com "catered lunch" OR "free lunch" "New York"',
+    'site:bamboohr.com "catered lunch" OR "meal stipend" "New York"',
 ]
 
-# Career page URL suffixes to try when verifying a domain
-CAREERS_PATHS = [
-    "/careers",
-    "/jobs",
-    "/join-us",
-    "/work-with-us",
-    "/about/careers",
-    "/company/careers",
-    "/en/careers",
-    "/benefits",
-    "/perks",
-    "/life-at",
+# ATS URL → employer name extraction
+ATS_PATTERNS = [
+    (re.compile(r"greenhouse\.io/(?:v1/boards/)?([^/]+)/jobs"), "Greenhouse"),
+    (re.compile(r"lever\.co/([^/]+)"), "Lever"),
+    (re.compile(r"ashbyhq\.com/([^/]+)"), "Ashby"),
+    (re.compile(r"([^.]+)\.myworkdayjobs\.com"), "Workday"),
+    (re.compile(r"smartrecruiters\.com/([^/]+)"), "SmartRecruiters"),
+    (re.compile(r"([^.]+)\.bamboohr\.com"), "BambooHR"),
+    (re.compile(r"([^.]+)\.icims\.com"), "iCIMS"),
 ]
+
+PLATFORM_SLUGS = {
+    "greenhouse", "lever", "ashby", "workday", "smartrecruiters",
+    "bamboohr", "icims", "jobvite", "breezy", "careers", "jobs",
+    "en", "us", "external", "career", "site", "boards", "job-boards",
+}
+
+
+def _extract_company_from_url(url: str) -> str:
+    for pattern, _ in ATS_PATTERNS:
+        m = pattern.search(url)
+        if m:
+            slug = m.group(1).lower().strip()
+            if slug and slug not in PLATFORM_SLUGS and len(slug) > 1:
+                return slug.replace("-", " ").replace("_", " ").title()
+    return ""
 
 
 def _firecrawl_search(query: str) -> list[dict]:
-    """Use Firecrawl /search to find and scrape matching pages."""
     if not API_KEY:
         return []
     try:
         resp = requests.post(
             f"{BASE_URL}/search",
             json={
-                "query":   query,
-                "limit":   SEARCH_RESULTS_PER_QUERY,
+                "query": query,
+                "limit": SEARCH_RESULTS_PER_QUERY,
                 "scrapeOptions": {
                     "formats": ["markdown"],
                     "onlyMainContent": True,
@@ -80,95 +92,7 @@ def _firecrawl_search(query: str) -> list[dict]:
         return []
 
 
-def _firecrawl_scrape(url: str) -> str:
-    """Scrape a single URL via Firecrawl. Returns clean markdown text."""
-    if not API_KEY:
-        return ""
-    try:
-        resp = requests.post(
-            f"{BASE_URL}/scrape",
-            json={
-                "url": url,
-                "formats": ["markdown"],
-                "onlyMainContent": True,
-                "waitFor": 2000,   # ms — let JS render
-            },
-            headers={"Authorization": f"Bearer {API_KEY}"},
-            timeout=SCRAPE_TIMEOUT,
-        )
-        resp.raise_for_status()
-        data = resp.json().get("data", {})
-        return data.get("markdown", "") or ""
-    except Exception as e:
-        log.warning(f"Firecrawl scrape failed — {url}: {e}")
-        return ""
-
-
-def verify_domain(domain: str) -> dict | None:
-    """
-    Verify a company domain has food perks by scraping their careers/benefits page.
-    Returns a record dict if perks found, None otherwise.
-    Called by enrich.py for new companies discovered by other scrapers.
-    """
-    if not API_KEY:
-        return None
-
-    domain = domain.rstrip("/")
-    if not domain.startswith("http"):
-        domain = f"https://{domain}"
-
-    for path in CAREERS_PATHS:
-        url = f"{domain}{path}"
-        log.info(f"Firecrawl: verifying {url}")
-        text = _firecrawl_scrape(url)
-        if not text:
-            continue
-
-        full_text = clean_text(text)
-        matched = find_food_keywords(full_text)
-        if matched:
-            snip = excerpt(full_text, matched[0])
-            return {
-                "source":                "Firecrawl/Benefits",
-                "url":                   url,
-                "food_keywords_matched": ", ".join(matched),
-                "keyword_count":         len(matched),
-                "perk_excerpt":          snip,
-            }
-        time.sleep(1.0)
-
-    return None
-
-
-def _extract_company(result: dict) -> str:
-    """Best-effort company name from a Firecrawl search result."""
-    import re
-    metadata = result.get("metadata", {}) or {}
-    title    = metadata.get("title", "") or result.get("title", "") or ""
-    url      = result.get("url", "")
-
-    for sep in [" | ", " — ", " - ", " at ", " @ ", " · "]:
-        if sep in title:
-            parts = title.split(sep)
-            company = min(parts, key=len).strip()
-            if 2 < len(company) < 60:
-                return company
-
-    domain_match = re.search(r"(?:https?://)?(?:www\.)?([^/]+)", url)
-    if domain_match:
-        domain = domain_match.group(1)
-        company = re.sub(r"\.(com|io|co|ai|net|org|jobs).*$", "", domain)
-        company = company.replace("-", " ").replace("_", " ").title()
-        if len(company) > 2:
-            return company
-
-    return ""
-
-
 def scrape() -> Iterator[dict]:
-    """
-    Discovery mode: run Firecrawl search queries and yield perk-matched records.
-    """
     if not API_KEY:
         log.warning("Firecrawl: FIRECRAWL_API_KEY not set — skipping")
         return
@@ -186,9 +110,15 @@ def scrape() -> Iterator[dict]:
                 continue
             seen_urls.add(url)
 
+            # Require ATS URL — if we can't extract an employer from the URL,
+            # it's not a job posting and we skip it
+            company = _extract_company_from_url(url)
+            if not company:
+                log.debug(f"Firecrawl: skipping non-ATS URL {url}")
+                continue
+
             markdown  = result.get("markdown", "") or ""
             full_text = clean_text(markdown)
-
             if not full_text:
                 continue
 
@@ -200,10 +130,6 @@ def scrape() -> Iterator[dict]:
 
             matched = find_food_keywords(full_text)
             if not matched:
-                continue
-
-            company = _extract_company(result)
-            if not company:
                 continue
 
             snip = excerpt(full_text, matched[0])
@@ -221,4 +147,4 @@ def scrape() -> Iterator[dict]:
                 "url":                   url,
             }
 
-        time.sleep(2.0)  # Firecrawl search is heavier — be conservative
+        time.sleep(2.0)
