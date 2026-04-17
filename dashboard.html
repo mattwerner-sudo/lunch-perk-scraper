@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NYC Lunch Perk Intel</title>
+<link href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700,900&display=swap" rel="stylesheet">
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     PASTE THIS INTO CODEPEN → CSS PANE
+     (Everything between the style tags)
+════════════════════════════════════════════════════════════════════ -->
+<style>
+/* ── Reset & Base ── */
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Satoshi',system-ui,sans-serif;background:#f7f6f3;color:#0d0c22;-webkit-font-smoothing:antialiased;min-height:100vh}
+a{color:inherit;text-decoration:none}
+
+/* ── Nav ── */
+nav{background:#0d0c22;color:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 40px;height:56px;position:sticky;top:0;z-index:100}
+.nav-brand{display:flex;align-items:center;gap:10px;font-size:15px;font-weight:700;letter-spacing:-.01em}
+.nav-brand .dot{width:8px;height:8px;border-radius:50%;background:#22c55e;box-shadow:0 0 6px #22c55e}
+.nav-stats{display:flex;gap:28px;font-size:13px;color:rgba(255,255,255,0.55)}
+.nav-stats strong{color:#fff;font-weight:700}
+.badge-new{background:#22c55e;color:#fff;font-size:10px;font-weight:800;padding:2px 7px;border-radius:999px;letter-spacing:.04em;text-transform:uppercase;margin-left:6px}
+
+/* ── Hero ── */
+.hero{background:#0d0c22;color:#fff;padding:48px 40px 56px;border-bottom:1px solid rgba(255,255,255,0.08)}
+.hero-inner{max-width:1160px;margin:0 auto}
+.hero h1{font-size:40px;font-weight:900;letter-spacing:-.03em;line-height:1.1;margin-bottom:8px}
+.hero h1 em{color:#22c55e;font-style:normal}
+.hero p{font-size:16px;color:rgba(255,255,255,0.6);max-width:560px;line-height:1.6;margin-bottom:28px}
+.hero-kpis{display:flex;gap:40px}
+.kpi-item{border-left:2px solid rgba(255,255,255,0.12);padding-left:20px}
+.kpi-item .k-val{font-size:28px;font-weight:900;letter-spacing:-.03em;color:#fff}
+.kpi-item .k-label{font-size:12px;color:rgba(255,255,255,0.45);font-weight:500;margin-top:2px;text-transform:uppercase;letter-spacing:.06em}
+
+/* ── Layout ── */
+.page{max-width:1160px;margin:0 auto;padding:32px 40px 80px;display:flex;gap:32px}
+.main{flex:1;min-width:0}
+.sidebar{width:260px;flex-shrink:0}
+
+/* ── Toolbar ── */
+.toolbar{display:flex;gap:10px;align-items:center;margin-bottom:20px;flex-wrap:wrap}
+.search-wrap{flex:1;min-width:240px;position:relative}
+.search-wrap input{width:100%;padding:10px 16px 10px 40px;font:inherit;font-size:14px;font-weight:500;border:1px solid #e7e7e9;border-radius:10px;background:#fff;outline:none;transition:.15s;color:#0d0c22}
+.search-wrap input:focus{border-color:#0d0c22;box-shadow:0 0 0 3px rgba(13,12,34,.06)}
+.search-wrap input::placeholder{color:#b0b0ba}
+.search-wrap svg{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:#b0b0ba}
+.sort-select{padding:10px 14px;font:inherit;font-size:13px;font-weight:600;border:1px solid #e7e7e9;border-radius:10px;background:#fff;color:#0d0c22;cursor:pointer;outline:none}
+
+/* ── Filters (sidebar) ── */
+.filter-card{background:#fff;border:1px solid #e7e7e9;border-radius:14px;padding:20px;margin-bottom:16px}
+.filter-card h3{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#9e9ea7;margin-bottom:12px}
+.chip-group{display:flex;flex-wrap:wrap;gap:6px}
+.chip{padding:4px 10px;border-radius:999px;font-size:12px;font-weight:600;border:1.5px solid #e7e7e9;background:#fff;color:#6e6d7a;cursor:pointer;transition:.12s;white-space:nowrap}
+.chip:hover{border-color:#0d0c22;color:#0d0c22}
+.chip.on{background:#0d0c22;border-color:#0d0c22;color:#fff}
+.filter-clear{font-size:11px;font-weight:500;color:#9e9ea7;cursor:pointer;margin-top:8px;display:inline-block}
+.filter-clear:hover{color:#0d0c22}
+
+/* ── Count bar ── */
+.count-bar{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.count-bar .count{font-size:14px;font-weight:600;color:#6e6d7a}
+.count-bar .count strong{color:#0d0c22}
+.new-only-toggle{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:600;cursor:pointer;color:#6e6d7a}
+.new-only-toggle input{width:16px;height:16px;accent-color:#22c55e;cursor:pointer}
+.new-only-toggle:hover{color:#0d0c22}
+
+/* ── Company Cards ── */
+.cards{display:flex;flex-direction:column;gap:10px}
+.card{background:#fff;border:1px solid #e7e7e9;border-radius:14px;padding:20px 24px;cursor:pointer;transition:box-shadow .15s,border-color .15s;position:relative}
+.card:hover{border-color:#d1d0da;box-shadow:0 4px 20px rgba(0,0,0,0.06)}
+.card.is-new{border-left:3px solid #22c55e}
+.card-top{display:flex;align-items:flex-start;gap:14px}
+.card-logo{width:44px;height:44px;border-radius:10px;background:#f3f3f4;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#6e6d7a;flex-shrink:0;text-transform:uppercase;overflow:hidden}
+.card-logo img{width:100%;height:100%;object-fit:contain;padding:6px}
+.card-main{flex:1;min-width:0}
+.card-header{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:4px}
+.card-company{font-size:16px;font-weight:700;color:#0d0c22;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card-score{font-size:12px;font-weight:700;padding:3px 9px;border-radius:999px;white-space:nowrap}
+.score-high{background:#dcfce7;color:#15803d}
+.score-mid{background:#fef9c3;color:#a16207}
+.score-low{background:#f3f3f4;color:#6e6d7a}
+.card-sub{font-size:13px;color:#6e6d7a;margin-bottom:8px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.card-sub .role-count{font-weight:600;color:#0d0c22}
+.card-keywords{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:0}
+.kw-tag{font-size:11px;font-weight:600;padding:2px 8px;border-radius:999px;background:#f0f0f5;color:#4a4a6a}
+.kw-tag.primary{background:#ede9fe;color:#6d28d9}
+
+/* expanded detail */
+.card-detail{display:none;margin-top:16px;padding-top:16px;border-top:1px solid #f3f3f4;animation:fadeIn .15s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
+.card.open .card-detail{display:block}
+.detail-excerpt{font-size:13px;color:#4a4a6a;line-height:1.6;background:#f8f7f4;border-radius:8px;padding:12px 14px;margin-bottom:14px;font-style:italic}
+.detail-meta{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.meta-item label{display:block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#9e9ea7;margin-bottom:2px}
+.meta-item span{font-size:13px;color:#3d3d4e;font-weight:500}
+.card-actions{display:flex;gap:8px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:5px;padding:8px 16px;border-radius:8px;font:inherit;font-size:13px;font-weight:600;cursor:pointer;transition:.15s;border:none}
+.btn-primary{background:#0d0c22;color:#fff}
+.btn-primary:hover{background:#3d3d4e}
+.btn-secondary{background:#f3f3f4;color:#3d3d4e}
+.btn-secondary:hover{background:#e7e7e9}
+.btn svg{width:13px;height:13px}
+
+/* ── Empty state ── */
+.empty{text-align:center;padding:80px 20px;color:#9e9ea7}
+.empty h3{font-size:18px;font-weight:700;color:#0d0c22;margin-bottom:6px}
+
+/* ── Source legend (sidebar) ── */
+.legend{display:flex;flex-direction:column;gap:8px}
+.legend-row{display:flex;align-items:center;gap:8px;font-size:13px;color:#3d3d4e}
+.legend-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.dot-high{background:#22c55e}
+.dot-mid{background:#3b82f6}
+.dot-low{background:#e5e7eb}
+
+/* ── Last updated ── */
+.last-updated{font-size:12px;color:#9e9ea7;text-align:center;margin-top:24px}
+
+/* ── Responsive ── */
+@media(max-width:860px){
+.page{flex-direction:column;padding:20px 16px 60px}
+.sidebar{width:100%}
+.hero{padding:32px 20px 40px}
+.hero h1{font-size:28px}
+.hero-kpis{gap:20px}
+.kpi-item .k-val{font-size:22px}
+nav{padding:0 16px}
+.nav-stats{display:none}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     PASTE THIS INTO CODEPEN → HTML PANE
+     (Everything inside <body>)
+════════════════════════════════════════════════════════════════════ -->
+
+<nav>
+  <div class="nav-brand">
+    <div class="dot"></div>
+    NYC Lunch Perk Intel
+  </div>
+  <div class="nav-stats">
+    <div><strong id="nav-total">—</strong> companies</div>
+    <div><strong id="nav-new">—</strong> new this run</div>
+    <div><strong id="nav-updated">—</strong> last updated</div>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="hero-inner">
+    <h1>NYC companies that <em>feed their people</em></h1>
+    <p>Companies with DoorDash, GrubHub, catered meals, and free lunch in their NYC job postings — live and verified.</p>
+    <div class="hero-kpis">
+      <div class="kpi-item"><div class="k-val" id="kpi-total">—</div><div class="k-label">Companies tracked</div></div>
+      <div class="kpi-item"><div class="k-val" id="kpi-new">—</div><div class="k-label">Net new this run</div></div>
+      <div class="kpi-item"><div class="k-val" id="kpi-high">—</div><div class="k-label">High confidence</div></div>
+      <div class="kpi-item"><div class="k-val" id="kpi-sources">6</div><div class="k-label">Job board sources</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="page">
+  <div class="main">
+    <div class="toolbar">
+      <div class="search-wrap">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        <input type="text" id="q" placeholder="Search company, keyword, source…" oninput="render()">
+      </div>
+      <select class="sort-select" id="sort" onchange="render()">
+        <option value="gtm_score">Highest Score</option>
+        <option value="role_count">Most Roles</option>
+        <option value="company">A → Z</option>
+        <option value="new_first">New First</option>
+      </select>
+    </div>
+
+    <div class="count-bar">
+      <div class="count"><strong id="result-count">—</strong> companies</div>
+      <label class="new-only-toggle">
+        <input type="checkbox" id="new-only" onchange="render()">
+        New only
+      </label>
+    </div>
+
+    <div class="cards" id="cards"></div>
+  </div>
+
+  <div class="sidebar">
+    <div class="filter-card">
+      <h3>Confidence</h3>
+      <div class="chip-group" id="f-confidence"></div>
+    </div>
+    <div class="filter-card">
+      <h3>Source</h3>
+      <div class="chip-group" id="f-source"></div>
+      <span class="filter-clear" onclick="clearFilter('source')">Clear</span>
+    </div>
+    <div class="filter-card">
+      <h3>Keywords</h3>
+      <div class="chip-group" id="f-kw"></div>
+      <span class="filter-clear" onclick="clearFilter('kw')">Clear</span>
+    </div>
+    <div class="filter-card">
+      <h3>Signal Key</h3>
+      <div class="legend">
+        <div class="legend-row"><div class="legend-dot dot-high"></div>High — platform names + perk context</div>
+        <div class="legend-row"><div class="legend-dot dot-mid"></div>Medium — explicit perk language</div>
+        <div class="legend-row"><div class="legend-dot dot-low"></div>Low — general food mentions</div>
+      </div>
+    </div>
+    <div class="last-updated" id="last-updated"></div>
+  </div>
+</div>
+
+<!-- Load data generated by enrich.py.
+     For CodePen: paste dashboard_data.js contents at the top of the JS pane. -->
+<script src="dashboard_data.js"></script>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     PASTE THIS INTO CODEPEN → JS PANE
+     (Everything between the script tags — AFTER the data constants)
+════════════════════════════════════════════════════════════════════ -->
+<script>
+// ── If running in CodePen, paste DASHBOARD_DATA and DASHBOARD_STATS above this line ──
+
+const F = { confidence: [], source: [], kw: [] };
+
+function init() {
+  if (typeof DASHBOARD_DATA === 'undefined') {
+    document.getElementById('cards').innerHTML =
+      '<div class="empty"><h3>No data loaded</h3><p>Run <code>python3 scrape.py</code> then <code>python3 enrich.py</code> to generate dashboard_data.js</p></div>';
+    return;
+  }
+
+  const stats = typeof DASHBOARD_STATS !== 'undefined' ? DASHBOARD_STATS : {};
+
+  // KPIs
+  const total = DASHBOARD_DATA.length;
+  const newCount = DASHBOARD_DATA.filter(c => c.is_new).length;
+  const highCount = DASHBOARD_DATA.filter(c => c.confidence === 'High').length;
+
+  document.getElementById('nav-total').textContent = total;
+  document.getElementById('nav-new').textContent = newCount;
+  document.getElementById('nav-updated').textContent = stats.run_date || 'today';
+  document.getElementById('kpi-total').textContent = total;
+  document.getElementById('kpi-new').textContent = newCount;
+  document.getElementById('kpi-high').textContent = highCount;
+
+  if (stats.run_date) {
+    document.getElementById('last-updated').textContent =
+      'Last updated: ' + stats.run_date;
+  }
+
+  // Build filter chips
+  buildChips('f-confidence', 'confidence', ['High', 'Medium', 'Low']);
+
+  const sources = [...new Set(DASHBOARD_DATA.map(c => c.best_source || c.source).filter(Boolean))].sort();
+  buildChips('f-source', 'source', sources);
+
+  // Top keywords across all companies
+  const kwCount = {};
+  DASHBOARD_DATA.forEach(c => {
+    (c.top_keywords || '').split(', ').forEach(kw => {
+      if (kw) kwCount[kw] = (kwCount[kw] || 0) + 1;
+    });
+  });
+  const topKws = Object.entries(kwCount).sort((a,b) => b[1]-a[1]).slice(0,15).map(([k]) => k);
+  buildChips('f-kw', 'kw', topKws);
+
+  render();
+}
+
+function buildChips(containerId, filterKey, values) {
+  const el = document.getElementById(containerId);
+  el.innerHTML = '';
+  values.forEach(v => {
+    const b = document.createElement('button');
+    b.className = 'chip';
+    b.textContent = v;
+    b.dataset.v = v;
+    b.onclick = () => {
+      b.classList.toggle('on');
+      const a = F[filterKey], i = a.indexOf(v);
+      i > -1 ? a.splice(i, 1) : a.push(v);
+      render();
+    };
+    el.appendChild(b);
+  });
+}
+
+function clearFilter(key) {
+  F[key] = [];
+  document.querySelectorAll(`#f-${key} .chip`).forEach(c => c.classList.remove('on'));
+  render();
+}
+
+function render() {
+  if (typeof DASHBOARD_DATA === 'undefined') return;
+
+  const q = document.getElementById('q').value.toLowerCase().trim();
+  const sort = document.getElementById('sort').value;
+  const newOnly = document.getElementById('new-only').checked;
+
+  let results = DASHBOARD_DATA.filter(c => {
+    if (newOnly && !c.is_new) return false;
+    if (F.confidence.length && !F.confidence.includes(c.confidence)) return false;
+    if (F.source.length && !F.source.includes(c.best_source || c.source)) return false;
+    if (F.kw.length && !F.kw.some(kw => (c.top_keywords || '').includes(kw))) return false;
+    if (q) {
+      const haystack = `${c.company} ${c.top_keywords} ${c.best_source} ${c.location}`.toLowerCase();
+      if (!haystack.includes(q)) return false;
+    }
+    return true;
+  });
+
+  results = [...results].sort((a, b) => {
+    if (sort === 'gtm_score')  return (b.gtm_score||0) - (a.gtm_score||0);
+    if (sort === 'role_count') return (b.role_count||0) - (a.role_count||0);
+    if (sort === 'company')    return a.company.localeCompare(b.company);
+    if (sort === 'new_first')  return (b.is_new||0) - (a.is_new||0) || (b.gtm_score||0) - (a.gtm_score||0);
+    return 0;
+  });
+
+  document.getElementById('result-count').textContent = results.length;
+  document.getElementById('cards').innerHTML = results.length
+    ? results.map(cardHTML).join('')
+    : '<div class="empty"><h3>No companies match</h3><p>Try adjusting your filters</p></div>';
+}
+
+function cardHTML(c) {
+  const ini = (c.company || 'XX').slice(0, 2).toUpperCase();
+  const domain = c.inferred_domain || '';
+  const logoUrl = domain ? `https://logo.uplead.com/${domain}` : '';
+  const scoreClass = c.confidence === 'High' ? 'score-high' : c.confidence === 'Medium' ? 'score-mid' : 'score-low';
+
+  // Split keywords into primary (platform names) and secondary
+  const PRIMARY_KWS = ['doordash','grubhub','ubereats','uber eats','forkable','sharebite','seamless corporate'];
+  const kws = (c.top_keywords || '').split(', ').filter(Boolean);
+  const kwTags = kws.map(kw =>
+    `<span class="kw-tag ${PRIMARY_KWS.some(p => kw.toLowerCase().includes(p)) ? 'primary' : ''}">${kw}</span>`
+  ).join('');
+
+  const newBadge = c.is_new ? '<span class="badge-new">New</span>' : '';
+  const rolePlural = c.role_count === 1 ? 'role' : 'roles';
+  const excerpt = c.perk_excerpt ? `<div class="detail-excerpt">"${c.perk_excerpt}"</div>` : '';
+
+  return `
+<div class="card ${c.is_new ? 'is-new' : ''}" onclick="toggleCard(this)">
+  <div class="card-top">
+    <div class="card-logo">
+      ${logoUrl
+        ? `<img src="${logoUrl}" alt="${c.company}" onerror="this.remove();this.parentElement.textContent='${ini}'">`
+        : ini}
+    </div>
+    <div class="card-main">
+      <div class="card-header">
+        <span class="card-company">${c.company}${newBadge}</span>
+        <span class="card-score ${scoreClass}">${c.confidence} · ${c.gtm_score}</span>
+      </div>
+      <div class="card-sub">
+        <span class="role-count">${c.role_count} ${rolePlural}</span>
+        <span>·</span>
+        <span>${c.best_source || c.source || ''}</span>
+        ${c.location ? `<span>·</span><span>${c.location}</span>` : ''}
+      </div>
+      <div class="card-keywords">${kwTags}</div>
+    </div>
+  </div>
+  <div class="card-detail">
+    ${excerpt}
+    <div class="detail-meta">
+      <div class="meta-item"><label>Domain</label><span>${c.inferred_domain || '—'}</span></div>
+      <div class="meta-item"><label>Remote</label><span>${c.remote || 'On-site'}</span></div>
+      <div class="meta-item"><label>First Seen</label><span>${c.date_first_seen || c.first_seen || '—'}</span></div>
+      <div class="meta-item"><label>GTM Score</label><span>${c.gtm_score}</span></div>
+    </div>
+    <div class="card-actions">
+      ${c.sample_url
+        ? `<a href="${c.sample_url}" target="_blank" rel="noopener" onclick="event.stopPropagation()">
+             <button class="btn btn-primary">
+               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg>
+               View Job Posting
+             </button>
+           </a>`
+        : ''}
+      <button class="btn btn-secondary" onclick="copyToClipboard(event,'${c.company}','${c.inferred_domain}')">
+        Copy for CRM
+      </button>
+    </div>
+  </div>
+</div>`;
+}
+
+function toggleCard(el) {
+  el.classList.toggle('open');
+}
+
+function copyToClipboard(e, company, domain) {
+  e.stopPropagation();
+  const text = `${company}\t${domain}`;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = e.currentTarget;
+    const orig = btn.textContent;
+    btn.textContent = 'Copied!';
+    setTimeout(() => btn.textContent = orig, 1500);
+  });
+}
+
+init();
+</script>
+</body>
+</html>

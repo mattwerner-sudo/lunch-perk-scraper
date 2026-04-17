@@ -1,0 +1,9 @@
+requests==2.31.0
+beautifulsoup4==4.12.3
+python-jobspy==1.1.82
+pandas==2.2.2
+tqdm==4.66.4
+python-dotenv==1.0.1
+lxml==5.2.2
+exa-py>=1.1.0
+firecrawl-py>=1.4.0
