@@ -1,420 +1,418 @@
-2026-04-17 18:35:42,893 [INFO] Scraping: Greenhouse
-2026-04-17 18:35:44,558 [INFO] Greenhouse figma: 153 jobs
-2026-04-17 18:35:46,156 [INFO] Greenhouse airtable: 58 jobs
-2026-04-17 18:35:47,730 [INFO] Greenhouse stripe: 497 jobs
-2026-04-17 18:35:49,569 [INFO] Greenhouse hubspot: 0 jobs
-2026-04-17 18:35:51,136 [INFO] Greenhouse twilio: 137 jobs
-2026-04-17 18:35:52,921 [INFO] Greenhouse amplitude: 41 jobs
-2026-04-17 18:35:54,272 [INFO] Greenhouse mixpanel: 47 jobs
-2026-04-17 18:35:55,684 [INFO] Greenhouse klaviyo: 245 jobs
-2026-04-17 18:35:57,561 [INFO] Greenhouse intercom: 176 jobs
-2026-04-17 18:36:00,853 [INFO] Greenhouse mongodb: 417 jobs
-2026-04-17 18:36:02,903 [INFO] Greenhouse datadog: 423 jobs
-2026-04-17 18:36:04,792 [INFO] Greenhouse braze: 177 jobs
-2026-04-17 18:36:06,347 [INFO] Greenhouse movableink: 25 jobs
-2026-04-17 18:36:07,824 [INFO] Greenhouse yotpo: 50 jobs
-2026-04-17 18:36:09,511 [INFO] Greenhouse sisense: 3 jobs
-2026-04-17 18:36:10,972 [INFO] Greenhouse appsflyer: 56 jobs
-2026-04-17 18:36:12,372 [INFO] Greenhouse taboola: 74 jobs
-2026-04-17 18:36:13,838 [INFO] Greenhouse pinterest: 152 jobs
-2026-04-17 18:36:15,705 [INFO] Greenhouse reddit: 152 jobs
-2026-04-17 18:36:17,204 [INFO] Greenhouse lyft: 141 jobs
-2026-04-17 18:36:18,809 [INFO] Greenhouse airbnb: 239 jobs
-2026-04-17 18:36:20,341 [INFO] Greenhouse dropbox: 102 jobs
-2026-04-17 18:36:22,057 [INFO] Greenhouse squarespace: 33 jobs
-2026-04-17 18:36:23,428 [INFO] Greenhouse kickstarter: 2 jobs
-2026-04-17 18:36:25,127 [INFO] Greenhouse duolingo: 89 jobs
-2026-04-17 18:36:26,606 [INFO] Greenhouse pagerduty: 51 jobs
-2026-04-17 18:36:28,461 [INFO] Greenhouse cloudflare: 473 jobs
-2026-04-17 18:36:30,571 [INFO] Greenhouse fastly: 52 jobs
-2026-04-17 18:36:32,252 [INFO] Greenhouse elastic: 204 jobs
-2026-04-17 18:36:34,252 [INFO] Greenhouse databricks: 855 jobs
-2026-04-17 18:36:35,987 [INFO] Greenhouse seatgeek: 41 jobs
-2026-04-17 18:36:37,422 [INFO] Greenhouse tripadvisor: 72 jobs
-2026-04-17 18:36:39,097 [INFO] Greenhouse opendoor: 59 jobs
-2026-04-17 18:36:40,492 [INFO] Greenhouse mindbody: 35 jobs
-2026-04-17 18:36:41,895 [INFO] Greenhouse cision: 68 jobs
-2026-04-17 18:36:43,471 [INFO] Greenhouse similarweb: 67 jobs
-2026-04-17 18:36:45,164 [INFO] Greenhouse okta: 361 jobs
-2026-04-17 18:36:47,182 [INFO] Greenhouse newrelic: 63 jobs
-2026-04-17 18:36:48,776 [INFO] Greenhouse sumologic: 34 jobs
-2026-04-17 18:36:50,429 [INFO] Greenhouse contentful: 112 jobs
-2026-04-17 18:36:51,844 [INFO] Greenhouse storyblok: 18 jobs
-2026-04-17 18:36:53,526 [INFO] Greenhouse pendo: 17 jobs
-2026-04-17 18:36:55,115 [INFO] Greenhouse zuora: 58 jobs
-2026-04-17 18:36:56,437 [INFO] Greenhouse marqeta: 32 jobs
-2026-04-17 18:36:57,810 [INFO] Greenhouse fivetran: 182 jobs
-2026-04-17 18:36:59,286 [INFO] Greenhouse starburst: 27 jobs
-2026-04-17 18:37:00,972 [INFO] Greenhouse dremio: 11 jobs
-2026-04-17 18:37:02,644 [INFO] Greenhouse clickhouse: 169 jobs
-2026-04-17 18:37:04,402 [WARNING] GET failed for https://boards-api.greenhouse.io/v1/boards/monday/jobs?content=true: 404 Client Error: Not Found for url: https://boards-api.greenhouse.io/v1/boards/monday/jobs?content=true
-2026-04-17 18:37:05,830 [WARNING] GET failed for https://boards-api.greenhouse.io/v1/boards/notion/jobs?content=true: 404 Client Error: Not Found for url: https://boards-api.greenhouse.io/v1/boards/notion/jobs?content=true
-2026-04-17 18:37:07,516 [INFO] Greenhouse lattice: 16 jobs
-2026-04-17 18:37:09,047 [INFO] Greenhouse greenhouse: 31 jobs
-2026-04-17 18:37:10,398 [WARNING] GET failed for https://boards-api.greenhouse.io/v1/boards/segment/jobs?content=true: 404 Client Error: Not Found for url: https://boards-api.greenhouse.io/v1/boards/segment/jobs?content=true
-2026-04-17 18:37:11,786 [INFO] Greenhouse sendbird: 22 jobs
-2026-04-17 18:37:13,035 [WARNING] GET failed for https://boards-api.greenhouse.io/v1/boards/freshworks/jobs?content=true: 404 Client Error: Not Found for url: https://boards-api.greenhouse.io/v1/boards/freshworks/jobs?content=true
-2026-04-17 18:37:14,576 [WARNING] GET failed for https://boards-api.greenhouse.io/v1/boards/drift/jobs?content=true: 404 Client Error: Not Found for url: https://boards-api.greenhouse.io/v1/boards/drift/jobs?content=true
-2026-04-17 18:37:16,149 [WARNING] GET failed for https://boards-api.greenhouse.io/v1/boards/outreach/jobs?content=true: 404 Client Error: Not Found for url: https://boards-api.greenhouse.io/v1/boards/outreach/jobs?content=true
-2026-04-17 18:37:17,710 [INFO] Greenhouse salesloft: 25 jobs
-2026-04-17 18:37:19,125 [WARNING] GET failed for https://boards-api.greenhouse.io/v1/boards/terminus/jobs?content=true: 404 Client Error: Not Found for url: https://boards-api.greenhouse.io/v1/boards/terminus/jobs?content=true
-2026-04-17 18:37:20,388 [WARNING] GET failed for https://boards-api.greenhouse.io/v1/boards/rollworks/jobs?content=true: 404 Client Error: Not Found for url: https://boards-api.greenhouse.io/v1/boards/rollworks/jobs?content=true
-2026-04-17 18:37:22,046 [INFO] Greenhouse bombora: 3 jobs
-2026-04-17 18:37:23,507 [WARNING] GET failed for https://boards-api.greenhouse.io/v1/boards/trustradius/jobs?content=true: 404 Client Error: Not Found for url: https://boards-api.greenhouse.io/v1/boards/trustradius/jobs?content=true
-2026-04-17 18:37:25,009 [WARNING] GET failed for https://boards-api.greenhouse.io/v1/boards/capterra/jobs?content=true: 404 Client Error: Not Found for url: https://boards-api.greenhouse.io/v1/boards/capterra/jobs?content=true
-2026-04-17 18:37:26,616 [INFO] Greenhouse doubleverify: 60 jobs
-2026-04-17 18:37:28,364 [INFO] Greenhouse pubmatic: 62 jobs
-2026-04-17 18:37:30,034 [INFO] Greenhouse northbeam: 13 jobs
-2026-04-17 18:37:31,342 [INFO] Greenhouse point72: 269 jobs
-2026-04-17 18:37:32,852 [INFO] Greenhouse apollo: 3 jobs
-2026-04-17 18:37:34,261 [INFO] Greenhouse betterment: 30 jobs
-2026-04-17 18:37:35,648 [INFO] Greenhouse robinhood: 144 jobs
-2026-04-17 18:37:37,005 [WARNING] GET failed for https://boards-api.greenhouse.io/v1/boards/plaid/jobs?content=true: 404 Client Error: Not Found for url: https://boards-api.greenhouse.io/v1/boards/plaid/jobs?content=true
-2026-04-17 18:37:38,389 [WARNING] GET failed for https://boards-api.greenhouse.io/v1/boards/wealthfront/jobs?content=true: 404 Client Error: Not Found for url: https://boards-api.greenhouse.io/v1/boards/wealthfront/jobs?content=true
-2026-04-17 18:37:40,021 [INFO] Greenhouse virtu: 35 jobs
-2026-04-17 18:37:41,487 [INFO] Greenhouse iex: 9 jobs
-2026-04-17 18:37:42,905 [INFO] Greenhouse creditkarma: 0 jobs
-2026-04-17 18:37:44,565 [INFO] Greenhouse cleo: 6 jobs
-2026-04-17 18:37:46,139 [INFO] Greenhouse galileo: 5 jobs
-2026-04-17 18:37:47,781 [INFO] Greenhouse coinbase: 134 jobs
-2026-04-17 18:37:49,608 [INFO] Greenhouse gemini: 17 jobs
-2026-04-17 18:37:51,115 [INFO] Greenhouse ripple: 126 jobs
-2026-04-17 18:37:52,770 [INFO] Greenhouse fireblocks: 47 jobs
-2026-04-17 18:37:54,263 [INFO] Greenhouse alchemy: 16 jobs
-2026-04-17 18:37:55,703 [INFO] Greenhouse consensys: 13 jobs
-2026-04-17 18:37:57,146 [INFO] Greenhouse sofi: 217 jobs
-2026-04-17 18:37:58,742 [INFO] Greenhouse chime: 84 jobs
-2026-04-17 18:38:00,083 [INFO] Greenhouse alloy: 18 jobs
-2026-04-17 18:38:01,597 [INFO] Greenhouse lithic: 14 jobs
-2026-04-17 18:38:03,077 [INFO] Greenhouse highnote: 9 jobs
-2026-04-17 18:38:04,595 [INFO] Greenhouse marqeta: 32 jobs
-2026-04-17 18:38:06,117 [INFO] Greenhouse schonfeld: 36 jobs
-2026-04-17 18:38:07,692 [INFO] Greenhouse icon: 0 jobs
-2026-04-17 18:38:09,085 [INFO] Greenhouse natera: 151 jobs
-2026-04-17 18:38:10,725 [INFO] Greenhouse beamtherapeutics: 32 jobs
-2026-04-17 18:38:12,088 [INFO] Greenhouse 10xgenomics: 40 jobs
-2026-04-17 18:38:13,637 [INFO] Greenhouse veracyte: 59 jobs
-2026-04-17 18:38:15,422 [INFO] Greenhouse zocdoc: 70 jobs
-2026-04-17 18:38:16,829 [INFO] Greenhouse ritual: 15 jobs
-2026-04-17 18:38:18,476 [INFO] Greenhouse calm: 3 jobs
-2026-04-17 18:38:20,172 [INFO] Greenhouse peloton: 52 jobs
-2026-04-17 18:38:21,635 [INFO] Greenhouse classpass: 94 jobs
-2026-04-17 18:38:23,058 [INFO] Greenhouse oscar: 277 jobs
-2026-04-17 18:38:24,688 [INFO] Greenhouse cerebral: 5 jobs
-2026-04-17 18:38:26,268 [INFO] Greenhouse waymark: 21 jobs
-2026-04-17 18:38:27,858 [WARNING] GET failed for https://boards-api.greenhouse.io/v1/boards/cityblock/jobs?content=true: 404 Client Error: Not Found for url: https://boards-api.greenhouse.io/v1/boards/cityblock/jobs?content=true
-2026-04-17 18:38:29,510 [INFO] Greenhouse gusto: 85 jobs
-2026-04-17 18:38:31,256 [INFO] Greenhouse justworks: 88 jobs
-2026-04-17 18:38:32,707 [INFO] Greenhouse cultureamp: 25 jobs
-2026-04-17 18:38:34,188 [INFO] Greenhouse buzzfeed: 4 jobs
-2026-04-17 18:38:35,768 [INFO] Greenhouse voxmedia: 23 jobs
-2026-04-17 18:38:37,169 [INFO] Greenhouse forbes: 30 jobs
-2026-04-17 18:38:38,592 [INFO] Greenhouse axios: 22 jobs
-2026-04-17 18:38:40,094 [INFO] Greenhouse semafor: 17 jobs
-2026-04-17 18:38:41,669 [INFO] Greenhouse fandom: 6 jobs
-2026-04-17 18:38:42,965 [INFO] Greenhouse fanduel: 140 jobs
-2026-04-17 18:38:44,366 [INFO] Greenhouse octagon: 65 jobs
-2026-04-17 18:38:46,063 [INFO] Greenhouse geniussports: 40 jobs
-2026-04-17 18:38:47,640 [INFO] Greenhouse coursera: 6 jobs
-2026-04-17 18:38:49,146 [INFO] Greenhouse masterclass: 8 jobs
-2026-04-17 18:38:50,435 [INFO] Greenhouse udemy: 35 jobs
-2026-04-17 18:38:52,094 [INFO] Greenhouse 2u: 33 jobs
-2026-04-17 18:38:53,426 [INFO] Greenhouse glossier: 18 jobs
-2026-04-17 18:38:54,928 [INFO] Greenhouse allbirds: 0 jobs
-2026-04-17 18:38:56,521 [INFO] Greenhouse brooklinen: 12 jobs
-2026-04-17 18:38:57,877 [INFO] Greenhouse renttherunway: 24 jobs
-2026-04-17 18:38:59,533 [INFO] Greenhouse rebag: 9 jobs
-2026-04-17 18:39:01,014 [INFO] Greenhouse harrys: 12 jobs
-2026-04-17 18:39:02,654 [INFO] Greenhouse mejuri: 135 jobs
-2026-04-17 18:39:04,376 [INFO] Greenhouse everlane: 20 jobs
-2026-04-17 18:39:05,626 [WARNING] GET failed for https://boards-api.greenhouse.io/v1/boards/etsy/jobs?content=true: 404 Client Error: Not Found for url: https://boards-api.greenhouse.io/v1/boards/etsy/jobs?content=true
-2026-04-17 18:39:06,996 [INFO] Greenhouse poshmark: 0 jobs
-2026-04-17 18:39:08,599 [INFO] Greenhouse narvar: 20 jobs
-2026-04-17 18:39:10,178 [INFO] Greenhouse aftership: 15 jobs
-2026-04-17 18:39:11,832 [INFO] Greenhouse flexport: 122 jobs
-2026-04-17 18:39:13,632 [INFO] Greenhouse shipmonk: 40 jobs
-2026-04-17 18:39:15,266 [INFO] Greenhouse project44: 43 jobs
-2026-04-17 18:39:16,684 [INFO] Greenhouse fourkites: 14 jobs
-2026-04-17 18:39:18,134 [INFO] Greenhouse costar: 4 jobs
-2026-04-17 18:39:19,757 [INFO] Greenhouse vts: 12 jobs
-2026-04-17 18:39:21,119 [INFO] Greenhouse crexi: 19 jobs
-2026-04-17 18:39:22,423 [INFO] Greenhouse orchard: 49 jobs
-2026-04-17 18:39:23,805 [WARNING] GET failed for https://boards-api.greenhouse.io/v1/boards/doordash/jobs?content=true: 404 Client Error: Not Found for url: https://boards-api.greenhouse.io/v1/boards/doordash/jobs?content=true
-2026-04-17 18:39:25,370 [INFO] Greenhouse goldbelly: 1 jobs
-2026-04-17 18:39:26,804 [INFO] Greenhouse misfitsmarket: 43 jobs
-2026-04-17 18:39:28,453 [INFO] Greenhouse hungryroot: 8 jobs
-2026-04-17 18:39:29,877 [INFO] Greenhouse touchbistro: 5 jobs
-2026-04-17 18:39:31,121 [INFO] Greenhouse revel: 2 jobs
-2026-04-17 18:39:32,561 [INFO] Greenhouse agilysys: 10 jobs
-2026-04-17 18:39:34,165 [INFO] Greenhouse instacart: 136 jobs
-2026-04-17 18:39:35,957 [INFO] Greenhouse sweetgreen: 39 jobs
-2026-04-17 18:39:37,683 [INFO] Greenhouse alixpartners: 94 jobs
-2026-04-17 18:39:39,080 [INFO] Greenhouse ogilvy: 160 jobs
-2026-04-17 18:39:40,978 [INFO] Greenhouse wpp: 139 jobs
-2026-04-17 18:39:41,109 [INFO]   Greenhouse: 265 keyword matches
-2026-04-17 18:39:41,109 [INFO] Scraping: Lever
-2026-04-17 18:39:44,599 [INFO] Lever gettyimages: 18 jobs
-2026-04-17 18:39:51,650 [INFO] Lever gopuff: 765 jobs
-2026-04-17 18:39:53,915 [INFO] Lever arcadia: 16 jobs
-2026-04-17 18:39:56,051 [INFO] Lever ro: 44 jobs
-2026-04-17 18:39:57,607 [WARNING] GET failed for https://api.lever.co/v0/postings/hims?mode=json: 404 Client Error: Not Found for url: https://api.lever.co/v0/postings/hims?mode=json
-2026-04-17 18:39:59,381 [WARNING] GET failed for https://api.lever.co/v0/postings/cerebral?mode=json: 404 Client Error: Not Found for url: https://api.lever.co/v0/postings/cerebral?mode=json
-2026-04-17 18:40:01,047 [WARNING] GET failed for https://api.lever.co/v0/postings/vimeo?mode=json: 404 Client Error: Not Found for url: https://api.lever.co/v0/postings/vimeo?mode=json
-2026-04-17 18:40:02,999 [WARNING] GET failed for https://api.lever.co/v0/postings/canva?mode=json: 404 Client Error: Not Found for url: https://api.lever.co/v0/postings/canva?mode=json
-2026-04-17 18:40:04,309 [WARNING] GET failed for https://api.lever.co/v0/postings/miro?mode=json: 404 Client Error: Not Found for url: https://api.lever.co/v0/postings/miro?mode=json
-2026-04-17 18:40:06,063 [WARNING] GET failed for https://api.lever.co/v0/postings/asana?mode=json: 404 Client Error: Not Found for url: https://api.lever.co/v0/postings/asana?mode=json
-2026-04-17 18:40:07,738 [WARNING] GET failed for https://api.lever.co/v0/postings/seatgeek?mode=json: 404 Client Error: Not Found for url: https://api.lever.co/v0/postings/seatgeek?mode=json
-2026-04-17 18:40:14,407 [WARNING] GET failed for https://api.lever.co/v0/postings/eventbrite?mode=json: 404 Client Error: Not Found for url: https://api.lever.co/v0/postings/eventbrite?mode=json
-2026-04-17 18:40:16,093 [WARNING] GET failed for https://api.lever.co/v0/postings/webflow?mode=json: 404 Client Error: Not Found for url: https://api.lever.co/v0/postings/webflow?mode=json
-2026-04-17 18:40:21,686 [WARNING] GET failed for https://api.lever.co/v0/postings/coda?mode=json: 404 Client Error: Not Found for url: https://api.lever.co/v0/postings/coda?mode=json
-2026-04-17 18:40:26,709 [WARNING] GET failed for https://api.lever.co/v0/postings/loom?mode=json: 404 Client Error: Not Found for url: https://api.lever.co/v0/postings/loom?mode=json
-2026-04-17 18:40:29,763 [WARNING] GET failed for https://api.lever.co/v0/postings/benchling?mode=json: 404 Client Error: Not Found for url: https://api.lever.co/v0/postings/benchling?mode=json
-2026-04-17 18:40:31,541 [WARNING] GET failed for https://api.lever.co/v0/postings/ironclad?mode=json: 404 Client Error: Not Found for url: https://api.lever.co/v0/postings/ironclad?mode=json
-2026-04-17 18:40:47,787 [WARNING] Retrying (Retry(total=2, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='api.lever.co', port=443): Read timed out. (read timeout=15)")': /v0/postings/procore?mode=json
-2026-04-17 18:40:48,260 [WARNING] GET failed for https://api.lever.co/v0/postings/procore?mode=json: 404 Client Error: Not Found for url: https://api.lever.co/v0/postings/procore?mode=json
-2026-04-17 18:40:49,573 [WARNING] GET failed for https://api.lever.co/v0/postings/brex?mode=json: 404 Client Error: Not Found for url: https://api.lever.co/v0/postings/brex?mode=json
-2026-04-17 18:40:51,268 [WARNING] GET failed for https://api.lever.co/v0/postings/mercury?mode=json: 404 Client Error: Not Found for url: https://api.lever.co/v0/postings/mercury?mode=json
-2026-04-17 18:40:54,032 [WARNING] GET failed for https://api.lever.co/v0/postings/ramp?mode=json: 404 Client Error: Not Found for url: https://api.lever.co/v0/postings/ramp?mode=json
-2026-04-17 18:40:55,700 [WARNING] GET failed for https://api.lever.co/v0/postings/nerdwallet?mode=json: 404 Client Error: Not Found for url: https://api.lever.co/v0/postings/nerdwallet?mode=json
-2026-04-17 18:40:57,449 [WARNING] GET failed for https://api.lever.co/v0/postings/stash?mode=json: 404 Client Error: Not Found for url: https://api.lever.co/v0/postings/stash?mode=json
-2026-04-17 18:40:59,137 [WARNING] GET failed for https://api.lever.co/v0/postings/acorns?mode=json: 404 Client Error: Not Found for url: https://api.lever.co/v0/postings/acorns?mode=json
-2026-04-17 18:41:01,807 [WARNING] GET failed for https://api.lever.co/v0/postings/pipe?mode=json: 404 Client Error: Not Found for url: https://api.lever.co/v0/postings/pipe?mode=json
-2026-04-17 18:41:18,118 [WARNING] Retrying (Retry(total=2, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='api.lever.co', port=443): Read timed out. (read timeout=15)")': /v0/postings/capchase?mode=json
-2026-04-17 18:41:18,503 [WARNING] GET failed for https://api.lever.co/v0/postings/capchase?mode=json: 404 Client Error: Not Found for url: https://api.lever.co/v0/postings/capchase?mode=json
-2026-04-17 18:41:20,034 [WARNING] GET failed for https://api.lever.co/v0/postings/mosaic?mode=json: 404 Client Error: Not Found for url: https://api.lever.co/v0/postings/mosaic?mode=json
-2026-04-17 18:41:24,362 [WARNING] GET failed for https://api.lever.co/v0/postings/garner?mode=json: 404 Client Error: Not Found for url: https://api.lever.co/v0/postings/garner?mode=json
-2026-04-17 18:41:26,049 [WARNING] GET failed for https://api.lever.co/v0/postings/virta?mode=json: 404 Client Error: Not Found for url: https://api.lever.co/v0/postings/virta?mode=json
-2026-04-17 18:41:29,823 [WARNING] GET failed for https://api.lever.co/v0/postings/omada?mode=json: 404 Client Error: Not Found for url: https://api.lever.co/v0/postings/omada?mode=json
-2026-04-17 18:41:33,846 [WARNING] GET failed for https://api.lever.co/v0/postings/brightline?mode=json: 404 Client Error: Not Found for url: https://api.lever.co/v0/postings/brightline?mode=json
-2026-04-17 18:41:42,706 [WARNING] GET failed for https://api.lever.co/v0/postings/newsela?mode=json: 404 Client Error: Not Found for url: https://api.lever.co/v0/postings/newsela?mode=json
-2026-04-17 18:41:44,184 [WARNING] GET failed for https://api.lever.co/v0/postings/panorama?mode=json: 404 Client Error: Not Found for url: https://api.lever.co/v0/postings/panorama?mode=json
-2026-04-17 18:41:45,681 [WARNING] GET failed for https://api.lever.co/v0/postings/draftkings?mode=json: 404 Client Error: Not Found for url: https://api.lever.co/v0/postings/draftkings?mode=json
-2026-04-17 18:41:47,950 [WARNING] GET failed for https://api.lever.co/v0/postings/fanatics?mode=json: 404 Client Error: Not Found for url: https://api.lever.co/v0/postings/fanatics?mode=json
-2026-04-17 18:41:49,379 [WARNING] GET failed for https://api.lever.co/v0/postings/compass?mode=json: 404 Client Error: Not Found for url: https://api.lever.co/v0/postings/compass?mode=json
-2026-04-17 18:41:51,008 [WARNING] GET failed for https://api.lever.co/v0/postings/opendoor?mode=json: 404 Client Error: Not Found for url: https://api.lever.co/v0/postings/opendoor?mode=json
-2026-04-17 18:41:52,492 [WARNING] GET failed for https://api.lever.co/v0/postings/lattice?mode=json: 404 Client Error: Not Found for url: https://api.lever.co/v0/postings/lattice?mode=json
-2026-04-17 18:42:09,187 [WARNING] Retrying (Retry(total=2, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='api.lever.co', port=443): Read timed out. (read timeout=15)")': /v0/postings/leapsome?mode=json
-2026-04-17 18:42:09,969 [WARNING] GET failed for https://api.lever.co/v0/postings/leapsome?mode=json: 404 Client Error: Not Found for url: https://api.lever.co/v0/postings/leapsome?mode=json
-2026-04-17 18:42:11,515 [WARNING] GET failed for https://api.lever.co/v0/postings/betterworks?mode=json: 404 Client Error: Not Found for url: https://api.lever.co/v0/postings/betterworks?mode=json
-2026-04-17 18:42:12,910 [WARNING] GET failed for https://api.lever.co/v0/postings/remote?mode=json: 404 Client Error: Not Found for url: https://api.lever.co/v0/postings/remote?mode=json
-2026-04-17 18:42:14,307 [WARNING] GET failed for https://api.lever.co/v0/postings/deel?mode=json: 404 Client Error: Not Found for url: https://api.lever.co/v0/postings/deel?mode=json
-2026-04-17 18:42:14,307 [INFO]   Lever: 0 keyword matches
-2026-04-17 18:42:14,307 [INFO] Scraping: Ashby
-2026-04-17 18:42:16,074 [INFO] Ashby linear: 19 jobs
-2026-04-17 18:42:17,777 [INFO] Ashby loom: 0 jobs
-2026-04-17 18:42:19,368 [INFO] Ashby runway: 4 jobs
-2026-04-17 18:42:20,815 [INFO] Ashby causal: 2 jobs
-2026-04-17 18:42:22,243 [INFO] Ashby hightouch: 1 jobs
-2026-04-17 18:42:23,996 [INFO] Ashby replit: 84 jobs
-2026-04-17 18:42:25,381 [INFO] Ashby harvey: 234 jobs
-2026-04-17 18:42:27,188 [INFO] Ashby notion: 147 jobs
-2026-04-17 18:42:28,588 [INFO] Ashby retool: 0 jobs
-2026-04-17 18:42:30,512 [INFO] Ashby openai: 645 jobs
-2026-04-17 18:42:32,188 [WARNING] GET failed for https://api.ashbyhq.com/posting-api/job-board/anthropic: 404 Client Error: Not Found for url: https://api.ashbyhq.com/posting-api/job-board/anthropic
-2026-04-17 18:42:33,491 [INFO] Ashby cohere: 115 jobs
-2026-04-17 18:42:34,892 [INFO] Ashby mercury: 0 jobs
-2026-04-17 18:42:36,558 [INFO] Ashby ramp: 125 jobs
-2026-04-17 18:42:38,603 [INFO] Ashby airwallex: 621 jobs
-2026-04-17 18:42:40,560 [INFO] Ashby capchase: 3 jobs
-2026-04-17 18:42:42,000 [INFO] Ashby clearco: 7 jobs
-2026-04-17 18:42:43,236 [INFO] Ashby parafin: 25 jobs
-2026-04-17 18:42:45,149 [INFO] Ashby slope: 1 jobs
-2026-04-17 18:42:46,872 [WARNING] GET failed for https://api.ashbyhq.com/posting-api/job-board/brex: 404 Client Error: Not Found for url: https://api.ashbyhq.com/posting-api/job-board/brex
-2026-04-17 18:42:48,452 [INFO] Ashby vanta: 165 jobs
-2026-04-17 18:42:50,243 [INFO] Ashby drata: 25 jobs
-2026-04-17 18:42:51,851 [INFO] Ashby leapsome: 13 jobs
-2026-04-17 18:42:53,493 [INFO] Ashby deel: 268 jobs
-2026-04-17 18:42:55,070 [INFO] Ashby oyster: 17 jobs
-2026-04-17 18:42:56,376 [WARNING] GET failed for https://api.ashbyhq.com/posting-api/job-board/lattice: 404 Client Error: Not Found for url: https://api.ashbyhq.com/posting-api/job-board/lattice
-2026-04-17 18:42:58,007 [WARNING] GET failed for https://api.ashbyhq.com/posting-api/job-board/flatiron-health: 404 Client Error: Not Found for url: https://api.ashbyhq.com/posting-api/job-board/flatiron-health
-2026-04-17 18:43:00,610 [INFO] Ashby cityblock: 0 jobs
-2026-04-17 18:43:02,112 [INFO] Ashby benchling: 47 jobs
-2026-04-17 18:43:03,639 [WARNING] GET failed for https://api.ashbyhq.com/posting-api/job-board/ro: 404 Client Error: Not Found for url: https://api.ashbyhq.com/posting-api/job-board/ro
-2026-04-17 18:43:05,074 [WARNING] GET failed for https://api.ashbyhq.com/posting-api/job-board/chainalysis: 404 Client Error: Not Found for url: https://api.ashbyhq.com/posting-api/job-board/chainalysis
-2026-04-17 18:43:06,567 [WARNING] GET failed for https://api.ashbyhq.com/posting-api/job-board/fireblocks: 404 Client Error: Not Found for url: https://api.ashbyhq.com/posting-api/job-board/fireblocks
-2026-04-17 18:43:07,996 [WARNING] GET failed for https://api.ashbyhq.com/posting-api/job-board/movable-ink: 404 Client Error: Not Found for url: https://api.ashbyhq.com/posting-api/job-board/movable-ink
-2026-04-17 18:43:09,471 [WARNING] GET failed for https://api.ashbyhq.com/posting-api/job-board/sprinklr: 404 Client Error: Not Found for url: https://api.ashbyhq.com/posting-api/job-board/sprinklr
-2026-04-17 18:43:10,868 [WARNING] GET failed for https://api.ashbyhq.com/posting-api/job-board/diligent: 404 Client Error: Not Found for url: https://api.ashbyhq.com/posting-api/job-board/diligent
-2026-04-17 18:43:12,221 [WARNING] GET failed for https://api.ashbyhq.com/posting-api/job-board/tempus: 404 Client Error: Not Found for url: https://api.ashbyhq.com/posting-api/job-board/tempus
-2026-04-17 18:43:13,886 [INFO] Ashby spekit: 6 jobs
-2026-04-17 18:43:13,889 [INFO]   Ashby: 117 keyword matches
-2026-04-17 18:43:13,889 [INFO] Scraping: Built In NYC
-2026-04-17 18:43:15,120 [WARNING] Built In NYC POST failed: 405 Client Error: Method Not Allowed for url: https://api.builtin.com/jobs/search
-2026-04-17 18:43:16,226 [WARNING] Built In NYC company API failed for free-daily-lunches: 405 Client Error: Method Not Allowed for url: https://api.builtin.com/companies
-2026-04-17 18:43:17,327 [WARNING] Built In NYC company API failed for catered-meals: 405 Client Error: Method Not Allowed for url: https://api.builtin.com/companies
-2026-04-17 18:43:18,429 [WARNING] Built In NYC company API failed for company-provided-meals: 405 Client Error: Method Not Allowed for url: https://api.builtin.com/companies
-2026-04-17 18:43:19,523 [WARNING] Built In NYC company API failed for meal-stipend: 405 Client Error: Method Not Allowed for url: https://api.builtin.com/companies
-2026-04-17 18:43:20,620 [WARNING] Built In NYC company API failed for food-stipend: 405 Client Error: Method Not Allowed for url: https://api.builtin.com/companies
-2026-04-17 18:43:21,719 [WARNING] Built In NYC company API failed for snacks-and-coffee: 405 Client Error: Method Not Allowed for url: https://api.builtin.com/companies
-2026-04-17 18:43:22,818 [WARNING] Built In NYC company API failed for fully-stocked-kitchen: 405 Client Error: Method Not Allowed for url: https://api.builtin.com/companies
-2026-04-17 18:43:22,818 [INFO]   Built In NYC: 0 keyword matches
-2026-04-17 18:43:22,818 [INFO] Scraping: Workday
-2026-04-17 18:43:22,820 [INFO] Workday: scanning JPMorgan Chase at https://jpmc.wd5.myworkdayjobs.com/wday/cxs/jpmc/JPMorgan_Chase_External_Career_Site/jobs
-2026-04-17 18:43:24,853 [INFO] Workday: scanning Goldman Sachs at https://goldmansachs.wd1.myworkdayjobs.com/wday/cxs/goldmansachs/External_Career_Site/jobs
-2026-04-17 18:43:26,601 [INFO] Workday: scanning Salesforce at https://salesforce.wd2.myworkdayjobs.com/wday/cxs/salesforce/External_Career_Site/jobs
-2026-04-17 18:43:28,133 [WARNING] Workday Salesforce: HTTPSConnectionPool(host='salesforce.wd2.myworkdayjobs.com', port=443): Max retries exceeded with url: /wday/cxs/salesforce/External_Career_Site/jobs (Caused by NameResolutionError("HTTPSConnection(host='salesforce.wd2.myworkdayjobs.com', port=443): Failed to resolve 'salesforce.wd2.myworkdayjobs.com' ([Errno -2] Name or service not known)"))
-2026-04-17 18:43:28,133 [INFO] Workday: scanning Verizon at https://verizon.wd1.myworkdayjobs.com/wday/cxs/verizon/External_Career_Site/jobs
-2026-04-17 18:43:29,961 [INFO] Workday: scanning Mastercard at https://mastercard.wd5.myworkdayjobs.com/wday/cxs/mastercard/External_Career_Site/jobs
-2026-04-17 18:43:31,825 [INFO] Workday: scanning American Express at https://aexp.wd1.myworkdayjobs.com/wday/cxs/aexp/AmexExternalSite/jobs
-2026-04-17 18:43:33,247 [INFO] Workday: scanning Bloomberg at https://bloomberg.wd5.myworkdayjobs.com/wday/cxs/bloomberg/External_Career_Site/jobs
-2026-04-17 18:43:35,020 [INFO] Workday: scanning WeWork at https://wework.wd5.myworkdayjobs.com/wday/cxs/wework/WeWork_External/jobs
-2026-04-17 18:43:36,908 [INFO] Workday: scanning Spotify at https://spotify.wd1.myworkdayjobs.com/wday/cxs/spotify/External/jobs
-2026-04-17 18:43:38,706 [INFO] Workday: scanning Peloton at https://pel.wd5.myworkdayjobs.com/wday/cxs/pel/Peloton/jobs
-2026-04-17 18:43:40,660 [INFO] Workday: scanning BuzzFeed at https://buzzfeed.wd1.myworkdayjobs.com/wday/cxs/buzzfeed/External/jobs
-2026-04-17 18:43:42,609 [INFO] Workday: scanning NBCUniversal at https://nbcuni.wd1.myworkdayjobs.com/wday/cxs/nbcuni/External_Career_Site/jobs
-2026-04-17 18:43:44,306 [INFO] Workday: scanning Condé Nast at https://condenast.wd5.myworkdayjobs.com/wday/cxs/condenast/CNExternalCareerSite/jobs
-2026-04-17 18:43:45,788 [INFO]   Workday: 0 keyword matches
-2026-04-17 18:43:45,788 [INFO] Scraping: JobSpy (Indeed/Google)
-2026-04-17 18:43:45,896 [INFO] JobSpy: searching 'free lunch' in New York City
-2026-04-17 18:43:47,129 [INFO] JobSpy: 100 raw results for 'free lunch'
-2026-04-17 18:43:49,571 [INFO] JobSpy: searching 'catered lunch' in New York City
-2026-04-17 18:43:50,840 [INFO] JobSpy: 81 raw results for 'catered lunch'
-2026-04-17 18:43:53,270 [INFO] JobSpy: searching 'catered meals' in New York City
-2026-04-17 18:43:54,132 [INFO] JobSpy: 38 raw results for 'catered meals'
-2026-04-17 18:43:56,545 [INFO] JobSpy: searching 'DoorDash' in New York City
-2026-04-17 18:43:57,012 [INFO] JobSpy: 16 raw results for 'DoorDash'
-2026-04-17 18:43:59,424 [INFO] JobSpy: searching 'GrubHub' in New York City
-2026-04-17 18:44:00,003 [INFO] JobSpy: 8 raw results for 'GrubHub'
-2026-04-17 18:44:02,409 [INFO] JobSpy: searching 'Uber Eats' in New York City
-2026-04-17 18:44:02,727 [INFO] JobSpy: 1 raw results for 'Uber Eats'
-2026-04-17 18:44:05,128 [INFO] JobSpy: searching 'Forkable' in New York City
-2026-04-17 18:44:05,307 [INFO] JobSpy: no results for 'Forkable'
-2026-04-17 18:44:05,307 [INFO] JobSpy: searching 'Sharebite' in New York City
-2026-04-17 18:44:05,663 [INFO] JobSpy: 7 raw results for 'Sharebite'
-2026-04-17 18:44:08,066 [INFO] JobSpy: searching 'meal stipend' in New York City
-2026-04-17 18:44:08,987 [INFO] JobSpy: 64 raw results for 'meal stipend'
-2026-04-17 18:44:11,403 [INFO] JobSpy: searching 'lunch stipend' in New York City
-2026-04-17 18:44:12,597 [INFO] JobSpy: 100 raw results for 'lunch stipend'
-2026-04-17 18:44:15,028 [INFO] JobSpy: searching 'food stipend' in New York City
-2026-04-17 18:44:15,998 [INFO] JobSpy: 51 raw results for 'food stipend'
-2026-04-17 18:44:18,414 [INFO] JobSpy: searching 'meal credit' in New York City
-2026-04-17 18:44:19,806 [INFO] JobSpy: 100 raw results for 'meal credit'
-2026-04-17 18:44:22,240 [INFO] JobSpy: searching 'stocked kitchen' in New York City
-2026-04-17 18:44:23,225 [INFO] JobSpy: 100 raw results for 'stocked kitchen'
-2026-04-17 18:44:25,655 [INFO] JobSpy: searching 'daily lunch' in New York City
-2026-04-17 18:44:26,767 [INFO] JobSpy: 100 raw results for 'daily lunch'
-2026-04-17 18:44:29,187 [INFO] JobSpy: searching 'free food' in New York City
-2026-04-17 18:44:30,301 [INFO] JobSpy: 100 raw results for 'free food'
-2026-04-17 18:44:32,731 [INFO] JobSpy: searching 'lunch provided' in New York City
-2026-04-17 18:44:33,963 [INFO] JobSpy: 100 raw results for 'lunch provided'
-2026-04-17 18:44:36,384 [INFO] JobSpy: searching 'fully stocked kitchen' in New York City
-2026-04-17 18:44:37,603 [INFO] JobSpy: 68 raw results for 'fully stocked kitchen'
-2026-04-17 18:44:40,019 [INFO] JobSpy: searching 'company lunch' in New York City
-2026-04-17 18:44:41,143 [INFO] JobSpy: 100 raw results for 'company lunch'
-2026-04-17 18:44:43,560 [INFO] JobSpy: searching 'ezCater' in New York City
-2026-04-17 18:44:43,717 [INFO] JobSpy: no results for 'ezCater'
-2026-04-17 18:44:43,717 [INFO] JobSpy: searching 'snacks and meals' in New York City
-2026-04-17 18:44:44,705 [INFO] JobSpy: 100 raw results for 'snacks and meals'
-2026-04-17 18:44:47,127 [INFO]   JobSpy (Indeed/Google): 157 keyword matches
-2026-04-17 18:44:47,127 [INFO] Scraping: Apify LinkedIn
-2026-04-17 18:44:47,129 [INFO] Apify: launching 12 parallel runs...
-2026-04-17 18:44:47,427 [INFO] Apify: started run for 'free lunch' → eyrO9wBRiPq5AY672
-2026-04-17 18:44:48,278 [INFO] Apify: started run for 'catered lunch' → 7SKdRzHpXB6Zw2CTk
-2026-04-17 18:44:49,017 [INFO] Apify: started run for 'catered meals' → 8VbyEGtlWvnwo3JFa
-2026-04-17 18:44:49,754 [INFO] Apify: started run for 'DoorDash' → 9A1mLcMNB0ndd8woQ
-2026-04-17 18:44:50,497 [INFO] Apify: started run for 'GrubHub' → rsLpnLtCDLPfD3LPt
-2026-04-17 18:44:51,256 [INFO] Apify: started run for 'Uber Eats' → aHjXLGBu5kamDcPfK
-2026-04-17 18:44:52,139 [INFO] Apify: started run for 'Forkable' → AAKpXDRf6RLiWO0WK
-2026-04-17 18:44:53,081 [INFO] Apify: started run for 'Sharebite' → N8ln64YfqDKuv03sG
-2026-04-17 18:44:53,826 [INFO] Apify: started run for 'meal stipend' → xdGb1AIU52VRL5zvn
-2026-04-17 18:44:54,574 [INFO] Apify: started run for 'lunch stipend' → c9k8i7HesB5ipEtRK
-2026-04-17 18:44:55,331 [INFO] Apify: started run for 'stocked kitchen' → QXknd01HaYRc4lI5o
-2026-04-17 18:44:56,191 [INFO] Apify: started run for 'meal credit' → Dg2UwEzblKKcO6VMh
-2026-04-17 18:44:56,692 [INFO] Apify: 12 runs started — waiting for completion...
-2026-04-17 18:45:07,090 [INFO] Apify: 0 results for 'Forkable'
-2026-04-17 18:45:37,233 [INFO] Apify: 6 results for 'meal credit'
-2026-04-17 18:45:57,841 [INFO] Apify: 58 results for 'meal stipend'
-2026-04-17 18:45:57,846 [INFO] Apify: 36 results for 'Sharebite'
-2026-04-17 18:46:07,862 [INFO] Apify: 74 results for 'catered meals'
-2026-04-17 18:46:38,015 [INFO] Apify: 100 results for 'Uber Eats'
-2026-04-17 18:46:38,266 [INFO] Apify: 100 results for 'DoorDash'
-2026-04-17 18:46:47,799 [INFO] Apify: 83 results for 'GrubHub'
-2026-04-17 18:46:58,146 [INFO] Apify: 100 results for 'lunch stipend'
-2026-04-17 18:46:58,206 [INFO] Apify: 101 results for 'stocked kitchen'
-2026-04-17 18:46:58,311 [INFO] Apify: 100 results for 'catered lunch'
-2026-04-17 18:47:08,431 [INFO] Apify: 100 results for 'free lunch'
-2026-04-17 18:47:08,433 [INFO]   Apify LinkedIn: 0 keyword matches
-2026-04-17 18:47:08,434 [INFO] Scraping: Wellfound
-2026-04-17 18:47:08,435 [INFO] Wellfound: searching 'free lunch'
-2026-04-17 18:47:10,054 [WARNING] GET failed for https://wellfound.com/jobs: 403 Client Error: Forbidden for url: https://wellfound.com/jobs?q=free+lunch&location=New+York+City
-2026-04-17 18:47:10,054 [INFO] Wellfound: 0 results for 'free lunch'
-2026-04-17 18:47:11,555 [INFO] Wellfound: searching 'catered meals'
-2026-04-17 18:47:12,922 [WARNING] GET failed for https://wellfound.com/jobs: 403 Client Error: Forbidden for url: https://wellfound.com/jobs?q=catered+meals&location=New+York+City
-2026-04-17 18:47:12,922 [INFO] Wellfound: 0 results for 'catered meals'
-2026-04-17 18:47:14,422 [INFO] Wellfound: searching 'DoorDash'
-2026-04-17 18:47:16,150 [WARNING] GET failed for https://wellfound.com/jobs: 403 Client Error: Forbidden for url: https://wellfound.com/jobs?q=DoorDash&location=New+York+City
-2026-04-17 18:47:16,150 [INFO] Wellfound: 0 results for 'DoorDash'
-2026-04-17 18:47:17,650 [INFO] Wellfound: searching 'GrubHub'
-2026-04-17 18:47:19,531 [WARNING] GET failed for https://wellfound.com/jobs: 403 Client Error: Forbidden for url: https://wellfound.com/jobs?q=GrubHub&location=New+York+City
-2026-04-17 18:47:19,531 [INFO] Wellfound: 0 results for 'GrubHub'
-2026-04-17 18:47:21,031 [INFO] Wellfound: searching 'meal stipend'
-2026-04-17 18:47:22,457 [WARNING] GET failed for https://wellfound.com/jobs: 403 Client Error: Forbidden for url: https://wellfound.com/jobs?q=meal+stipend&location=New+York+City
-2026-04-17 18:47:22,457 [INFO] Wellfound: 0 results for 'meal stipend'
-2026-04-17 18:47:23,957 [INFO] Wellfound: searching 'stocked kitchen'
-2026-04-17 18:47:25,304 [WARNING] GET failed for https://wellfound.com/jobs: 403 Client Error: Forbidden for url: https://wellfound.com/jobs?q=stocked+kitchen&location=New+York+City
-2026-04-17 18:47:25,304 [INFO] Wellfound: 0 results for 'stocked kitchen'
-2026-04-17 18:47:26,804 [INFO] Wellfound: searching 'lunch provided'
-2026-04-17 18:47:28,230 [WARNING] GET failed for https://wellfound.com/jobs: 403 Client Error: Forbidden for url: https://wellfound.com/jobs?q=lunch+provided&location=New+York+City
-2026-04-17 18:47:28,230 [INFO] Wellfound: 0 results for 'lunch provided'
-2026-04-17 18:47:29,730 [INFO]   Wellfound: 0 keyword matches
-2026-04-17 18:47:29,730 [INFO] Scraping: Exa
-2026-04-17 18:47:29,732 [INFO] Exa: searching — 'New York company offers catered lunch to employees office perks'
-2026-04-17 18:47:30,674 [INFO] Exa: 15 results
-2026-04-17 18:47:31,677 [INFO] Exa: searching — 'NYC startup free meals DoorDash GrubHub employee benefits'
-2026-04-17 18:47:32,205 [INFO] Exa: 15 results
-2026-04-17 18:47:33,208 [INFO] Exa: searching — 'New York office food stipend meal credit company benefit'
-2026-04-17 18:47:33,740 [INFO] Exa: 15 results
-2026-04-17 18:47:34,744 [INFO] Exa: searching — 'NYC company catered breakfast lunch dinner employees'
-2026-04-17 18:47:35,191 [INFO] Exa: 15 results
-2026-04-17 18:47:36,194 [INFO] Exa: searching — 'New York company fully stocked kitchen free snacks office culture'
-2026-04-17 18:47:36,625 [INFO] Exa: 15 results
-2026-04-17 18:47:37,629 [INFO] Exa: searching — 'companies with the best office food perks New York City'
-2026-04-17 18:47:38,025 [INFO] Exa: 15 results
-2026-04-17 18:47:39,027 [INFO] Exa: searching — 'ezcater catered meals corporate office New York'
-2026-04-17 18:47:39,456 [INFO] Exa: 15 results
-2026-04-17 18:47:40,459 [INFO] Exa: searching — 'NYC company orders lunch employees every day'
-2026-04-17 18:47:40,846 [INFO] Exa: 15 results
-2026-04-17 18:47:41,849 [INFO] Exa: searching — 'New York employer meal benefit office catering program'
-2026-04-17 18:47:42,413 [INFO] Exa: 15 results
-2026-04-17 18:47:43,415 [INFO] Exa: searching — 'company provides free food employees New York hiring'
-2026-04-17 18:47:43,868 [INFO] Exa: 15 results
-2026-04-17 18:47:44,870 [INFO]   Exa: 31 keyword matches
-2026-04-17 18:47:44,870 [INFO] Scraping: Firecrawl
-2026-04-17 18:47:44,872 [INFO] Firecrawl: searching — 'site:greenhouse.io OR site:lever.co OR site:ashbyhq.com "catered lunch'
-2026-04-17 18:47:47,845 [INFO] Firecrawl: 5 results
-2026-04-17 18:47:49,848 [INFO] Firecrawl: searching — '"meal stipend" OR "food stipend" OR "catered meals" jobs New York City'
-2026-04-17 18:47:53,874 [INFO] Firecrawl: 5 results
-2026-04-17 18:47:55,876 [INFO] Firecrawl: searching — '"DoorDash" OR "Forkable" OR "Sharebite" employee benefit New York offi'
-2026-04-17 18:48:00,522 [INFO] Firecrawl: 5 results
-2026-04-17 18:48:02,525 [INFO] Firecrawl: searching — '"stocked kitchen" OR "free lunch" OR "daily lunch" New York company be'
-2026-04-17 18:48:06,342 [INFO] Firecrawl: 5 results
-2026-04-17 18:48:08,349 [INFO] Firecrawl: searching — '"lunch provided" OR "meals provided" New York office hiring'
-2026-04-17 18:48:37,080 [INFO] Firecrawl: 5 results
-2026-04-17 18:48:39,085 [INFO]   Firecrawl: 13 keyword matches
-2026-04-17 18:48:39,085 [INFO] Total raw matches: 583
-2026-04-17 18:48:39,085 [WARNING] Skipping verification (--no-verify)
-2026-04-17 18:48:39,254 [INFO] Slack: notified about 34 new companies
-Raw job records   : 583
-Unique companies  : 52
-Net new companies : 34
+2026-04-17 19:11:09,312 [INFO] Scraping: Greenhouse
+2026-04-17 19:11:11,091 [INFO] Greenhouse figma: 153 jobs
+2026-04-17 19:11:12,687 [INFO] Greenhouse airtable: 58 jobs
+2026-04-17 19:11:14,550 [INFO] Greenhouse stripe: 497 jobs
+2026-04-17 19:11:16,295 [INFO] Greenhouse hubspot: 0 jobs
+2026-04-17 19:11:17,892 [INFO] Greenhouse twilio: 137 jobs
+2026-04-17 19:11:19,549 [INFO] Greenhouse amplitude: 41 jobs
+2026-04-17 19:11:21,099 [INFO] Greenhouse mixpanel: 47 jobs
+2026-04-17 19:11:22,875 [INFO] Greenhouse klaviyo: 245 jobs
+2026-04-17 19:11:24,509 [INFO] Greenhouse intercom: 176 jobs
+2026-04-17 19:11:26,190 [INFO] Greenhouse mongodb: 417 jobs
+2026-04-17 19:11:27,884 [INFO] Greenhouse datadog: 423 jobs
+2026-04-17 19:11:29,721 [INFO] Greenhouse braze: 177 jobs
+2026-04-17 19:11:31,454 [INFO] Greenhouse movableink: 25 jobs
+2026-04-17 19:11:33,215 [INFO] Greenhouse yotpo: 50 jobs
+2026-04-17 19:11:34,849 [INFO] Greenhouse sisense: 3 jobs
+2026-04-17 19:11:36,233 [INFO] Greenhouse appsflyer: 56 jobs
+2026-04-17 19:11:37,542 [INFO] Greenhouse taboola: 74 jobs
+2026-04-17 19:11:39,050 [INFO] Greenhouse pinterest: 152 jobs
+2026-04-17 19:11:40,628 [INFO] Greenhouse reddit: 152 jobs
+2026-04-17 19:11:42,501 [INFO] Greenhouse lyft: 141 jobs
+2026-04-17 19:11:43,942 [INFO] Greenhouse airbnb: 238 jobs
+2026-04-17 19:11:45,595 [INFO] Greenhouse dropbox: 102 jobs
+2026-04-17 19:11:46,958 [INFO] Greenhouse squarespace: 33 jobs
+2026-04-17 19:11:48,628 [INFO] Greenhouse kickstarter: 2 jobs
+2026-04-17 19:11:50,252 [INFO] Greenhouse duolingo: 89 jobs
+2026-04-17 19:11:51,888 [INFO] Greenhouse pagerduty: 52 jobs
+2026-04-17 19:11:53,794 [INFO] Greenhouse cloudflare: 473 jobs
+2026-04-17 19:11:55,565 [INFO] Greenhouse fastly: 52 jobs
+2026-04-17 19:11:57,092 [INFO] Greenhouse elastic: 204 jobs
+2026-04-17 19:11:59,031 [INFO] Greenhouse databricks: 855 jobs
+2026-04-17 19:12:00,909 [INFO] Greenhouse seatgeek: 41 jobs
+2026-04-17 19:12:02,690 [INFO] Greenhouse tripadvisor: 73 jobs
+2026-04-17 19:12:04,409 [INFO] Greenhouse opendoor: 59 jobs
+2026-04-17 19:12:05,730 [INFO] Greenhouse mindbody: 35 jobs
+2026-04-17 19:12:07,427 [INFO] Greenhouse cision: 68 jobs
+2026-04-17 19:12:09,197 [INFO] Greenhouse similarweb: 67 jobs
+2026-04-17 19:12:11,079 [INFO] Greenhouse okta: 361 jobs
+2026-04-17 19:12:12,910 [INFO] Greenhouse newrelic: 63 jobs
+2026-04-17 19:12:14,255 [INFO] Greenhouse sumologic: 34 jobs
+2026-04-17 19:12:15,585 [INFO] Greenhouse contentful: 112 jobs
+2026-04-17 19:12:17,365 [INFO] Greenhouse storyblok: 18 jobs
+2026-04-17 19:12:18,849 [INFO] Greenhouse pendo: 17 jobs
+2026-04-17 19:12:20,518 [INFO] Greenhouse zuora: 58 jobs
+2026-04-17 19:12:21,838 [INFO] Greenhouse marqeta: 31 jobs
+2026-04-17 19:12:23,457 [INFO] Greenhouse fivetran: 182 jobs
+2026-04-17 19:12:24,998 [INFO] Greenhouse starburst: 27 jobs
+2026-04-17 19:12:26,463 [INFO] Greenhouse dremio: 11 jobs
+2026-04-17 19:12:27,836 [INFO] Greenhouse clickhouse: 169 jobs
+2026-04-17 19:12:29,567 [WARNING] GET failed for https://boards-api.greenhouse.io/v1/boards/monday/jobs?content=true: 404 Client Error: Not Found for url: https://boards-api.greenhouse.io/v1/boards/monday/jobs?content=true
+2026-04-17 19:12:31,101 [WARNING] GET failed for https://boards-api.greenhouse.io/v1/boards/notion/jobs?content=true: 404 Client Error: Not Found for url: https://boards-api.greenhouse.io/v1/boards/notion/jobs?content=true
+2026-04-17 19:12:32,782 [INFO] Greenhouse lattice: 16 jobs
+2026-04-17 19:12:34,300 [INFO] Greenhouse greenhouse: 31 jobs
+2026-04-17 19:12:35,933 [WARNING] GET failed for https://boards-api.greenhouse.io/v1/boards/segment/jobs?content=true: 404 Client Error: Not Found for url: https://boards-api.greenhouse.io/v1/boards/segment/jobs?content=true
+2026-04-17 19:12:37,503 [INFO] Greenhouse sendbird: 22 jobs
+2026-04-17 19:12:39,000 [WARNING] GET failed for https://boards-api.greenhouse.io/v1/boards/freshworks/jobs?content=true: 404 Client Error: Not Found for url: https://boards-api.greenhouse.io/v1/boards/freshworks/jobs?content=true
+2026-04-17 19:12:40,438 [WARNING] GET failed for https://boards-api.greenhouse.io/v1/boards/drift/jobs?content=true: 404 Client Error: Not Found for url: https://boards-api.greenhouse.io/v1/boards/drift/jobs?content=true
+2026-04-17 19:12:41,772 [WARNING] GET failed for https://boards-api.greenhouse.io/v1/boards/outreach/jobs?content=true: 404 Client Error: Not Found for url: https://boards-api.greenhouse.io/v1/boards/outreach/jobs?content=true
+2026-04-17 19:12:43,208 [INFO] Greenhouse salesloft: 25 jobs
+2026-04-17 19:12:44,550 [WARNING] GET failed for https://boards-api.greenhouse.io/v1/boards/terminus/jobs?content=true: 404 Client Error: Not Found for url: https://boards-api.greenhouse.io/v1/boards/terminus/jobs?content=true
+2026-04-17 19:12:45,804 [WARNING] GET failed for https://boards-api.greenhouse.io/v1/boards/rollworks/jobs?content=true: 404 Client Error: Not Found for url: https://boards-api.greenhouse.io/v1/boards/rollworks/jobs?content=true
+2026-04-17 19:12:47,416 [INFO] Greenhouse bombora: 3 jobs
+2026-04-17 19:12:48,830 [WARNING] GET failed for https://boards-api.greenhouse.io/v1/boards/trustradius/jobs?content=true: 404 Client Error: Not Found for url: https://boards-api.greenhouse.io/v1/boards/trustradius/jobs?content=true
+2026-04-17 19:12:50,406 [WARNING] GET failed for https://boards-api.greenhouse.io/v1/boards/capterra/jobs?content=true: 404 Client Error: Not Found for url: https://boards-api.greenhouse.io/v1/boards/capterra/jobs?content=true
+2026-04-17 19:12:51,896 [INFO] Greenhouse doubleverify: 60 jobs
+2026-04-17 19:12:53,660 [INFO] Greenhouse pubmatic: 62 jobs
+2026-04-17 19:12:55,263 [INFO] Greenhouse northbeam: 13 jobs
+2026-04-17 19:12:56,768 [INFO] Greenhouse point72: 269 jobs
+2026-04-17 19:12:58,219 [INFO] Greenhouse apollo: 3 jobs
+2026-04-17 19:12:59,579 [INFO] Greenhouse betterment: 30 jobs
+2026-04-17 19:13:01,391 [INFO] Greenhouse robinhood: 144 jobs
+2026-04-17 19:13:02,949 [WARNING] GET failed for https://boards-api.greenhouse.io/v1/boards/plaid/jobs?content=true: 404 Client Error: Not Found for url: https://boards-api.greenhouse.io/v1/boards/plaid/jobs?content=true
+2026-04-17 19:13:04,686 [WARNING] GET failed for https://boards-api.greenhouse.io/v1/boards/wealthfront/jobs?content=true: 404 Client Error: Not Found for url: https://boards-api.greenhouse.io/v1/boards/wealthfront/jobs?content=true
+2026-04-17 19:13:06,125 [INFO] Greenhouse virtu: 35 jobs
+2026-04-17 19:13:07,855 [INFO] Greenhouse iex: 9 jobs
+2026-04-17 19:13:09,318 [INFO] Greenhouse creditkarma: 0 jobs
+2026-04-17 19:13:10,875 [INFO] Greenhouse cleo: 4 jobs
+2026-04-17 19:13:12,351 [INFO] Greenhouse galileo: 5 jobs
+2026-04-17 19:13:13,741 [INFO] Greenhouse coinbase: 133 jobs
+2026-04-17 19:13:15,421 [INFO] Greenhouse gemini: 17 jobs
+2026-04-17 19:13:16,878 [INFO] Greenhouse ripple: 126 jobs
+2026-04-17 19:13:18,263 [INFO] Greenhouse fireblocks: 47 jobs
+2026-04-17 19:13:19,804 [INFO] Greenhouse alchemy: 16 jobs
+2026-04-17 19:13:21,174 [INFO] Greenhouse consensys: 13 jobs
+2026-04-17 19:13:22,675 [INFO] Greenhouse sofi: 217 jobs
+2026-04-17 19:13:24,437 [INFO] Greenhouse chime: 84 jobs
+2026-04-17 19:13:25,795 [INFO] Greenhouse alloy: 18 jobs
+2026-04-17 19:13:27,070 [INFO] Greenhouse lithic: 14 jobs
+2026-04-17 19:13:28,565 [INFO] Greenhouse highnote: 9 jobs
+2026-04-17 19:13:30,292 [INFO] Greenhouse marqeta: 31 jobs
+2026-04-17 19:13:31,821 [INFO] Greenhouse schonfeld: 36 jobs
+2026-04-17 19:13:34,001 [INFO] Greenhouse icon: 0 jobs
+2026-04-17 19:13:35,728 [INFO] Greenhouse natera: 152 jobs
+2026-04-17 19:13:37,433 [INFO] Greenhouse beamtherapeutics: 32 jobs
+2026-04-17 19:13:39,184 [INFO] Greenhouse 10xgenomics: 40 jobs
+2026-04-17 19:13:40,931 [INFO] Greenhouse veracyte: 60 jobs
+2026-04-17 19:13:42,581 [INFO] Greenhouse zocdoc: 70 jobs
+2026-04-17 19:13:43,895 [INFO] Greenhouse ritual: 15 jobs
+2026-04-17 19:13:45,358 [INFO] Greenhouse calm: 3 jobs
+2026-04-17 19:13:46,639 [INFO] Greenhouse peloton: 52 jobs
+2026-04-17 19:13:48,192 [INFO] Greenhouse classpass: 94 jobs
+2026-04-17 19:13:49,825 [INFO] Greenhouse oscar: 277 jobs
+2026-04-17 19:13:51,354 [INFO] Greenhouse cerebral: 5 jobs
+2026-04-17 19:13:52,851 [INFO] Greenhouse waymark: 21 jobs
+2026-04-17 19:13:54,127 [WARNING] GET failed for https://boards-api.greenhouse.io/v1/boards/cityblock/jobs?content=true: 404 Client Error: Not Found for url: https://boards-api.greenhouse.io/v1/boards/cityblock/jobs?content=true
+2026-04-17 19:13:55,615 [INFO] Greenhouse gusto: 84 jobs
+2026-04-17 19:13:57,307 [INFO] Greenhouse justworks: 88 jobs
+2026-04-17 19:13:58,665 [INFO] Greenhouse cultureamp: 25 jobs
+2026-04-17 19:13:59,982 [INFO] Greenhouse buzzfeed: 4 jobs
+2026-04-17 19:14:01,698 [INFO] Greenhouse voxmedia: 23 jobs
+2026-04-17 19:14:03,468 [INFO] Greenhouse forbes: 30 jobs
+2026-04-17 19:14:04,862 [INFO] Greenhouse axios: 22 jobs
+2026-04-17 19:14:06,498 [INFO] Greenhouse semafor: 17 jobs
+2026-04-17 19:14:08,056 [INFO] Greenhouse fandom: 6 jobs
+2026-04-17 19:14:09,581 [INFO] Greenhouse fanduel: 139 jobs
+2026-04-17 19:14:11,009 [INFO] Greenhouse octagon: 65 jobs
+2026-04-17 19:14:12,780 [INFO] Greenhouse geniussports: 40 jobs
+2026-04-17 19:14:14,084 [INFO] Greenhouse coursera: 6 jobs
+2026-04-17 19:14:15,598 [INFO] Greenhouse masterclass: 8 jobs
+2026-04-17 19:14:29,484 [INFO] Greenhouse udemy: 35 jobs
+2026-04-17 19:14:31,175 [INFO] Greenhouse 2u: 33 jobs
+2026-04-17 19:14:32,456 [INFO] Greenhouse glossier: 18 jobs
+2026-04-17 19:14:34,175 [INFO] Greenhouse allbirds: 0 jobs
+2026-04-17 19:14:35,492 [INFO] Greenhouse brooklinen: 12 jobs
+2026-04-17 19:14:37,116 [INFO] Greenhouse renttherunway: 24 jobs
+2026-04-17 19:14:38,528 [INFO] Greenhouse rebag: 9 jobs
+2026-04-17 19:14:39,827 [INFO] Greenhouse harrys: 12 jobs
+2026-04-17 19:14:41,384 [INFO] Greenhouse mejuri: 135 jobs
+2026-04-17 19:14:43,052 [INFO] Greenhouse everlane: 20 jobs
+2026-04-17 19:14:44,628 [WARNING] GET failed for https://boards-api.greenhouse.io/v1/boards/etsy/jobs?content=true: 404 Client Error: Not Found for url: https://boards-api.greenhouse.io/v1/boards/etsy/jobs?content=true
+2026-04-17 19:14:46,053 [INFO] Greenhouse poshmark: 0 jobs
+2026-04-17 19:14:47,679 [INFO] Greenhouse narvar: 20 jobs
+2026-04-17 19:14:49,099 [INFO] Greenhouse aftership: 15 jobs
+2026-04-17 19:14:50,462 [INFO] Greenhouse flexport: 119 jobs
+2026-04-17 19:14:52,010 [INFO] Greenhouse shipmonk: 39 jobs
+2026-04-17 19:14:53,673 [INFO] Greenhouse project44: 43 jobs
+2026-04-17 19:14:55,374 [INFO] Greenhouse fourkites: 14 jobs
+2026-04-17 19:14:57,122 [INFO] Greenhouse costar: 4 jobs
+2026-04-17 19:14:58,552 [INFO] Greenhouse vts: 12 jobs
+2026-04-17 19:14:59,969 [INFO] Greenhouse crexi: 19 jobs
+2026-04-17 19:15:01,337 [INFO] Greenhouse orchard: 49 jobs
+2026-04-17 19:15:03,033 [WARNING] GET failed for https://boards-api.greenhouse.io/v1/boards/doordash/jobs?content=true: 404 Client Error: Not Found for url: https://boards-api.greenhouse.io/v1/boards/doordash/jobs?content=true
+2026-04-17 19:15:04,446 [INFO] Greenhouse goldbelly: 1 jobs
+2026-04-17 19:15:06,109 [INFO] Greenhouse misfitsmarket: 43 jobs
+2026-04-17 19:15:07,632 [INFO] Greenhouse hungryroot: 8 jobs
+2026-04-17 19:15:08,928 [INFO] Greenhouse touchbistro: 5 jobs
+2026-04-17 19:15:10,642 [INFO] Greenhouse revel: 2 jobs
+2026-04-17 19:15:12,114 [INFO] Greenhouse agilysys: 10 jobs
+2026-04-17 19:15:13,770 [INFO] Greenhouse instacart: 134 jobs
+2026-04-17 19:15:15,536 [INFO] Greenhouse sweetgreen: 39 jobs
+2026-04-17 19:15:18,282 [INFO] Greenhouse alixpartners: 95 jobs
+2026-04-17 19:15:19,998 [INFO] Greenhouse ogilvy: 160 jobs
+2026-04-17 19:15:21,931 [INFO] Greenhouse wpp: 139 jobs
+2026-04-17 19:15:22,075 [INFO]   Greenhouse: 265 keyword matches
+2026-04-17 19:15:22,075 [INFO] Scraping: Lever
+2026-04-17 19:15:24,193 [INFO] Lever gettyimages: 18 jobs
+2026-04-17 19:15:31,846 [INFO] Lever gopuff: 765 jobs
+2026-04-17 19:15:33,648 [INFO] Lever arcadia: 16 jobs
+2026-04-17 19:15:36,039 [INFO] Lever ro: 44 jobs
+2026-04-17 19:15:37,755 [WARNING] GET failed for https://api.lever.co/v0/postings/hims?mode=json: 404 Client Error: Not Found for url: https://api.lever.co/v0/postings/hims?mode=json
+2026-04-17 19:15:39,238 [WARNING] GET failed for https://api.lever.co/v0/postings/cerebral?mode=json: 404 Client Error: Not Found for url: https://api.lever.co/v0/postings/cerebral?mode=json
+2026-04-17 19:15:43,119 [WARNING] GET failed for https://api.lever.co/v0/postings/vimeo?mode=json: 404 Client Error: Not Found for url: https://api.lever.co/v0/postings/vimeo?mode=json
+2026-04-17 19:15:44,885 [WARNING] GET failed for https://api.lever.co/v0/postings/canva?mode=json: 404 Client Error: Not Found for url: https://api.lever.co/v0/postings/canva?mode=json
+2026-04-17 19:15:46,166 [WARNING] GET failed for https://api.lever.co/v0/postings/miro?mode=json: 404 Client Error: Not Found for url: https://api.lever.co/v0/postings/miro?mode=json
+2026-04-17 19:15:47,914 [WARNING] GET failed for https://api.lever.co/v0/postings/asana?mode=json: 404 Client Error: Not Found for url: https://api.lever.co/v0/postings/asana?mode=json
+2026-04-17 19:15:49,541 [WARNING] GET failed for https://api.lever.co/v0/postings/seatgeek?mode=json: 404 Client Error: Not Found for url: https://api.lever.co/v0/postings/seatgeek?mode=json
+2026-04-17 19:15:55,840 [WARNING] GET failed for https://api.lever.co/v0/postings/eventbrite?mode=json: 404 Client Error: Not Found for url: https://api.lever.co/v0/postings/eventbrite?mode=json
+2026-04-17 19:15:57,226 [WARNING] GET failed for https://api.lever.co/v0/postings/webflow?mode=json: 404 Client Error: Not Found for url: https://api.lever.co/v0/postings/webflow?mode=json
+2026-04-17 19:15:58,967 [WARNING] GET failed for https://api.lever.co/v0/postings/coda?mode=json: 404 Client Error: Not Found for url: https://api.lever.co/v0/postings/coda?mode=json
+2026-04-17 19:16:00,531 [WARNING] GET failed for https://api.lever.co/v0/postings/loom?mode=json: 404 Client Error: Not Found for url: https://api.lever.co/v0/postings/loom?mode=json
+2026-04-17 19:16:02,006 [WARNING] GET failed for https://api.lever.co/v0/postings/benchling?mode=json: 404 Client Error: Not Found for url: https://api.lever.co/v0/postings/benchling?mode=json
+2026-04-17 19:16:03,589 [WARNING] GET failed for https://api.lever.co/v0/postings/ironclad?mode=json: 404 Client Error: Not Found for url: https://api.lever.co/v0/postings/ironclad?mode=json
+2026-04-17 19:16:05,227 [WARNING] GET failed for https://api.lever.co/v0/postings/procore?mode=json: 404 Client Error: Not Found for url: https://api.lever.co/v0/postings/procore?mode=json
+2026-04-17 19:16:06,680 [WARNING] GET failed for https://api.lever.co/v0/postings/brex?mode=json: 404 Client Error: Not Found for url: https://api.lever.co/v0/postings/brex?mode=json
+2026-04-17 19:16:08,425 [WARNING] GET failed for https://api.lever.co/v0/postings/mercury?mode=json: 404 Client Error: Not Found for url: https://api.lever.co/v0/postings/mercury?mode=json
+2026-04-17 19:16:18,102 [WARNING] GET failed for https://api.lever.co/v0/postings/ramp?mode=json: 404 Client Error: Not Found for url: https://api.lever.co/v0/postings/ramp?mode=json
+2026-04-17 19:16:19,396 [WARNING] GET failed for https://api.lever.co/v0/postings/nerdwallet?mode=json: 404 Client Error: Not Found for url: https://api.lever.co/v0/postings/nerdwallet?mode=json
+2026-04-17 19:16:21,030 [WARNING] GET failed for https://api.lever.co/v0/postings/stash?mode=json: 404 Client Error: Not Found for url: https://api.lever.co/v0/postings/stash?mode=json
+2026-04-17 19:16:22,738 [WARNING] GET failed for https://api.lever.co/v0/postings/acorns?mode=json: 404 Client Error: Not Found for url: https://api.lever.co/v0/postings/acorns?mode=json
+2026-04-17 19:16:24,241 [WARNING] GET failed for https://api.lever.co/v0/postings/pipe?mode=json: 404 Client Error: Not Found for url: https://api.lever.co/v0/postings/pipe?mode=json
+2026-04-17 19:16:26,423 [WARNING] GET failed for https://api.lever.co/v0/postings/capchase?mode=json: 404 Client Error: Not Found for url: https://api.lever.co/v0/postings/capchase?mode=json
+2026-04-17 19:16:28,129 [WARNING] GET failed for https://api.lever.co/v0/postings/mosaic?mode=json: 404 Client Error: Not Found for url: https://api.lever.co/v0/postings/mosaic?mode=json
+2026-04-17 19:16:29,776 [WARNING] GET failed for https://api.lever.co/v0/postings/garner?mode=json: 404 Client Error: Not Found for url: https://api.lever.co/v0/postings/garner?mode=json
+2026-04-17 19:16:31,548 [WARNING] GET failed for https://api.lever.co/v0/postings/virta?mode=json: 404 Client Error: Not Found for url: https://api.lever.co/v0/postings/virta?mode=json
+2026-04-17 19:16:32,875 [WARNING] GET failed for https://api.lever.co/v0/postings/omada?mode=json: 404 Client Error: Not Found for url: https://api.lever.co/v0/postings/omada?mode=json
+2026-04-17 19:16:37,043 [WARNING] GET failed for https://api.lever.co/v0/postings/brightline?mode=json: 404 Client Error: Not Found for url: https://api.lever.co/v0/postings/brightline?mode=json
+2026-04-17 19:16:53,511 [WARNING] GET failed for https://api.lever.co/v0/postings/newsela?mode=json: 404 Client Error: Not Found for url: https://api.lever.co/v0/postings/newsela?mode=json
+2026-04-17 19:16:55,025 [WARNING] GET failed for https://api.lever.co/v0/postings/panorama?mode=json: 404 Client Error: Not Found for url: https://api.lever.co/v0/postings/panorama?mode=json
+2026-04-17 19:16:56,482 [WARNING] GET failed for https://api.lever.co/v0/postings/draftkings?mode=json: 404 Client Error: Not Found for url: https://api.lever.co/v0/postings/draftkings?mode=json
+2026-04-17 19:16:58,518 [WARNING] GET failed for https://api.lever.co/v0/postings/fanatics?mode=json: 404 Client Error: Not Found for url: https://api.lever.co/v0/postings/fanatics?mode=json
+2026-04-17 19:17:00,152 [WARNING] GET failed for https://api.lever.co/v0/postings/compass?mode=json: 404 Client Error: Not Found for url: https://api.lever.co/v0/postings/compass?mode=json
+2026-04-17 19:17:03,410 [WARNING] GET failed for https://api.lever.co/v0/postings/opendoor?mode=json: 404 Client Error: Not Found for url: https://api.lever.co/v0/postings/opendoor?mode=json
+2026-04-17 19:17:13,331 [WARNING] GET failed for https://api.lever.co/v0/postings/lattice?mode=json: 404 Client Error: Not Found for url: https://api.lever.co/v0/postings/lattice?mode=json
+2026-04-17 19:17:14,712 [WARNING] GET failed for https://api.lever.co/v0/postings/leapsome?mode=json: 404 Client Error: Not Found for url: https://api.lever.co/v0/postings/leapsome?mode=json
+2026-04-17 19:17:16,063 [WARNING] GET failed for https://api.lever.co/v0/postings/betterworks?mode=json: 404 Client Error: Not Found for url: https://api.lever.co/v0/postings/betterworks?mode=json
+2026-04-17 19:17:17,655 [WARNING] GET failed for https://api.lever.co/v0/postings/remote?mode=json: 404 Client Error: Not Found for url: https://api.lever.co/v0/postings/remote?mode=json
+2026-04-17 19:17:19,274 [WARNING] GET failed for https://api.lever.co/v0/postings/deel?mode=json: 404 Client Error: Not Found for url: https://api.lever.co/v0/postings/deel?mode=json
+2026-04-17 19:17:19,274 [INFO]   Lever: 0 keyword matches
+2026-04-17 19:17:19,274 [INFO] Scraping: Ashby
+2026-04-17 19:17:20,827 [INFO] Ashby linear: 19 jobs
+2026-04-17 19:17:22,766 [INFO] Ashby loom: 0 jobs
+2026-04-17 19:17:24,315 [INFO] Ashby runway: 4 jobs
+2026-04-17 19:17:25,609 [INFO] Ashby causal: 2 jobs
+2026-04-17 19:17:27,582 [INFO] Ashby hightouch: 1 jobs
+2026-04-17 19:17:29,056 [INFO] Ashby replit: 84 jobs
+2026-04-17 19:17:30,623 [INFO] Ashby harvey: 234 jobs
+2026-04-17 19:17:32,280 [INFO] Ashby notion: 147 jobs
+2026-04-17 19:17:33,861 [INFO] Ashby retool: 0 jobs
+2026-04-17 19:17:35,636 [INFO] Ashby openai: 645 jobs
+2026-04-17 19:17:37,192 [WARNING] GET failed for https://api.ashbyhq.com/posting-api/job-board/anthropic: 404 Client Error: Not Found for url: https://api.ashbyhq.com/posting-api/job-board/anthropic
+2026-04-17 19:17:38,645 [INFO] Ashby cohere: 115 jobs
+2026-04-17 19:17:40,288 [INFO] Ashby mercury: 0 jobs
+2026-04-17 19:17:41,825 [INFO] Ashby ramp: 125 jobs
+2026-04-17 19:17:58,374 [WARNING] Retrying (Retry(total=2, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='api.ashbyhq.com', port=443): Read timed out. (read timeout=15)")': /posting-api/job-board/airwallex
+2026-04-17 19:17:59,969 [INFO] Ashby airwallex: 621 jobs
+2026-04-17 19:18:01,652 [INFO] Ashby capchase: 3 jobs
+2026-04-17 19:18:03,382 [INFO] Ashby clearco: 7 jobs
+2026-04-17 19:18:05,665 [INFO] Ashby parafin: 25 jobs
+2026-04-17 19:18:07,191 [INFO] Ashby slope: 1 jobs
+2026-04-17 19:18:08,557 [WARNING] GET failed for https://api.ashbyhq.com/posting-api/job-board/brex: 404 Client Error: Not Found for url: https://api.ashbyhq.com/posting-api/job-board/brex
+2026-04-17 19:18:10,159 [INFO] Ashby vanta: 164 jobs
+2026-04-17 19:18:12,479 [INFO] Ashby drata: 25 jobs
+2026-04-17 19:18:14,269 [INFO] Ashby leapsome: 13 jobs
+2026-04-17 19:18:15,987 [INFO] Ashby deel: 269 jobs
+2026-04-17 19:18:17,425 [INFO] Ashby oyster: 17 jobs
+2026-04-17 19:18:18,845 [WARNING] GET failed for https://api.ashbyhq.com/posting-api/job-board/lattice: 404 Client Error: Not Found for url: https://api.ashbyhq.com/posting-api/job-board/lattice
+2026-04-17 19:18:20,184 [WARNING] GET failed for https://api.ashbyhq.com/posting-api/job-board/flatiron-health: 404 Client Error: Not Found for url: https://api.ashbyhq.com/posting-api/job-board/flatiron-health
+2026-04-17 19:18:22,379 [INFO] Ashby cityblock: 0 jobs
+2026-04-17 19:18:23,685 [INFO] Ashby benchling: 47 jobs
+2026-04-17 19:18:25,250 [WARNING] GET failed for https://api.ashbyhq.com/posting-api/job-board/ro: 404 Client Error: Not Found for url: https://api.ashbyhq.com/posting-api/job-board/ro
+2026-04-17 19:18:26,594 [WARNING] GET failed for https://api.ashbyhq.com/posting-api/job-board/chainalysis: 404 Client Error: Not Found for url: https://api.ashbyhq.com/posting-api/job-board/chainalysis
+2026-04-17 19:18:28,319 [WARNING] GET failed for https://api.ashbyhq.com/posting-api/job-board/fireblocks: 404 Client Error: Not Found for url: https://api.ashbyhq.com/posting-api/job-board/fireblocks
+2026-04-17 19:18:29,754 [WARNING] GET failed for https://api.ashbyhq.com/posting-api/job-board/movable-ink: 404 Client Error: Not Found for url: https://api.ashbyhq.com/posting-api/job-board/movable-ink
+2026-04-17 19:18:31,536 [WARNING] GET failed for https://api.ashbyhq.com/posting-api/job-board/sprinklr: 404 Client Error: Not Found for url: https://api.ashbyhq.com/posting-api/job-board/sprinklr
+2026-04-17 19:18:33,083 [WARNING] GET failed for https://api.ashbyhq.com/posting-api/job-board/diligent: 404 Client Error: Not Found for url: https://api.ashbyhq.com/posting-api/job-board/diligent
+2026-04-17 19:18:34,724 [WARNING] GET failed for https://api.ashbyhq.com/posting-api/job-board/tempus: 404 Client Error: Not Found for url: https://api.ashbyhq.com/posting-api/job-board/tempus
+2026-04-17 19:18:36,316 [INFO] Ashby spekit: 6 jobs
+2026-04-17 19:18:36,319 [INFO]   Ashby: 117 keyword matches
+2026-04-17 19:18:36,319 [INFO] Scraping: Built In NYC
+2026-04-17 19:18:37,554 [WARNING] Built In NYC POST failed: 405 Client Error: Method Not Allowed for url: https://api.builtin.com/jobs/search
+2026-04-17 19:18:38,635 [WARNING] Built In NYC company API failed for free-daily-lunches: 405 Client Error: Method Not Allowed for url: https://api.builtin.com/companies
+2026-04-17 19:18:39,718 [WARNING] Built In NYC company API failed for catered-meals: 405 Client Error: Method Not Allowed for url: https://api.builtin.com/companies
+2026-04-17 19:18:40,798 [WARNING] Built In NYC company API failed for company-provided-meals: 405 Client Error: Method Not Allowed for url: https://api.builtin.com/companies
+2026-04-17 19:18:41,878 [WARNING] Built In NYC company API failed for meal-stipend: 405 Client Error: Method Not Allowed for url: https://api.builtin.com/companies
+2026-04-17 19:18:42,955 [WARNING] Built In NYC company API failed for food-stipend: 405 Client Error: Method Not Allowed for url: https://api.builtin.com/companies
+2026-04-17 19:18:44,037 [WARNING] Built In NYC company API failed for snacks-and-coffee: 405 Client Error: Method Not Allowed for url: https://api.builtin.com/companies
+2026-04-17 19:18:45,105 [WARNING] Built In NYC company API failed for fully-stocked-kitchen: 405 Client Error: Method Not Allowed for url: https://api.builtin.com/companies
+2026-04-17 19:18:45,105 [INFO]   Built In NYC: 0 keyword matches
+2026-04-17 19:18:45,105 [INFO] Scraping: Workday
+2026-04-17 19:18:45,107 [INFO] Workday: scanning JPMorgan Chase at https://jpmc.wd5.myworkdayjobs.com/wday/cxs/jpmc/JPMorgan_Chase_External_Career_Site/jobs
+2026-04-17 19:18:46,903 [INFO] Workday: scanning Goldman Sachs at https://goldmansachs.wd1.myworkdayjobs.com/wday/cxs/goldmansachs/External_Career_Site/jobs
+2026-04-17 19:18:48,327 [INFO] Workday: scanning Salesforce at https://salesforce.wd2.myworkdayjobs.com/wday/cxs/salesforce/External_Career_Site/jobs
+2026-04-17 19:18:49,605 [WARNING] Workday Salesforce: HTTPSConnectionPool(host='salesforce.wd2.myworkdayjobs.com', port=443): Max retries exceeded with url: /wday/cxs/salesforce/External_Career_Site/jobs (Caused by NameResolutionError("HTTPSConnection(host='salesforce.wd2.myworkdayjobs.com', port=443): Failed to resolve 'salesforce.wd2.myworkdayjobs.com' ([Errno -2] Name or service not known)"))
+2026-04-17 19:18:49,605 [INFO] Workday: scanning Verizon at https://verizon.wd1.myworkdayjobs.com/wday/cxs/verizon/External_Career_Site/jobs
+2026-04-17 19:18:51,242 [INFO] Workday: scanning Mastercard at https://mastercard.wd5.myworkdayjobs.com/wday/cxs/mastercard/External_Career_Site/jobs
+2026-04-17 19:18:53,072 [INFO] Workday: scanning American Express at https://aexp.wd1.myworkdayjobs.com/wday/cxs/aexp/AmexExternalSite/jobs
+2026-04-17 19:18:54,528 [INFO] Workday: scanning Bloomberg at https://bloomberg.wd5.myworkdayjobs.com/wday/cxs/bloomberg/External_Career_Site/jobs
+2026-04-17 19:18:56,080 [INFO] Workday: scanning WeWork at https://wework.wd5.myworkdayjobs.com/wday/cxs/wework/WeWork_External/jobs
+2026-04-17 19:19:01,801 [INFO] Workday: scanning Spotify at https://spotify.wd1.myworkdayjobs.com/wday/cxs/spotify/External/jobs
+2026-04-17 19:19:03,435 [INFO] Workday: scanning Peloton at https://pel.wd5.myworkdayjobs.com/wday/cxs/pel/Peloton/jobs
+2026-04-17 19:19:04,829 [INFO] Workday: scanning BuzzFeed at https://buzzfeed.wd1.myworkdayjobs.com/wday/cxs/buzzfeed/External/jobs
+2026-04-17 19:19:06,882 [INFO] Workday: scanning NBCUniversal at https://nbcuni.wd1.myworkdayjobs.com/wday/cxs/nbcuni/External_Career_Site/jobs
+2026-04-17 19:19:08,390 [INFO] Workday: scanning Condé Nast at https://condenast.wd5.myworkdayjobs.com/wday/cxs/condenast/CNExternalCareerSite/jobs
+2026-04-17 19:19:10,025 [INFO]   Workday: 0 keyword matches
+2026-04-17 19:19:10,025 [INFO] Scraping: JobSpy (Indeed/Google)
+2026-04-17 19:19:10,217 [INFO] JobSpy: searching 'free lunch' in New York City
+2026-04-17 19:19:11,295 [INFO] JobSpy: 100 raw results for 'free lunch'
+2026-04-17 19:19:13,735 [INFO] JobSpy: searching 'catered lunch' in New York City
+2026-04-17 19:19:14,861 [INFO] JobSpy: 81 raw results for 'catered lunch'
+2026-04-17 19:19:17,291 [INFO] JobSpy: searching 'catered meals' in New York City
+2026-04-17 19:19:18,125 [INFO] JobSpy: 38 raw results for 'catered meals'
+2026-04-17 19:19:20,537 [INFO] JobSpy: searching 'DoorDash' in New York City
+2026-04-17 19:19:21,079 [INFO] JobSpy: 16 raw results for 'DoorDash'
+2026-04-17 19:19:23,491 [INFO] JobSpy: searching 'GrubHub' in New York City
+2026-04-17 19:19:23,825 [INFO] JobSpy: 9 raw results for 'GrubHub'
+2026-04-17 19:19:26,231 [INFO] JobSpy: searching 'Uber Eats' in New York City
+2026-04-17 19:19:26,506 [INFO] JobSpy: 1 raw results for 'Uber Eats'
+2026-04-17 19:19:28,907 [INFO] JobSpy: searching 'Forkable' in New York City
+2026-04-17 19:19:29,060 [INFO] JobSpy: no results for 'Forkable'
+2026-04-17 19:19:29,060 [INFO] JobSpy: searching 'Sharebite' in New York City
+2026-04-17 19:19:29,392 [INFO] JobSpy: 7 raw results for 'Sharebite'
+2026-04-17 19:19:31,796 [INFO] JobSpy: searching 'meal stipend' in New York City
+2026-04-17 19:19:32,676 [INFO] JobSpy: 64 raw results for 'meal stipend'
+2026-04-17 19:19:35,092 [INFO] JobSpy: searching 'lunch stipend' in New York City
+2026-04-17 19:19:36,307 [INFO] JobSpy: 100 raw results for 'lunch stipend'
+2026-04-17 19:19:38,737 [INFO] JobSpy: searching 'food stipend' in New York City
+2026-04-17 19:19:39,601 [INFO] JobSpy: 51 raw results for 'food stipend'
+2026-04-17 19:19:42,017 [INFO] JobSpy: searching 'meal credit' in New York City
+2026-04-17 19:19:43,207 [INFO] JobSpy: 100 raw results for 'meal credit'
+2026-04-17 19:19:45,643 [INFO] JobSpy: searching 'stocked kitchen' in New York City
+2026-04-17 19:19:46,684 [INFO] JobSpy: 100 raw results for 'stocked kitchen'
+2026-04-17 19:19:49,113 [INFO] JobSpy: searching 'daily lunch' in New York City
+2026-04-17 19:19:50,254 [INFO] JobSpy: 100 raw results for 'daily lunch'
+2026-04-17 19:19:52,674 [INFO] JobSpy: searching 'free food' in New York City
+2026-04-17 19:19:53,752 [INFO] JobSpy: 100 raw results for 'free food'
+2026-04-17 19:19:56,180 [INFO] JobSpy: searching 'lunch provided' in New York City
+2026-04-17 19:19:57,374 [INFO] JobSpy: 100 raw results for 'lunch provided'
+2026-04-17 19:19:59,793 [INFO] JobSpy: searching 'fully stocked kitchen' in New York City
+2026-04-17 19:20:00,804 [INFO] JobSpy: 68 raw results for 'fully stocked kitchen'
+2026-04-17 19:20:03,219 [INFO] JobSpy: searching 'company lunch' in New York City
+2026-04-17 19:20:04,589 [INFO] JobSpy: 100 raw results for 'company lunch'
+2026-04-17 19:20:07,004 [INFO] JobSpy: searching 'ezCater' in New York City
+2026-04-17 19:20:07,155 [INFO] JobSpy: no results for 'ezCater'
+2026-04-17 19:20:07,155 [INFO] JobSpy: searching 'snacks and meals' in New York City
+2026-04-17 19:20:08,093 [INFO] JobSpy: 100 raw results for 'snacks and meals'
+2026-04-17 19:20:10,513 [INFO]   JobSpy (Indeed/Google): 160 keyword matches
+2026-04-17 19:20:10,513 [INFO] Scraping: Apify LinkedIn
+2026-04-17 19:20:10,516 [INFO] Apify: launching 12 parallel runs...
+2026-04-17 19:20:10,875 [INFO] Apify: started run for 'free lunch' → bY5KANDFJ1y5R0dLg
+2026-04-17 19:20:11,672 [INFO] Apify: started run for 'catered lunch' → vjYTXDQ8gKTxWOinE
+2026-04-17 19:20:12,575 [INFO] Apify: started run for 'catered meals' → s7ZH5UZdVMxZWsXNa
+2026-04-17 19:20:13,382 [INFO] Apify: started run for 'DoorDash' → ztZjATPiYsxbg6pXK
+2026-04-17 19:20:14,293 [INFO] Apify: started run for 'GrubHub' → JgYS87arXAMEYmUgd
+2026-04-17 19:20:15,253 [INFO] Apify: started run for 'Uber Eats' → XjuJ7waYZAHe7EsBN
+2026-04-17 19:20:16,265 [INFO] Apify: started run for 'Forkable' → hVKScaJFitD3E1tbQ
+2026-04-17 19:20:17,091 [INFO] Apify: started run for 'Sharebite' → OcaBQlHr3NNHGvinL
+2026-04-17 19:20:17,880 [INFO] Apify: started run for 'meal stipend' → 12eimhZgc3VcGgPf2
+2026-04-17 19:20:18,728 [INFO] Apify: started run for 'lunch stipend' → bHiNoH9bQzWFbzQQ2
+2026-04-17 19:20:19,512 [INFO] Apify: started run for 'stocked kitchen' → v2bP33FKPkNEwYQus
+2026-04-17 19:20:20,383 [INFO] Apify: started run for 'meal credit' → bsjzqh65eBxAVBScv
+2026-04-17 19:20:20,884 [INFO] Apify: 12 runs started — waiting for completion...
+2026-04-17 19:20:31,297 [INFO] Apify: 0 results for 'Forkable'
+2026-04-17 19:21:01,621 [INFO] Apify: 36 results for 'Sharebite'
+2026-04-17 19:21:01,956 [INFO] Apify: 6 results for 'meal credit'
+2026-04-17 19:21:42,723 [INFO] Apify: 58 results for 'meal stipend'
+2026-04-17 19:21:52,948 [INFO] Apify: 100 results for 'DoorDash'
+2026-04-17 19:22:02,874 [INFO] Apify: 100 results for 'Uber Eats'
+2026-04-17 19:22:03,085 [INFO] Apify: 74 results for 'catered meals'
+2026-04-17 19:22:12,492 [INFO] Apify: 100 results for 'catered lunch'
+2026-04-17 19:22:12,606 [INFO] Apify: 100 results for 'lunch stipend'
+2026-04-17 19:22:13,238 [INFO] Apify: 100 results for 'stocked kitchen'
+2026-04-17 19:22:22,987 [INFO] Apify: 103 results for 'free lunch'
+2026-04-17 19:22:33,540 [INFO] Apify: 83 results for 'GrubHub'
+2026-04-17 19:22:33,543 [INFO]   Apify LinkedIn: 0 keyword matches
+2026-04-17 19:22:33,543 [INFO] Scraping: Wellfound
+2026-04-17 19:22:33,545 [INFO] Wellfound: searching 'free lunch'
+2026-04-17 19:22:35,427 [WARNING] GET failed for https://wellfound.com/jobs: 403 Client Error: Forbidden for url: https://wellfound.com/jobs?q=free+lunch&location=New+York+City
+2026-04-17 19:22:35,427 [INFO] Wellfound: 0 results for 'free lunch'
+2026-04-17 19:22:36,927 [INFO] Wellfound: searching 'catered meals'
+2026-04-17 19:22:38,671 [WARNING] GET failed for https://wellfound.com/jobs: 403 Client Error: Forbidden for url: https://wellfound.com/jobs?q=catered+meals&location=New+York+City
+2026-04-17 19:22:38,671 [INFO] Wellfound: 0 results for 'catered meals'
+2026-04-17 19:22:40,171 [INFO] Wellfound: searching 'DoorDash'
+2026-04-17 19:22:41,894 [WARNING] GET failed for https://wellfound.com/jobs: 403 Client Error: Forbidden for url: https://wellfound.com/jobs?q=DoorDash&location=New+York+City
+2026-04-17 19:22:41,895 [INFO] Wellfound: 0 results for 'DoorDash'
+2026-04-17 19:22:43,395 [INFO] Wellfound: searching 'GrubHub'
+2026-04-17 19:22:44,905 [WARNING] GET failed for https://wellfound.com/jobs: 403 Client Error: Forbidden for url: https://wellfound.com/jobs?q=GrubHub&location=New+York+City
+2026-04-17 19:22:44,905 [INFO] Wellfound: 0 results for 'GrubHub'
+2026-04-17 19:22:46,406 [INFO] Wellfound: searching 'meal stipend'
+2026-04-17 19:22:48,170 [WARNING] GET failed for https://wellfound.com/jobs: 403 Client Error: Forbidden for url: https://wellfound.com/jobs?q=meal+stipend&location=New+York+City
+2026-04-17 19:22:48,170 [INFO] Wellfound: 0 results for 'meal stipend'
+2026-04-17 19:22:49,671 [INFO] Wellfound: searching 'stocked kitchen'
+2026-04-17 19:22:51,061 [WARNING] GET failed for https://wellfound.com/jobs: 403 Client Error: Forbidden for url: https://wellfound.com/jobs?q=stocked+kitchen&location=New+York+City
+2026-04-17 19:22:51,061 [INFO] Wellfound: 0 results for 'stocked kitchen'
+2026-04-17 19:22:52,561 [INFO] Wellfound: searching 'lunch provided'
+2026-04-17 19:22:54,006 [WARNING] GET failed for https://wellfound.com/jobs: 403 Client Error: Forbidden for url: https://wellfound.com/jobs?q=lunch+provided&location=New+York+City
+2026-04-17 19:22:54,006 [INFO] Wellfound: 0 results for 'lunch provided'
+2026-04-17 19:22:55,506 [INFO]   Wellfound: 0 keyword matches
+2026-04-17 19:22:55,506 [INFO] Scraping: Exa
+2026-04-17 19:22:55,508 [INFO] Exa: searching — 'catered lunch free meals employee benefit New York'
+2026-04-17 19:22:56,123 [INFO] Exa: 19 results
+2026-04-17 19:22:57,127 [INFO] Exa: searching — 'DoorDash GrubHub Sharebite Forkable employee perk office New York'
+2026-04-17 19:22:57,608 [INFO] Exa: 20 results
+2026-04-17 19:22:58,613 [INFO] Exa: searching — 'meal stipend food stipend lunch credit New York'
+2026-04-17 19:22:59,199 [INFO] Exa: 20 results
+2026-04-17 19:23:00,203 [INFO] Exa: searching — 'fully stocked kitchen catered breakfast lunch New York'
+2026-04-17 19:23:00,655 [INFO] Exa: 20 results
+2026-04-17 19:23:01,659 [INFO] Exa: searching — 'daily lunch catered meals office New York'
+2026-04-17 19:23:02,133 [INFO] Exa: 20 results
+2026-04-17 19:23:03,134 [INFO]   Exa: 5 keyword matches
+2026-04-17 19:23:03,134 [INFO] Scraping: Firecrawl
+2026-04-17 19:23:03,136 [INFO] Firecrawl: searching — 'site:greenhouse.io "catered lunch" OR "catered meals" "New York"'
+2026-04-17 19:23:07,174 [INFO] Firecrawl: 5 results
+2026-04-17 19:23:09,183 [INFO] Firecrawl: searching — 'site:greenhouse.io "meal stipend" OR "food stipend" "New York"'
+2026-04-17 19:23:11,716 [INFO] Firecrawl: 5 results
+2026-04-17 19:23:13,722 [INFO] Firecrawl: searching — 'site:greenhouse.io "DoorDash" OR "Sharebite" OR "Forkable" "New York"'
+2026-04-17 19:23:23,088 [INFO] Firecrawl: 5 results
+2026-04-17 19:23:25,092 [INFO] Firecrawl: searching — 'site:lever.co "catered lunch" OR "catered meals" "New York"'
+2026-04-17 19:23:42,265 [INFO] Firecrawl: 5 results
+2026-04-17 19:23:44,269 [INFO] Firecrawl: searching — 'site:lever.co "meal stipend" OR "food stipend" "New York"'
+2026-04-17 19:23:56,243 [INFO] Firecrawl: 5 results
+2026-04-17 19:23:58,246 [INFO] Firecrawl: searching — 'site:ashbyhq.com "catered lunch" OR "meal stipend" "New York"'
+2026-04-17 19:24:00,766 [INFO] Firecrawl: 5 results
+2026-04-17 19:24:02,768 [INFO] Firecrawl: searching — 'site:ashbyhq.com "DoorDash" OR "Sharebite" "New York"'
+2026-04-17 19:24:05,166 [INFO] Firecrawl: 5 results
+2026-04-17 19:24:07,168 [INFO] Firecrawl: searching — 'site:myworkdayjobs.com "catered lunch" OR "meal stipend" "New York"'
+2026-04-17 19:24:10,036 [INFO] Firecrawl: 5 results
+2026-04-17 19:24:12,036 [INFO] Firecrawl: searching — 'site:smartrecruiters.com "catered lunch" OR "free lunch" "New York"'
+2026-04-17 19:24:14,864 [INFO] Firecrawl: 2 results
+2026-04-17 19:24:16,866 [INFO] Firecrawl: searching — 'site:bamboohr.com "catered lunch" OR "meal stipend" "New York"'
+2026-04-17 19:24:17,944 [INFO] Firecrawl: 0 results
+2026-04-17 19:24:19,944 [INFO]   Firecrawl: 30 keyword matches
+2026-04-17 19:24:19,944 [INFO] Total raw matches: 577
+2026-04-17 19:24:19,944 [WARNING] Skipping verification (--no-verify)
+2026-04-17 19:24:20,203 [INFO] Slack: notified about 14 new companies
+Raw job records   : 577
+Unique companies  : 32
+Net new companies : 14
 Updated companies : 18
 Saved to          : lunch_perk_jobs_enriched.csv
 Dashboard data exported → dashboard_data.js
 
 Top companies by GTM score:
-                             company  gtm_score                                                            top_keywords
-                          Free Lunch         64 catered lunch, daily lunch, doordash, free lunch, grubhub, lunch credit
-Office Food Perks Are Getting Better         36          catered lunch, free food, free lunch, free meals, office lunch
-                           Robinhood         28                   catered meals, fully stocked kitchen, stocked kitchen
-                   Strategy Business         25                                       free food, free lunch, free meals
-                         Squarespace         25                                                              free lunch
+    company  gtm_score                                          top_keywords
+  Robinhood         28 catered meals, fully stocked kitchen, stocked kitchen
+     Gigaml         26                               catered lunch, doordash
+Squarespace         25                                            free lunch
+     Ripple         22                        catered lunch, stocked kitchen
+     Mirage         21                                catered lunch, grubhub
 
 Run complete
-  Raw matches      : 583
+  Raw matches      : 577
   Stale removed    : 0
-  Live listings    : 583
-  Companies total  : 52
-  Net new today    : 34
+  Live listings    : 577
+  Companies total  : 66
+  Net new today    : 14
   Slack alert      : sent
 
 Files

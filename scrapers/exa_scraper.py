@@ -1,16 +1,16 @@
 """
 Exa semantic search scraper.
 
-Exa searches the entire web semantically — not just keyword matching.
-It finds companies mentioning food perks in job posts, blog posts, review
-sites (Glassdoor, Blind, Reddit), press releases, and benefits pages that
-no ATS scraper would ever surface.
+Restricted to ATS and job board domains only — no articles, no blogs,
+no catering vendors. Every result must be a real job posting from a
+real employer.
 
 Requires: EXA_API_KEY secret in GitHub Actions / .env
 API docs: https://docs.exa.ai/
 """
 import logging
 import os
+import re
 import time
 from typing import Iterator
 
@@ -22,58 +22,89 @@ log = logging.getLogger(__name__)
 
 API_KEY   = os.getenv("EXA_API_KEY", "")
 BASE_URL  = "https://api.exa.ai"
-RESULTS_PER_QUERY = 15   # Exa charges per result — 15 is a good balance
+RESULTS_PER_QUERY = 20
 
-# Semantic queries — written as natural language, not keyword strings.
-# Exa's neural search finds conceptually similar content even without
-# exact keyword matches.
+# Only search within actual job posting and employer career page domains.
+# This is the critical filter — prevents articles, blogs, and vendors.
+INCLUDE_DOMAINS = [
+    "greenhouse.io",
+    "lever.co",
+    "ashbyhq.com",
+    "myworkdayjobs.com",
+    "icims.com",
+    "smartrecruiters.com",
+    "bamboohr.com",
+    "breezy.hr",
+    "jobvite.com",
+    "jobs.lever.co",
+    "boards.greenhouse.io",
+    "job-boards.greenhouse.io",
+    "jobs.ashbyhq.com",
+    "careers.smartrecruiters.com",
+]
+
 EXA_QUERIES = [
-    "New York company offers catered lunch to employees office perks",
-    "NYC startup free meals DoorDash GrubHub employee benefits",
-    "New York office food stipend meal credit company benefit",
-    "NYC company catered breakfast lunch dinner employees",
-    "New York company fully stocked kitchen free snacks office culture",
-    "companies with the best office food perks New York City",
-    "ezcater catered meals corporate office New York",
-    "NYC company orders lunch employees every day",
-    "New York employer meal benefit office catering program",
-    "company provides free food employees New York hiring",
+    "catered lunch free meals employee benefit New York",
+    "DoorDash GrubHub Sharebite Forkable employee perk office New York",
+    "meal stipend food stipend lunch credit New York",
+    "fully stocked kitchen catered breakfast lunch New York",
+    "daily lunch catered meals office New York",
 ]
 
-# Only include results from these domains (job boards, review sites, company sites)
-# Empty list = search everything (broader but noisier)
-INCLUDE_DOMAINS: list[str] = []
-
-# Exclude pure news/unrelated domains
-EXCLUDE_DOMAINS = [
-    "wikipedia.org", "youtube.com", "twitter.com", "x.com",
-    "facebook.com", "instagram.com", "tiktok.com",
+# ATS URL patterns → extract employer slug from URL
+ATS_PATTERNS = [
+    # greenhouse: boards.greenhouse.io/{slug}/jobs/...
+    (re.compile(r"greenhouse\.io/(?:v1/boards/)?([^/]+)/jobs"), "Greenhouse"),
+    # lever: jobs.lever.co/{slug}/...
+    (re.compile(r"lever\.co/([^/]+)"), "Lever"),
+    # ashby: jobs.ashbyhq.com/{slug}/...
+    (re.compile(r"ashbyhq\.com/([^/]+)"), "Ashby"),
+    # workday: {tenant}.myworkdayjobs.com/...
+    (re.compile(r"([^.]+)\.myworkdayjobs\.com"), "Workday"),
+    # smartrecruiters: careers.smartrecruiters.com/{slug}/...
+    (re.compile(r"smartrecruiters\.com/([^/]+)"), "SmartRecruiters"),
+    # bamboohr: {tenant}.bamboohr.com/...
+    (re.compile(r"([^.]+)\.bamboohr\.com"), "BambooHR"),
+    # icims: {tenant}.icims.com/...
+    (re.compile(r"([^.]+)\.icims\.com"), "iCIMS"),
 ]
+
+# Slugs that are platform names, not companies — skip them
+PLATFORM_SLUGS = {
+    "greenhouse", "lever", "ashby", "workday", "smartrecruiters",
+    "bamboohr", "icims", "jobvite", "breezy", "careers", "jobs",
+    "en", "us", "external", "career", "site",
+}
+
+
+def _extract_company_from_url(url: str) -> str:
+    """Extract employer name from ATS job posting URL."""
+    for pattern, _ in ATS_PATTERNS:
+        m = pattern.search(url)
+        if m:
+            slug = m.group(1).lower().strip()
+            if slug and slug not in PLATFORM_SLUGS and len(slug) > 1:
+                return slug.replace("-", " ").replace("_", " ").title()
+    return ""
 
 
 def _search(query: str) -> list[dict]:
-    """Run one Exa semantic search query. Returns list of result dicts."""
     if not API_KEY:
-        log.warning("Exa: EXA_API_KEY not set — skipping")
         return []
 
     payload = {
         "query": query,
         "numResults": RESULTS_PER_QUERY,
-        "useAutoprompt": True,          # Exa rewrites query for better recall
-        "type": "neural",               # semantic, not keyword
+        "useAutoprompt": False,   # autoprompt drifts too broad — keep queries literal
+        "type": "keyword",        # keyword within our domain list is precise enough
+        "includeDomains": INCLUDE_DOMAINS,
         "contents": {
             "text": {
-                "maxCharacters": 3000,  # enough to scan for perk keywords
+                "maxCharacters": 3000,
                 "includeHtmlTags": False,
             },
         },
     }
-
-    if INCLUDE_DOMAINS:
-        payload["includeDomains"] = INCLUDE_DOMAINS
-    if EXCLUDE_DOMAINS:
-        payload["excludeDomains"] = EXCLUDE_DOMAINS
 
     try:
         resp = requests.post(
@@ -92,42 +123,9 @@ def _search(query: str) -> list[dict]:
         return []
 
 
-def _extract_company(result: dict) -> str:
-    """Best-effort company name from Exa result metadata."""
-    # Exa returns author, title, and URL — try to derive company from these
-    title = result.get("title", "")
-    url   = result.get("url", "")
-
-    # Many job posts have "Company Name — Job Title" or "Job Title at Company"
-    for sep in [" | ", " — ", " - ", " at ", " @ "]:
-        if sep in title:
-            parts = title.split(sep)
-            # Take the shorter segment — usually the company name
-            company = min(parts, key=len).strip()
-            if 2 < len(company) < 60:
-                return company
-
-    # Fall back to domain name (strip www., .com, etc.)
-    import re
-    domain_match = re.search(r"(?:https?://)?(?:www\.)?([^/]+)", url)
-    if domain_match:
-        domain = domain_match.group(1)
-        # Strip TLD
-        company = re.sub(r"\.(com|io|co|ai|net|org|jobs).*$", "", domain)
-        company = company.replace("-", " ").replace("_", " ").title()
-        if len(company) > 2:
-            return company
-
-    return ""
-
-
 def scrape() -> Iterator[dict]:
-    """
-    Run all Exa queries and yield records matching NYC + food perk keywords.
-    Each unique URL is yielded once regardless of how many queries match it.
-    """
     if not API_KEY:
-        log.warning("Exa: EXA_API_KEY not set — skipping entire source")
+        log.warning("Exa: EXA_API_KEY not set — skipping")
         return
 
     seen_urls: set[str] = set()
@@ -143,30 +141,28 @@ def scrape() -> Iterator[dict]:
                 continue
             seen_urls.add(url)
 
+            # Must be an actual job posting URL
+            company = _extract_company_from_url(url)
+            if not company:
+                log.debug(f"Exa: skipping non-ATS URL {url}")
+                continue
+
             text_block = result.get("text", "") or ""
             full_text  = clean_text(text_block)
-
             if not full_text:
                 continue
 
-            # NYC check
             title_str = result.get("title", "") or ""
+
             if not is_nyc(f"{full_text} {title_str} {url}"):
                 continue
 
-            # Food keyword check
             matched = find_food_keywords(full_text)
             if not matched:
                 continue
 
-            company = _extract_company(result)
-            if not company:
-                continue
-
             snip = excerpt(full_text, matched[0])
-
             published = result.get("publishedDate", "") or ""
-            date_posted = published[:10] if published else ""
 
             yield {
                 "source":                "Exa",
@@ -177,8 +173,8 @@ def scrape() -> Iterator[dict]:
                 "food_keywords_matched": ", ".join(matched),
                 "keyword_count":         len(matched),
                 "perk_excerpt":          snip,
-                "date_posted":           date_posted,
+                "date_posted":           published[:10] if published else "",
                 "url":                   url,
             }
 
-        time.sleep(1.0)  # stay well within Exa rate limits
+        time.sleep(1.0)
