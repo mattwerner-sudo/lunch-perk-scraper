@@ -8,7 +8,7 @@ Usage:
   python3 scrape.py --no-notify        # skip Slack notification
   python3 scrape.py --dry-run          # preview only, no writes
 
-Sources: gh gd lv ab bn wd
+Sources: gh gd lv ab bn wd js ap wf ex fc
 """
 import argparse
 import csv
@@ -21,15 +21,17 @@ import enrich as enricher
 from notify_slack import send_new_companies_alert
 
 SOURCES = {
-    "gh": ("Greenhouse",              "scrapers.greenhouse",     "scrape"),
-    "lv": ("Lever",                   "scrapers.lever",          "scrape"),
-    "ab": ("Ashby",                   "scrapers.ashby",          "scrape"),
-    "bn": ("Built In NYC",            "scrapers.builtin_nyc",    "scrape"),
-    "wd": ("Workday",                 "scrapers.workday",        "scrape"),
-    "gd": ("Glassdoor Benefits",      "scrapers.glassdoor",      "scrape"),
-    "js": ("JobSpy (Indeed/Google)",  "scrapers.jobspy_scraper", "scrape"),
-    "ap": ("Apify LinkedIn",          "scrapers.apify_linkedin", "scrape"),
-    "wf": ("Wellfound",               "scrapers.wellfound",      "scrape"),
+    "gh": ("Greenhouse",              "scrapers.greenhouse",        "scrape"),
+    "lv": ("Lever",                   "scrapers.lever",             "scrape"),
+    "ab": ("Ashby",                   "scrapers.ashby",             "scrape"),
+    "bn": ("Built In NYC",            "scrapers.builtin_nyc",       "scrape"),
+    "wd": ("Workday",                 "scrapers.workday",           "scrape"),
+    "gd": ("Glassdoor Benefits",      "scrapers.glassdoor",         "scrape"),
+    "js": ("JobSpy (Indeed/Google)",  "scrapers.jobspy_scraper",    "scrape"),
+    "ap": ("Apify LinkedIn",          "scrapers.apify_linkedin",    "scrape"),
+    "wf": ("Wellfound",               "scrapers.wellfound",         "scrape"),
+    "ex": ("Exa",                     "scrapers.exa_scraper",       "scrape"),
+    "fc": ("Firecrawl",               "scrapers.firecrawl_scraper", "scrape"),
 }
 
 FIELDNAMES = [
