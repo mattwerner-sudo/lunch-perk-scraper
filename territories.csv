@@ -1,0 +1,18 @@
+market,rep_name,slack_handle,webhook_env_var
+New York,Unassigned,,SLACK_WEBHOOK_URL
+Boston,Unassigned,,SLACK_WEBHOOK_URL
+Chicago,Unassigned,,SLACK_WEBHOOK_URL
+San Francisco,Unassigned,,SLACK_WEBHOOK_URL
+Los Angeles,Unassigned,,SLACK_WEBHOOK_URL
+Seattle,Unassigned,,SLACK_WEBHOOK_URL
+Austin,Unassigned,,SLACK_WEBHOOK_URL
+Dallas,Unassigned,,SLACK_WEBHOOK_URL
+Houston,Unassigned,,SLACK_WEBHOOK_URL
+Atlanta,Unassigned,,SLACK_WEBHOOK_URL
+Washington DC,Unassigned,,SLACK_WEBHOOK_URL
+Philadelphia,Unassigned,,SLACK_WEBHOOK_URL
+Miami,Unassigned,,SLACK_WEBHOOK_URL
+Denver,Unassigned,,SLACK_WEBHOOK_URL
+Minneapolis,Unassigned,,SLACK_WEBHOOK_URL
+Phoenix,Unassigned,,SLACK_WEBHOOK_URL
+Other,Unassigned,,SLACK_WEBHOOK_URL

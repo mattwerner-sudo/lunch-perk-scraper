@@ -21,6 +21,9 @@ def _add_column_if_missing(con: sqlite3.Connection, table: str, column: str, def
 def _conn() -> sqlite3.Connection:
     con = sqlite3.connect(DB_PATH)
     con.row_factory = sqlite3.Row
+    # WAL mode: concurrent readers don't block writers (Google Infra principle)
+    con.execute("PRAGMA journal_mode=WAL")
+    con.execute("PRAGMA synchronous=NORMAL")
     return con
 
 
@@ -53,6 +56,16 @@ def init():
 
         CREATE UNIQUE INDEX IF NOT EXISTS idx_company_name
             ON companies(name);
+
+        -- Velocity tracking: one row per company per week
+        CREATE TABLE IF NOT EXISTS company_velocity (
+            id            INTEGER PRIMARY KEY AUTOINCREMENT,
+            company_name  TEXT NOT NULL,
+            week          TEXT NOT NULL,  -- ISO week: YYYY-WW
+            signal_count  INTEGER DEFAULT 0,
+            keyword_set   TEXT,
+            UNIQUE(company_name, week)
+        );
         """)
         # Non-destructive migrations for existing databases
         _add_column_if_missing(con, "companies", "segment",          "TEXT DEFAULT 'prospect'")
@@ -156,6 +169,71 @@ def upsert_companies(records: list[dict]) -> tuple[list[dict], list[dict]]:
                 updated_cos.append(r)
 
     return new_cos, updated_cos
+
+
+def record_velocity(companies: list[dict]):
+    """
+    Record weekly signal counts per company for velocity tracking.
+    week format: YYYY-WW (ISO week number).
+    """
+    from datetime import date
+    today = date.today()
+    week  = f"{today.isocalendar()[0]}-{today.isocalendar()[1]:02d}"
+    with _conn() as con:
+        for c in companies:
+            name  = c.get("company", "").strip()
+            count = c.get("role_count", 1)
+            kws   = c.get("top_keywords", "")
+            if not name:
+                continue
+            con.execute("""
+                INSERT INTO company_velocity (company_name, week, signal_count, keyword_set)
+                VALUES (?, ?, ?, ?)
+                ON CONFLICT(company_name, week) DO UPDATE SET
+                    signal_count = signal_count + excluded.signal_count,
+                    keyword_set  = excluded.keyword_set
+            """, (name, week, count, kws))
+
+
+def get_velocity(company_name: str, weeks: int = 4) -> list[dict]:
+    """Return last N weeks of velocity data for a company."""
+    with _conn() as con:
+        rows = con.execute("""
+            SELECT week, signal_count, keyword_set
+            FROM company_velocity
+            WHERE company_name = ?
+            ORDER BY week DESC
+            LIMIT ?
+        """, (company_name, weeks)).fetchall()
+    return [dict(r) for r in rows]
+
+
+def get_accelerating_companies(min_delta: int = 2) -> list[dict]:
+    """
+    Return companies whose signal count increased week-over-week by at least min_delta.
+    This is the Quant signal: rate of change > presence.
+    """
+    with _conn() as con:
+        rows = con.execute("""
+            SELECT
+                a.company_name,
+                a.week          AS this_week,
+                a.signal_count  AS this_count,
+                b.week          AS prev_week,
+                b.signal_count  AS prev_count,
+                (a.signal_count - b.signal_count) AS delta
+            FROM company_velocity a
+            JOIN company_velocity b
+              ON a.company_name = b.company_name
+            WHERE a.week = (SELECT MAX(week) FROM company_velocity WHERE company_name = a.company_name)
+              AND b.week = (
+                  SELECT MAX(week) FROM company_velocity
+                  WHERE company_name = a.company_name AND week < a.week
+              )
+              AND (a.signal_count - b.signal_count) >= ?
+            ORDER BY delta DESC
+        """, (min_delta,)).fetchall()
+    return [dict(r) for r in rows]
 
 
 def log_run(raw_count: int, live_count: int, new_count: int):

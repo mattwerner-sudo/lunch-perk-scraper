@@ -154,7 +154,36 @@ def main():
     parser.add_argument("--no-verify",  action="store_true")
     parser.add_argument("--no-notify",  action="store_true")
     parser.add_argument("--dry-run",    action="store_true")
+    # Targeted mode: scrape directly against managed + ICP unmanaged account list
+    parser.add_argument("--targeted",   action="store_true",
+                        help="Scrape directly against account list (targeted mode)")
+    parser.add_argument("--tier2-sample", type=int, default=1000,
+                        help="Number of unmanaged ICP accounts per targeted run (default: 1000)")
     args = parser.parse_args()
+
+    if args.targeted:
+        from targeted_scraper import run_targeted
+        import csv as csv_mod
+        raw = run_targeted(
+            tier2_sample=args.tier2_sample,
+            dry_run=args.dry_run,
+        )
+        if not raw or args.dry_run:
+            return
+        with open(OUTPUT_CSV, "w", newline="", encoding="utf-8") as f:
+            writer = csv_mod.DictWriter(f, fieldnames=FIELDNAMES, extrasaction="ignore")
+            writer.writeheader()
+            writer.writerows(raw)
+        import enrich as enricher
+        import db
+        db.init()
+        result = enricher.run()
+        if result:
+            new_cos, companies_df, stats = result
+            if not args.no_notify and new_cos:
+                from notify_slack import send_new_companies_alert
+                send_new_companies_alert(new_cos, stats)
+        return
 
     run(
         selected_sources=args.sources,

@@ -300,7 +300,11 @@ def run():
     print(f"Unique companies  : {len(companies)}")
 
     # Persist to SQLite — get net new vs updated
-    new_cos, updated_cos = db.upsert_companies(companies.to_dict(orient="records"))
+    records = companies.to_dict(orient="records")
+    new_cos, updated_cos = db.upsert_companies(records)
+
+    # Velocity tracking — record weekly signal counts
+    db.record_velocity(records)
     print(f"Net new companies : {len(new_cos)}")
     print(f"Updated companies : {len(updated_cos)}")
 
