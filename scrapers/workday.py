@@ -17,7 +17,7 @@ from typing import Iterator
 
 import requests
 
-from utils import get, find_food_keywords, is_nyc, excerpt, clean_text
+from utils import get, find_food_keywords, is_in_target_location, excerpt, clean_text
 
 log = logging.getLogger(__name__)
 
@@ -85,7 +85,7 @@ def scrape(tenants=WORKDAY_TENANTS) -> Iterator[dict]:
                 title = posting.get("title", "")
                 location = posting.get("locationsText", "")
 
-                if not is_nyc(f"{location} {title}"):
+                if not is_in_target_location(f"{location} {title}"):
                     continue
 
                 # Fetch full JD

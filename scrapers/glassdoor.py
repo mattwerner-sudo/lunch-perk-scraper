@@ -23,7 +23,7 @@ from typing import Iterator
 
 from bs4 import BeautifulSoup
 
-from utils import get, find_food_keywords, is_nyc, excerpt, clean_text
+from utils import get, find_food_keywords, is_in_target_location, excerpt, clean_text
 
 log = logging.getLogger(__name__)
 
@@ -167,7 +167,7 @@ def _get_company_jobs(co: dict) -> Iterator[dict]:
             )
             for job in jobs_list:
                 location = job.get("location", "")
-                if not is_nyc(location):
+                if not is_in_target_location(location):
                     continue
                 title = job.get("jobTitle", "")
                 job_url = "https://www.glassdoor.com" + job.get("jobLink", "")

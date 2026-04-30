@@ -11,7 +11,7 @@ import requests
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 
-from config import FOOD_KEYWORDS, NYC_SIGNALS, REQUEST_TIMEOUT, DELAY_BETWEEN_REQUESTS, MAX_RETRIES
+from config import FOOD_KEYWORDS, LOCATION_FILTER, REQUEST_TIMEOUT, DELAY_BETWEEN_REQUESTS, MAX_RETRIES
 
 logging.basicConfig(
     level=logging.INFO,
@@ -113,10 +113,15 @@ def find_food_keywords(text: str) -> list[str]:
     return matched
 
 
-def is_nyc(text: str) -> bool:
-    """Return True if text contains any NYC location signal."""
+def is_in_target_location(text: str) -> bool:
+    """
+    Return True if text matches the configured LOCATION_FILTER.
+    If LOCATION_FILTER is None (nationwide mode), always returns True.
+    """
+    if LOCATION_FILTER is None:
+        return True
     text_lower = text.lower()
-    return any(sig in text_lower for sig in NYC_SIGNALS)
+    return any(sig in text_lower for sig in LOCATION_FILTER)
 
 
 def excerpt(text: str, keyword: str, window: int = 120) -> str:

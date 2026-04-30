@@ -14,7 +14,7 @@ from typing import Iterator
 
 from bs4 import BeautifulSoup
 
-from utils import get, find_food_keywords, is_nyc, excerpt, clean_text
+from utils import get, find_food_keywords, is_in_target_location, excerpt, clean_text
 
 log = logging.getLogger(__name__)
 
@@ -120,7 +120,7 @@ def scrape(slugs: list[str] = GREENHOUSE_SLUGS) -> Iterator[dict]:
             # Location check: must include NYC signal in location field OR
             # job description (some postings list "New York" only in body)
             combined = f"{location} {content_text}"
-            if not is_nyc(combined):
+            if not is_in_target_location(combined):
                 continue
 
             matched_keywords = find_food_keywords(content_text)

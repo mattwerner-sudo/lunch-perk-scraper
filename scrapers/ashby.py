@@ -9,7 +9,7 @@ import json
 import logging
 from typing import Iterator
 
-from utils import get, find_food_keywords, is_nyc, excerpt, clean_text
+from utils import get, find_food_keywords, is_in_target_location, excerpt, clean_text
 
 log = logging.getLogger(__name__)
 
@@ -76,7 +76,7 @@ def scrape(slugs: list[str] = ASHBY_SLUGS) -> Iterator[dict]:
             full_text = clean_text(f"{desc_html} {section_text}")
 
             combined = f"{location} {full_text}"
-            if not is_nyc(combined):
+            if not is_in_target_location(combined):
                 continue
 
             matched_keywords = find_food_keywords(full_text)

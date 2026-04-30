@@ -10,7 +10,7 @@ from typing import Iterator
 
 from jobspy import scrape_jobs
 
-from utils import find_food_keywords, is_nyc, excerpt, clean_text
+from utils import find_food_keywords, is_in_target_location, excerpt, clean_text
 from config import SEARCH_QUERIES, DELAY_BETWEEN_REQUESTS
 
 log = logging.getLogger(__name__)
@@ -79,7 +79,7 @@ def scrape() -> Iterator[dict]:
             full_text = clean_text(description)
 
             # NYC check on location + description
-            if not is_nyc(f"{location} {full_text} {title}"):
+            if not is_in_target_location(f"{location} {full_text} {title}"):
                 continue
 
             matched_keywords = find_food_keywords(full_text)

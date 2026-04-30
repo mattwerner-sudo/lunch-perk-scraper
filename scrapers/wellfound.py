@@ -17,7 +17,7 @@ from typing import Iterator
 import requests
 from bs4 import BeautifulSoup
 
-from utils import get, find_food_keywords, is_nyc, excerpt, clean_text
+from utils import get, find_food_keywords, is_in_target_location, excerpt, clean_text
 
 log = logging.getLogger(__name__)
 
@@ -87,7 +87,7 @@ def _scrape_via_search() -> Iterator[dict]:
             desc     = job.get("description", "") or job.get("body", "")
             full_text = clean_text(desc)
 
-            if not is_nyc(f"{location} {full_text}"):
+            if not is_in_target_location(f"{location} {full_text}"):
                 continue
 
             matched = find_food_keywords(full_text)

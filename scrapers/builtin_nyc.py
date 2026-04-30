@@ -16,7 +16,7 @@ from typing import Iterator
 
 from bs4 import BeautifulSoup
 
-from utils import get, find_food_keywords, is_nyc, excerpt, clean_text, SESSION
+from utils import get, find_food_keywords, is_in_target_location, excerpt, clean_text, SESSION
 
 log = logging.getLogger(__name__)
 

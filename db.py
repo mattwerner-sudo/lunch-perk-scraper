@@ -12,6 +12,12 @@ from pathlib import Path
 DB_PATH = Path(__file__).parent / "lunch_perks.db"
 
 
+def _add_column_if_missing(con: sqlite3.Connection, table: str, column: str, definition: str):
+    existing = {row[1] for row in con.execute(f"PRAGMA table_info({table})")}
+    if column not in existing:
+        con.execute(f"ALTER TABLE {table} ADD COLUMN {column} {definition}")
+
+
 def _conn() -> sqlite3.Connection:
     con = sqlite3.connect(DB_PATH)
     con.row_factory = sqlite3.Row
@@ -38,11 +44,22 @@ def init():
             location        TEXT,
             perk_excerpt    TEXT,
             source          TEXT,
-            notified        INTEGER DEFAULT 0    -- 1 after Slack notification sent
+            notified        INTEGER DEFAULT 0,   -- 1 after Slack notification sent
+            segment         TEXT DEFAULT 'prospect', -- 'managed' or 'prospect'
+            market          TEXT,                -- city/metro inferred from location
+            ezcater_vertical TEXT,              -- from managed_accounts.csv if matched
+            zi_industry     TEXT                -- ZoomInfo industry from managed_accounts.csv
         );
 
         CREATE UNIQUE INDEX IF NOT EXISTS idx_company_name
             ON companies(name);
+        """)
+        # Non-destructive migrations for existing databases
+        _add_column_if_missing(con, "companies", "segment",          "TEXT DEFAULT 'prospect'")
+        _add_column_if_missing(con, "companies", "market",           "TEXT")
+        _add_column_if_missing(con, "companies", "ezcater_vertical", "TEXT")
+        _add_column_if_missing(con, "companies", "zi_industry",      "TEXT")
+        con.executescript("""
 
         CREATE TABLE IF NOT EXISTS runs (
             id          INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -81,8 +98,9 @@ def upsert_companies(records: list[dict]) -> tuple[list[dict], list[dict]]:
                     INSERT INTO companies
                         (name, domain, first_seen, last_seen, times_seen, is_new,
                          gtm_score, top_keywords, role_count, sample_title,
-                         sample_url, location, perk_excerpt, source, notified)
-                    VALUES (?,?,?,?,1,1,?,?,?,?,?,?,?,?,0)
+                         sample_url, location, perk_excerpt, source, notified,
+                         segment, market, ezcater_vertical, zi_industry)
+                    VALUES (?,?,?,?,1,1,?,?,?,?,?,?,?,?,0,?,?,?,?)
                 """, (
                     name,
                     r.get("inferred_domain", ""),
@@ -95,22 +113,30 @@ def upsert_companies(records: list[dict]) -> tuple[list[dict], list[dict]]:
                     r.get("location", ""),
                     r.get("perk_excerpt", ""),
                     r.get("source", ""),
+                    r.get("segment", "prospect"),
+                    r.get("market", ""),
+                    r.get("ezcater_vertical", ""),
+                    r.get("zi_industry", ""),
                 ))
                 new_cos.append(r)
             else:
                 # Update: refresh score/keywords, bump times_seen, clear is_new
                 con.execute("""
                     UPDATE companies SET
-                        last_seen    = ?,
-                        times_seen   = times_seen + 1,
-                        is_new       = 0,
-                        gtm_score    = MAX(gtm_score, ?),
-                        top_keywords = ?,
-                        role_count   = ?,
-                        sample_title = ?,
-                        sample_url   = ?,
-                        perk_excerpt = ?,
-                        source       = ?
+                        last_seen        = ?,
+                        times_seen       = times_seen + 1,
+                        is_new           = 0,
+                        gtm_score        = MAX(gtm_score, ?),
+                        top_keywords     = ?,
+                        role_count       = ?,
+                        sample_title     = ?,
+                        sample_url       = ?,
+                        perk_excerpt     = ?,
+                        source           = ?,
+                        segment          = ?,
+                        market           = ?,
+                        ezcater_vertical = ?,
+                        zi_industry      = ?
                     WHERE name = ?
                 """, (
                     today,
@@ -121,6 +147,10 @@ def upsert_companies(records: list[dict]) -> tuple[list[dict], list[dict]]:
                     r.get("sample_url", r.get("url", "")),
                     r.get("perk_excerpt", ""),
                     r.get("source", ""),
+                    r.get("segment", "prospect"),
+                    r.get("market", ""),
+                    r.get("ezcater_vertical", ""),
+                    r.get("zi_industry", ""),
                     name,
                 ))
                 updated_cos.append(r)
