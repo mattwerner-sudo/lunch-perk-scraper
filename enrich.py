@@ -312,10 +312,12 @@ def run():
     companies.to_csv(OUTPUT_ENRICHED_CSV, index=False)
     print(f"Saved to          : {OUTPUT_ENRICHED_CSV}")
 
-    # Export dashboard JS
+    # Export dashboard JS from FULL DB (all historical companies, not just this run)
+    all_companies_df = pd.DataFrame(db.get_all_companies())
     stats = db.get_stats()
     stats["run_date"] = __import__("datetime").date.today().isoformat()
-    export_dashboard_js(companies, stats)
+    export_dashboard_js(all_companies_df, stats)
+    print(f"Dashboard shows   : {len(all_companies_df)} total companies (full history)")
 
     # Slack summary
     top = companies.head(5)[["company", "gtm_score", "top_keywords"]].to_string(index=False)
