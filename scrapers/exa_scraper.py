@@ -16,7 +16,7 @@ from typing import Iterator
 
 import requests
 
-from utils import find_food_keywords, is_nyc, excerpt, clean_text
+from utils import find_food_keywords, is_in_target_location, excerpt, clean_text
 
 log = logging.getLogger(__name__)
 
@@ -154,7 +154,7 @@ def scrape() -> Iterator[dict]:
 
             title_str = result.get("title", "") or ""
 
-            if not is_nyc(f"{full_text} {title_str} {url}"):
+            if not is_in_target_location(f"{full_text} {title_str} {url}"):
                 continue
 
             matched = find_food_keywords(full_text)

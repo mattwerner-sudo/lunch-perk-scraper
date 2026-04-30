@@ -10,6 +10,7 @@ import pandas as pd
 from pathlib import Path
 from collections import defaultdict
 from config import OUTPUT_CSV, OUTPUT_ENRICHED_CSV
+import account_lookup
 
 # ── Scoring rubric ───────────────────────────────────────────────────────────
 KEYWORD_SCORE = {
@@ -143,6 +144,38 @@ def score_row(row) -> int:
     return s
 
 
+# ── Metro market inference ────────────────────────────────────────────────────
+MARKET_SIGNALS: dict[str, list[str]] = {
+    "New York":     ["new york", "nyc", "manhattan", "brooklyn", "queens", "bronx"],
+    "Boston":       ["boston", "cambridge, ma", "somerville", " ma,", ", ma "],
+    "Chicago":      ["chicago", " il,", ", il "],
+    "San Francisco":["san francisco", "sf,", "bay area", "palo alto", "mountain view",
+                     "redwood city", "menlo park", "san mateo", "sunnyvale", "santa clara"],
+    "Los Angeles":  ["los angeles", " la,", ", la ", "santa monica", "culver city", "el segundo"],
+    "Seattle":      ["seattle", "bellevue, wa", "redmond, wa", "kirkland, wa"],
+    "Austin":       ["austin", " tx,", ", tx "],
+    "Dallas":       ["dallas", "fort worth", "plano, tx", "irving, tx"],
+    "Houston":      ["houston", "the woodlands"],
+    "Atlanta":      ["atlanta", "alpharetta", "buckhead"],
+    "Washington DC":["washington, dc", "washington dc", " dc,", "arlington, va",
+                     "bethesda", "mclean, va", "tysons"],
+    "Philadelphia": ["philadelphia", "philly", " pa,", ", pa "],
+    "Miami":        ["miami", "fort lauderdale", "boca raton"],
+    "Denver":       ["denver", "boulder, co", "aurora, co"],
+    "Minneapolis":  ["minneapolis", "st. paul", "twin cities"],
+    "Phoenix":      ["phoenix", "scottsdale", "tempe, az"],
+}
+
+
+def infer_market(location: str) -> str:
+    """Map a location string to a named metro market."""
+    loc = (location or "").lower()
+    for market, signals in MARKET_SIGNALS.items():
+        if any(sig in loc for sig in signals):
+            return market
+    return "Other"
+
+
 def infer_domain(company: str) -> str:
     clean = re.sub(r"[^a-zA-Z0-9 ]", "", company).strip().lower()
     slug = clean.split()[0] if clean else "unknown"
@@ -197,18 +230,36 @@ def rollup_to_companies(df: pd.DataFrame) -> pd.DataFrame:
         all_sources = ", ".join(sorted(sources_seen))
 
         score = best["gtm_score"]
+        company_name = best["company"].strip()
+        location_str = best.get("location", "")
+
+        # Account segmentation — domain-first, three tiers
+        domain = infer_domain(company_name)
+        seg, acct_row = account_lookup.lookup(company_name, domain)
+        ezcater_vertical = acct_row["ezcater_vertical"] if acct_row else ""
+        zi_industry      = acct_row["zi_industry"]      if acct_row else ""
+        # Score boosts: managed (rep-owned) > unmanaged (no rep yet) > prospect (unknown)
+        if seg == "managed":
+            score += 15
+        elif seg == "unmanaged":
+            score += 8
+
         records.append({
-            "company":             best["company"].strip(),
-            "inferred_domain":     infer_domain(best["company"]),
+            "company":             company_name,
+            "inferred_domain":     infer_domain(company_name),
             "gtm_score":           score,
             "confidence":          get_confidence(score),
             "icp_tier":            _icp_tier(score),
-            "unique_roles_with_perk": len(unique_titles),  # unique job titles mentioning food
-            "role_count":          len(unique_titles),      # same field, dashboard-friendly name
+            "segment":             seg,
+            "market":              infer_market(location_str),
+            "ezcater_vertical":    ezcater_vertical,
+            "zi_industry":         zi_industry,
+            "unique_roles_with_perk": len(unique_titles),
+            "role_count":          len(unique_titles),
             "top_keywords":        ", ".join(sorted(all_kws)),
             "best_source":         best_source,
             "all_sources":         all_sources,
-            "location":            best.get("location", ""),
+            "location":            location_str,
             "remote":              best.get("remote", ""),
             "sample_title":        best.get("title", ""),
             "sample_url":          best.get("url", ""),

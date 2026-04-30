@@ -17,7 +17,7 @@ from typing import Iterator
 import requests
 from dotenv import load_dotenv
 
-from utils import find_food_keywords, is_nyc, excerpt, clean_text
+from utils import find_food_keywords, is_in_target_location, excerpt, clean_text
 from config import FOOD_KEYWORDS
 
 load_dotenv()
@@ -166,7 +166,7 @@ def scrape() -> Iterator[dict]:
                 desc_raw = str(item.get("description") or item.get("jobDescription") or "")
                 full_text = clean_text(desc_raw)
 
-                if not is_nyc(f"{location} {full_text}"):
+                if not is_in_target_location(f"{location} {full_text}"):
                     continue
 
                 matched_keywords = find_food_keywords(full_text)

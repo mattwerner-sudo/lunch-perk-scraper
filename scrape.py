@@ -13,6 +13,7 @@ Sources: gh gd lv ab bn wd js ap wf ex fc
 import argparse
 import csv
 import importlib
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from config import OUTPUT_CSV
 from utils import log
 from verify_live import verify_jobs
@@ -41,27 +42,37 @@ FIELDNAMES = [
 ]
 
 
+def _run_one(key: str, dry_run: bool) -> tuple[str, list[dict]]:
+    """Run a single scraper and return (label, records). Never raises."""
+    label, module_path, fn_name = SOURCES[key]
+    try:
+        mod = importlib.import_module(module_path)
+        fn = getattr(mod, fn_name)
+    except Exception as e:
+        log.error(f"Failed to load {label}: {e}")
+        return label, []
+    records = []
+    try:
+        for record in fn():
+            records.append(record)
+            if dry_run and len(records) >= 5:
+                break
+    except Exception as e:
+        log.error(f"  {label} crashed mid-scrape: {e}", exc_info=True)
+    log.info(f"  {label}: {len(records)} keyword matches")
+    return label, records
+
+
 def scrape_all(selected_sources: list[str], dry_run: bool) -> list[dict]:
     raw = []
-    for key in selected_sources:
-        label, module_path, fn_name = SOURCES[key]
-        log.info(f"Scraping: {label}")
-        try:
-            mod = importlib.import_module(module_path)
-            fn = getattr(mod, fn_name)
-        except Exception as e:
-            log.error(f"Failed to load {label}: {e}")
-            continue
-        count = 0
-        try:
-            for record in fn():
-                raw.append(record)
-                count += 1
-                if dry_run and count >= 5:
-                    break
-        except Exception as e:
-            log.error(f"  {label} crashed mid-scrape: {e}", exc_info=True)
-        log.info(f"  {label}: {count} keyword matches")
+    # I/O-bound scrapers run in parallel; cap workers to avoid hammering rate limits
+    max_workers = min(len(selected_sources), 5)
+    log.info(f"Running {len(selected_sources)} scrapers ({max_workers} parallel workers)")
+    with ThreadPoolExecutor(max_workers=max_workers) as pool:
+        futures = {pool.submit(_run_one, key, dry_run): key for key in selected_sources}
+        for future in as_completed(futures):
+            _, records = future.result()
+            raw.extend(records)
     return raw
 
 

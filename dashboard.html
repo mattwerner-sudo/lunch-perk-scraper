@@ -23,6 +23,8 @@ nav{background:#0d0c22;color:#fff;display:flex;align-items:center;justify-conten
 .nav-stats{display:flex;gap:28px;font-size:13px;color:rgba(255,255,255,0.55)}
 .nav-stats strong{color:#fff;font-weight:700}
 .badge-new{background:#22c55e;color:#fff;font-size:10px;font-weight:800;padding:2px 7px;border-radius:999px;letter-spacing:.04em;text-transform:uppercase;margin-left:6px}
+.badge-managed{background:#f59e0b;color:#fff;font-size:10px;font-weight:800;padding:2px 7px;border-radius:999px;letter-spacing:.04em;text-transform:uppercase;margin-left:6px}
+.badge-unmanaged{background:#6366f1;color:#fff;font-size:10px;font-weight:800;padding:2px 7px;border-radius:999px;letter-spacing:.04em;text-transform:uppercase;margin-left:6px}
 
 /* ── Hero ── */
 .hero{background:#0d0c22;color:#fff;padding:48px 40px 56px;border-bottom:1px solid rgba(255,255,255,0.08)}
@@ -192,6 +194,16 @@ nav{padding:0 16px}
 
   <div class="sidebar">
     <div class="filter-card">
+      <h3>Segment</h3>
+      <div class="chip-group" id="f-segment"></div>
+      <span class="filter-clear" onclick="clearFilter('segment')">Clear</span>
+    </div>
+    <div class="filter-card">
+      <h3>Market</h3>
+      <div class="chip-group" id="f-market"></div>
+      <span class="filter-clear" onclick="clearFilter('market')">Clear</span>
+    </div>
+    <div class="filter-card">
       <h3>Confidence</h3>
       <div class="chip-group" id="f-confidence"></div>
     </div>
@@ -228,7 +240,7 @@ nav{padding:0 16px}
 <script>
 // ── If running in CodePen, paste DASHBOARD_DATA and DASHBOARD_STATS above this line ──
 
-const F = { confidence: [], source: [], kw: [] };
+const F = { segment: [], market: [], confidence: [], source: [], kw: [] };
 
 function init() {
   if (typeof DASHBOARD_DATA === 'undefined') {
@@ -257,6 +269,11 @@ function init() {
   }
 
   // Build filter chips
+  buildChips('f-segment', 'segment', ['managed', 'unmanaged', 'prospect']);
+
+  const markets = [...new Set(DASHBOARD_DATA.map(c => c.market).filter(Boolean))].sort();
+  buildChips('f-market', 'market', markets);
+
   buildChips('f-confidence', 'confidence', ['High', 'Medium', 'Low']);
 
   const sources = [...new Set(DASHBOARD_DATA.map(c => c.best_source || c.source).filter(Boolean))].sort();
@@ -308,6 +325,8 @@ function render() {
 
   let results = DASHBOARD_DATA.filter(c => {
     if (newOnly && !c.is_new) return false;
+    if (F.segment.length && !F.segment.includes(c.segment)) return false;
+    if (F.market.length && !F.market.includes(c.market)) return false;
     if (F.confidence.length && !F.confidence.includes(c.confidence)) return false;
     if (F.source.length && !F.source.includes(c.best_source || c.source)) return false;
     if (F.kw.length && !F.kw.some(kw => (c.top_keywords || '').includes(kw))) return false;
@@ -346,6 +365,11 @@ function cardHTML(c) {
   ).join('');
 
   const newBadge = c.is_new ? '<span class="badge-new">New</span>' : '';
+  const managedBadge = c.segment === 'managed'
+    ? '<span class="badge-managed">Managed</span>'
+    : c.segment === 'unmanaged'
+    ? '<span class="badge-unmanaged">Target</span>'
+    : '';
   const rolePlural = c.role_count === 1 ? 'role' : 'roles';
   const excerpt = c.perk_excerpt ? `<div class="detail-excerpt">"${c.perk_excerpt}"</div>` : '';
 
@@ -359,7 +383,7 @@ function cardHTML(c) {
     </div>
     <div class="card-main">
       <div class="card-header">
-        <span class="card-company">${c.company}${newBadge}</span>
+        <span class="card-company">${c.company}${newBadge}${managedBadge}</span>
         <span class="card-score ${scoreClass}">${c.confidence} · ${c.gtm_score}</span>
       </div>
       <div class="card-sub">
@@ -378,6 +402,9 @@ function cardHTML(c) {
       <div class="meta-item"><label>Remote</label><span>${c.remote || 'On-site'}</span></div>
       <div class="meta-item"><label>First Seen</label><span>${c.date_first_seen || c.first_seen || '—'}</span></div>
       <div class="meta-item"><label>GTM Score</label><span>${c.gtm_score}</span></div>
+      <div class="meta-item"><label>Segment</label><span>${c.segment || 'prospect'}</span></div>
+      <div class="meta-item"><label>Market</label><span>${c.market || '—'}</span></div>
+      ${c.ezcater_vertical ? `<div class="meta-item"><label>ezCater Vertical</label><span>${c.ezcater_vertical}</span></div>` : ''}
     </div>
     <div class="card-actions">
       ${c.sample_url

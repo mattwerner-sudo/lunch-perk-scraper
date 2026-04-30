@@ -37,19 +37,13 @@ FOOD_KEYWORDS = [
     "stocked kitchen",
 ]
 
-# ── NYC location signals ────────────────────────────────────────────────────
-NYC_SIGNALS = [
-    "new york city",
-    "new york, ny",
-    "new york, new york",
-    "nyc",
-    " ny ",      # surrounded by spaces to avoid false positives like "any"
-    "manhattan",
-    "brooklyn",
-    "queens",
-    "bronx",
-    "new york",
-]
+# ── Location filtering ───────────────────────────────────────────────────────
+# Set to None to scrape nationwide (recommended).
+# Set to a list of strings to restrict to specific markets, e.g.:
+#   LOCATION_FILTER = ["new york", "nyc", "boston", "chicago"]
+# Any job whose location contains at least one of these strings (case-insensitive)
+# will pass the filter. All others are dropped.
+LOCATION_FILTER = None  # None = no geographic restriction
 
 # ── Job search queries ──────────────────────────────────────────────────────
 # Search directly for food perk keywords — any role at any company.
