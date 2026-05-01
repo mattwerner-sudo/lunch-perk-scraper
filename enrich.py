@@ -211,8 +211,7 @@ def infer_domain(company: str) -> str:
     # Prefer real domain from account lists
     row = account_lookup.lookup(company)
     if row and row[1] and row[1].get("domain"):
-        from ats_fingerprint import _norm_domain
-        return _norm_domain(row[1]["domain"])
+        return row[1]["domain"].strip().lower()
 
     # Fallback: slugify full name
     clean = re.sub(r"[^a-zA-Z0-9 ]", "", company).strip().lower()
