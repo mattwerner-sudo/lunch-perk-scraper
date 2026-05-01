@@ -186,23 +186,9 @@ def debug():
         time.sleep(0.3)
 
 
-def _count(payload: dict) -> int:
-    """
-    Free count mode — returns total matching jobs without consuming credits.
-    Append ?free_count=true to preview how many results a query would return.
-    """
-    try:
-        resp = requests.post(
-            f"{BASE_URL}?free_count=true",
-            json=payload,
-            headers=HEADERS,
-            timeout=15,
-        )
-        resp.raise_for_status()
-        return resp.json().get("total", 0)
-    except Exception as e:
-        log.warning(f"TheirStack: count failed — {e}")
-        return 0
+def _total(body: dict) -> int | None:
+    """Extract total_results from TheirStack response metadata. Returns None if not set."""
+    return (body.get("metadata") or {}).get("total_results")
 
 
 # ── Record builder ────────────────────────────────────────────────────────────
@@ -210,32 +196,32 @@ def _count(payload: dict) -> int:
 def _build_record(job: dict) -> dict | None:
     """
     Map a TheirStack job object to the standard scraper record format.
-    Returns None if the job doesn't pass local keyword validation.
+    Field names confirmed from real API response (debug step 1).
+    Returns None if local keyword check fails — description filter is done
+    here because TheirStack's API-side description filter is plan-restricted.
     """
-    description = clean_text(job.get("description") or job.get("short_description") or "")
-    title       = (job.get("job_title") or job.get("title") or "").strip()
-    company     = (job.get("company_name") or job.get("company", {}).get("name") or "").strip()
-    location    = (job.get("location") or job.get("city") or "").strip()
-    country     = (job.get("country_code") or "").strip()
-    url         = (job.get("url") or job.get("job_url") or "").strip()
+    # Confirmed field names from debug output
+    title       = (job.get("job_title") or "").strip()
+    url         = (job.get("url") or "").strip()
     date_posted = (job.get("date_posted") or job.get("discovered_at") or "")[:10]
-    domain      = (job.get("company_domain") or
-                   job.get("company", {}).get("domain") or "").strip().lower()
+    domain      = (job.get("company_domain") or "").strip().lower()
+    description = clean_text(job.get("description") or "")
 
-    if not company or not url:
+    # Company is nested under company_object
+    co_obj  = job.get("company_object") or {}
+    company = (co_obj.get("name") or domain).strip()
+
+    # Location: short_location is cleaner than location for display
+    location = (job.get("short_location") or job.get("long_location") or "").strip()
+
+    if not url:
         return None
 
-    # Full location string
-    loc_parts = [p for p in [location, country] if p]
-    loc_str   = ", ".join(loc_parts)
-
-    # Local keyword validation — TheirStack pattern matching is substring-based
-    # but our find_food_keywords() is more precise (word boundaries, de-dup).
-    # Only emit records that pass our own classifier.
+    # ── Local description filter (API-side filter not available on this plan) ──
+    # Run our keyword matcher on the full description text returned by TheirStack.
     search_text = f"{title} {description}"
     matched = find_food_keywords(search_text)
     if not matched:
-        # Fallback: check against our pattern list directly (catches multi-word)
         low = search_text.lower()
         matched = [p for p in FOOD_PATTERNS if p in low]
     if not matched:
@@ -245,14 +231,14 @@ def _build_record(job: dict) -> dict | None:
         "source":                "TheirStack",
         "company":               company,
         "title":                 title,
-        "location":              loc_str,
+        "location":              location,
         "remote":                "Remote" if job.get("remote") else "",
         "food_keywords_matched": ", ".join(matched),
         "keyword_count":         len(matched),
         "perk_excerpt":          excerpt(description, matched[0]) if description else "",
         "date_posted":           date_posted,
         "url":                   url,
-        "_domain":               domain,   # internal — used for dedup, not in CSV
+        "_domain":               domain,
     }
 
 
@@ -269,13 +255,26 @@ def _fetch_batch(
     Pages through results up to MAX_PAGES_PER_BATCH.
     Mutates seen_urls (dedup) and credit_counter (tracking).
     """
+    # Job title pre-filter: roles that commonly describe food perks in JDs.
+    # TheirStack's description-level filter is plan-restricted (silently ignored).
+    # Title filter IS confirmed working and limits credit spend significantly —
+    # without it we'd pull every job from every domain regardless of relevance.
+    # We then run find_food_keywords() locally on the returned description field.
+    TITLE_PROXY_FILTER = [
+        "facilities", "office manager", "workplace", "people operations",
+        "human resources", "hr manager", "hr director", "total rewards",
+        "employee experience", "office operations", "procurement",
+        "office coordinator", "executive assistant", "chief of staff",
+        "culture", "benefits manager", "real estate", "corporate services",
+    ]
+
     base_payload = {
-        "company_domain_or":          domain_batch,
-        "job_description_pattern_or": FOOD_PATTERNS,
-        "posted_at_max_age_days":     posted_at_max_age_days,
-        "job_country_code_or":        ["US"],
-        "limit":                      RESULTS_PER_PAGE,
-        "order_by":                   [{"field": "date_posted", "desc": True}],
+        "company_domain_or":      domain_batch,
+        "job_title_pattern_or":   TITLE_PROXY_FILTER,
+        "posted_at_max_age_days": posted_at_max_age_days,
+        "job_country_code_or":    ["US"],
+        "limit":                  RESULTS_PER_PAGE,
+        "order_by":               [{"field": "date_posted", "desc": True}],
     }
 
     records = []
@@ -287,24 +286,21 @@ def _fetch_batch(
         if not data:
             break
 
-        jobs = data.get("data", []) or data.get("jobs", [])
+        jobs = data.get("data", [])
         if not jobs:
             break
 
-        credits_used = len(jobs)
-        credit_counter[0] += credits_used
+        credit_counter[0] += len(jobs)
 
         for job in jobs:
-            url = (job.get("url") or job.get("job_url") or "").strip()
+            url = (job.get("url") or "").strip()
             if not url or url in seen_urls:
                 continue
             seen_urls.add(url)
-
             record = _build_record(job)
             if record:
                 records.append(record)
 
-        # If we got fewer results than the page size, we've exhausted this batch
         if len(jobs) < RESULTS_PER_PAGE:
             break
 
@@ -364,20 +360,30 @@ def scrape(
     )
 
     if dry_run:
-        # Preview: count matching jobs without burning credits
+        # Probe first batch with limit=1 (1 credit) to confirm filters work,
+        # then project full run volume. free_count returns null on this plan.
         sample_batch = all_domains[:DOMAIN_BATCH_SIZE]
-        count = _count({
-            "company_domain_or":          sample_batch,
-            "job_description_pattern_or": FOOD_PATTERNS,
-            "posted_at_max_age_days":     max_age_days,
-            "job_country_code_or":        ["US"],
-            "limit":                      RESULTS_PER_PAGE,
+        probe = _post({
+            "company_domain_or":      sample_batch,
+            "job_title_pattern_or":   [
+                "facilities", "office manager", "workplace", "people operations",
+                "human resources", "hr manager", "total rewards", "employee experience",
+            ],
+            "posted_at_max_age_days": max_age_days,
+            "job_country_code_or":    ["US"],
+            "limit":                  5,
         })
-        projected = round(count * (len(all_domains) / len(sample_batch)))
+        sample_jobs = (probe or {}).get("data", [])
+        sample_food = sum(1 for j in sample_jobs if _build_record(j))
         log.info(
-            f"TheirStack DRY RUN — sample batch ({len(sample_batch)} domains): "
-            f"{count} jobs found. Projected full run: ~{projected} jobs / ~{projected} credits."
+            f"TheirStack DRY RUN — sample batch ({len(sample_batch)} domains, 5 jobs pulled): "
+            f"{sample_food}/{len(sample_jobs)} passed local food keyword filter. "
+            f"Full run: {total_batches} batches × up to {RESULTS_PER_PAGE * MAX_PAGES_PER_BATCH} "
+            f"jobs/batch = up to {total_batches * RESULTS_PER_PAGE * MAX_PAGES_PER_BATCH} credits max."
         )
+        if sample_jobs:
+            for j in sample_jobs[:2]:
+                log.info(f"  sample: [{j.get('company_domain','')}] {j.get('job_title','')} — {j.get('short_location','')}")
         return
 
     for batch_num, start in enumerate(range(0, len(all_domains), DOMAIN_BATCH_SIZE), 1):
@@ -406,17 +412,25 @@ def _scrape_discovery(
     Finds companies with food perks outside our known account universe.
     Caps at 5 pages (125 results / 125 credits) by default.
     """
+    DISCOVERY_TITLES = [
+        "facilities", "office manager", "workplace", "people operations",
+        "human resources", "hr manager", "total rewards", "employee experience",
+        "office coordinator", "chief of staff", "culture", "benefits manager",
+    ]
+
     payload = {
-        "job_description_pattern_or": FOOD_PATTERNS,
-        "posted_at_max_age_days":     max_age_days,
-        "job_country_code_or":        ["US"],
-        "limit":                      RESULTS_PER_PAGE,
-        "order_by":                   [{"field": "date_posted", "desc": True}],
+        "job_title_pattern_or":   DISCOVERY_TITLES,
+        "posted_at_max_age_days": max_age_days,
+        "job_country_code_or":    ["US"],
+        "limit":                  RESULTS_PER_PAGE,
+        "order_by":               [{"field": "date_posted", "desc": True}],
     }
 
     if dry_run:
-        count = _count(payload)
-        log.info(f"TheirStack discovery DRY RUN: ~{count} jobs would be returned (~{count} credits)")
+        probe = _post({**payload, "limit": 3})
+        jobs  = (probe or {}).get("data", [])
+        food  = sum(1 for j in jobs if _build_record(j))
+        log.info(f"TheirStack discovery DRY RUN: {food}/{len(jobs)} of 3 probed passed food keyword filter")
         return
 
     MAX_DISCOVERY_PAGES = 5
@@ -427,18 +441,17 @@ def _scrape_discovery(
         if not data:
             break
 
-        jobs = data.get("data", []) or data.get("jobs", [])
+        jobs = data.get("data", [])
         if not jobs:
             break
 
         credit_counter[0] += len(jobs)
 
         for job in jobs:
-            url = (job.get("url") or job.get("job_url") or "").strip()
+            url = (job.get("url") or "").strip()
             if not url or url in seen_urls:
                 continue
             seen_urls.add(url)
-
             record = _build_record(job)
             if record:
                 record["source"] = "TheirStack-Discovery"
