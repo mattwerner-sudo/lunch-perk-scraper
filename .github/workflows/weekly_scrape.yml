@@ -1,4 +1,4 @@
-name: Weekly NYC Lunch Perk Scrape
+name: Weekly Lunch Perk Scrape
 
 on:
   schedule:
@@ -40,13 +40,16 @@ jobs:
 
       - name: Run scraper
         env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-          APIFY_API_TOKEN:   ${{ secrets.APIFY_API_TOKEN }}
-          EXA_API_KEY:       ${{ secrets.EXA_API_KEY }}
-          FIRECRAWL_API_KEY: ${{ secrets.FIRECRAWL_API_KEY }}
+          SLACK_WEBHOOK_URL:           ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_WEBHOOK_MANAGED_URL:   ${{ secrets.SLACK_WEBHOOK_MANAGED_URL }}
+          SLACK_WEBHOOK_UNMANAGED_URL: ${{ secrets.SLACK_WEBHOOK_UNMANAGED_URL }}
+          APIFY_API_TOKEN:             ${{ secrets.APIFY_API_TOKEN }}
+          EXA_API_KEY:                 ${{ secrets.EXA_API_KEY }}
+          FIRECRAWL_API_KEY:           ${{ secrets.FIRECRAWL_API_KEY }}
+          THEIRSTACK_API_KEY:          ${{ secrets.THEIRSTACK_API_KEY }}
         # Skip glassdoor (403 in cloud) — run it locally if needed
         # Tee output to scraper.log so we can surface the tail on failure
-        run: python3 scrape.py --sources gh lv ab bn wd js ap wf ex fc --no-verify 2>&1 | tee scraper.log; test ${PIPESTATUS[0]} -eq 0
+        run: python3 scrape.py --sources gh lv ab bn wd js ap wf ex fc ts --no-verify 2>&1 | tee scraper.log; test ${PIPESTATUS[0]} -eq 0
 
       - name: Show last 150 lines of log on failure
         if: failure()
