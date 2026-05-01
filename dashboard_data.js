@@ -6,16 +6,16 @@ const DASHBOARD_DATA = [
     "domain": "robinhood.com",
     "first_seen": "2026-04-16",
     "last_seen": "2026-05-01",
-    "times_seen": 12,
+    "times_seen": 13,
     "is_new": 0,
     "gtm_score": 128,
-    "top_keywords": "",
-    "role_count": 120,
+    "top_keywords": "catered meals, fully stocked kitchen, stocked kitchen",
+    "role_count": 118,
     "sample_title": "Staff Product Manager, Banking",
     "sample_url": "https://boards.greenhouse.io/robinhood/jobs/7587151?t=gh_src=&gh_jid=7587151",
     "location": "Menlo Park, CA; New York, NY; Washington, DC",
     "perk_excerpt": "...al leave, and more!</li> <li>Lively office environment with catered meals, fully stocked kitchens, and geo-specific commuter benefits...",
-    "source": "",
+    "source": "Greenhouse",
     "notified": 1,
     "segment": "managed",
     "market": "San Francisco",
@@ -26,10 +26,13 @@ const DASHBOARD_DATA = [
     "expansion_possible": "",
     "existing_confirmed": "San Francisco",
     "existing_possible": "",
-    "location_jd_count": 132,
-    "location_detail": "[{\"market\": \"New York\", \"jd_count\": 43, \"signal_strength\": \"confirmed\", \"loc_type\": \"expansion\", \"max_kw_score\": 14}, {\"market\": \"Other\", \"jd_count\": 34, \"signal_strength\": \"confirmed\", \"loc_type\": \"expansion\", \"max_kw_score\": 7}, {\"market\": \"San Francisco\", \"jd_count\": 30, \"signal_strength\": \"confirmed\", \"loc_type\": \"existing\", \"max_kw_score\": 10}, {\"market\": \"Denver\", \"jd_count\": 9, \"signal_strength\": \"confirmed\", \"loc_type\": \"expansion\", \"max_kw_score\": 7}, {\"market\": \"Seattle\", \"jd_count\": 9, \"signal_strength\": \"confirmed\", \"loc_type\": \"expansion\", \"max_kw_score\": 14}, {\"market\": \"Chicago\", \"jd_count\": 6, \"signal_strength\": \"confirmed\", \"loc_type\": \"expansion\", \"max_kw_score\": 14}, {\"market\": \"Washington DC\", \"jd_count\": 1, \"signal_strength\": \"noise\", \"loc_type\": \"expansion\", \"max_kw_score\": 7}]",
+    "location_jd_count": 130,
+    "location_detail": "[{\"market\": \"New York\", \"jd_count\": 41, \"signal_strength\": \"confirmed\", \"loc_type\": \"expansion\", \"max_kw_score\": 14}, {\"market\": \"Other\", \"jd_count\": 34, \"signal_strength\": \"confirmed\", \"loc_type\": \"expansion\", \"max_kw_score\": 7}, {\"market\": \"San Francisco\", \"jd_count\": 30, \"signal_strength\": \"confirmed\", \"loc_type\": \"existing\", \"max_kw_score\": 10}, {\"market\": \"Denver\", \"jd_count\": 9, \"signal_strength\": \"confirmed\", \"loc_type\": \"expansion\", \"max_kw_score\": 7}, {\"market\": \"Seattle\", \"jd_count\": 8, \"signal_strength\": \"confirmed\", \"loc_type\": \"expansion\", \"max_kw_score\": 14}, {\"market\": \"Chicago\", \"jd_count\": 7, \"signal_strength\": \"confirmed\", \"loc_type\": \"expansion\", \"max_kw_score\": 14}, {\"market\": \"Washington DC\", \"jd_count\": 1, \"signal_strength\": \"noise\", \"loc_type\": \"expansion\", \"max_kw_score\": 7}]",
     "known_markets": "San Francisco",
-    "office_cities": "[{\"city\": \"Menlo Park\", \"state\": \"California\", \"market\": \"San Francisco\"}]"
+    "office_cities": "[{\"city\": \"Menlo Park\", \"state\": \"California\", \"market\": \"San Francisco\"}]",
+    "company": "Robinhood",
+    "confidence": "High",
+    "icp_tier": "Very Viable"
   },
   {
     "id": 3,
@@ -37,16 +40,16 @@ const DASHBOARD_DATA = [
     "domain": "ripple.com",
     "first_seen": "2026-04-16",
     "last_seen": "2026-05-01",
-    "times_seen": 12,
+    "times_seen": 13,
     "is_new": 0,
     "gtm_score": 106,
-    "top_keywords": "",
+    "top_keywords": "catered lunch, stocked kitchen",
     "role_count": 98,
     "sample_title": "Senior Software Engineer, Banking Connectivity",
     "sample_url": "https://ripple.com/careers/all-jobs/job/7729908?gh_jid=7729908",
     "location": "New York, NY, United States",
     "perk_excerpt": "...i style=\"font-weight: 400;\"><span style=\"font-weight: 400;\">Catered lunches, fully-stocked kitchens with premium snacks/beverages, an...",
-    "source": "",
+    "source": "Greenhouse",
     "notified": 1,
     "segment": "unmanaged",
     "market": "San Francisco",
@@ -60,7 +63,10 @@ const DASHBOARD_DATA = [
     "location_jd_count": 125,
     "location_detail": "[{\"market\": \"Other\", \"jd_count\": 37, \"signal_strength\": \"confirmed\", \"loc_type\": \"expansion\", \"max_kw_score\": 10}, {\"market\": \"New York\", \"jd_count\": 34, \"signal_strength\": \"confirmed\", \"loc_type\": \"expansion\", \"max_kw_score\": 10}, {\"market\": \"San Francisco\", \"jd_count\": 33, \"signal_strength\": \"confirmed\", \"loc_type\": \"existing\", \"max_kw_score\": 10}, {\"market\": \"Chicago\", \"jd_count\": 16, \"signal_strength\": \"confirmed\", \"loc_type\": \"expansion\", \"max_kw_score\": 10}, {\"market\": \"Miami\", \"jd_count\": 5, \"signal_strength\": \"confirmed\", \"loc_type\": \"expansion\", \"max_kw_score\": 10}]",
     "known_markets": "San Francisco",
-    "office_cities": "[{\"city\": \"Menlo Park\", \"state\": \"California\", \"market\": \"San Francisco\"}]"
+    "office_cities": "[{\"city\": \"Menlo Park\", \"state\": \"California\", \"market\": \"San Francisco\"}]",
+    "company": "Ripple",
+    "confidence": "High",
+    "icp_tier": "Very Viable"
   },
   {
     "id": 8,
@@ -68,16 +74,16 @@ const DASHBOARD_DATA = [
     "domain": "fivetran.com",
     "first_seen": "2026-04-16",
     "last_seen": "2026-05-01",
-    "times_seen": 12,
+    "times_seen": 13,
     "is_new": 0,
     "gtm_score": 74,
-    "top_keywords": "",
+    "top_keywords": "free food",
     "role_count": 91,
     "sample_title": "Senior Manager Software Engineering",
     "sample_url": "https://www.fivetran.com/careers/job?gh_jid=7670783003",
     "location": "Remote, Connecticut, United States, AMER",
     "perk_excerpt": "...raining opportunities</li> <li>Company virtual happy hours, free food, and fun team-building activities</li> <li>Monthly cell pho...",
-    "source": "",
+    "source": "Greenhouse",
     "notified": 1,
     "segment": "unmanaged",
     "market": "San Francisco",
@@ -89,9 +95,12 @@ const DASHBOARD_DATA = [
     "existing_confirmed": "",
     "existing_possible": "",
     "location_jd_count": 173,
-    "location_detail": "[{\"market\": \"Other\", \"jd_count\": 138, \"signal_strength\": \"confirmed\", \"loc_type\": \"expansion\", \"max_kw_score\": 6}, {\"market\": \"Denver\", \"jd_count\": 28, \"signal_strength\": \"confirmed\", \"loc_type\": \"expansion\", \"max_kw_score\": 6}, {\"market\": \"New York\", \"jd_count\": 7, \"signal_strength\": \"confirmed\", \"loc_type\": \"expansion\", \"max_kw_score\": 6}]",
+    "location_detail": "[{\"market\": \"Other\", \"jd_count\": 140, \"signal_strength\": \"confirmed\", \"loc_type\": \"expansion\", \"max_kw_score\": 6}, {\"market\": \"Denver\", \"jd_count\": 26, \"signal_strength\": \"confirmed\", \"loc_type\": \"expansion\", \"max_kw_score\": 6}, {\"market\": \"New York\", \"jd_count\": 7, \"signal_strength\": \"confirmed\", \"loc_type\": \"expansion\", \"max_kw_score\": 6}]",
     "known_markets": "San Francisco",
-    "office_cities": "[{\"city\": \"Oakland\", \"state\": \"California\", \"market\": \"San Francisco\"}]"
+    "office_cities": "[{\"city\": \"Oakland\", \"state\": \"California\", \"market\": \"San Francisco\"}]",
+    "company": "Fivetran",
+    "confidence": "High",
+    "icp_tier": "Very Viable"
   },
   {
     "id": 6,
@@ -99,16 +108,16 @@ const DASHBOARD_DATA = [
     "domain": "cohere.com",
     "first_seen": "2026-04-16",
     "last_seen": "2026-05-01",
-    "times_seen": 12,
+    "times_seen": 13,
     "is_new": 0,
     "gtm_score": 72,
-    "top_keywords": "",
-    "role_count": 118,
+    "top_keywords": "lunch stipend, office lunch",
+    "role_count": 119,
     "sample_title": "Manager, Real Estate & Facilities",
     "sample_url": "https://jobs.ashbyhq.com/cohere/4595759c-0d57-4ffa-805a-4577e994676a",
     "location": "Canada",
     "perk_excerpt": "...the cutting edge of AI research \ud83c\udf7d Weekly lunch stipend, in-office lunches & snacks \ud83e\uddb7 Full health and dental benefits, including a s...",
-    "source": "",
+    "source": "Ashby",
     "notified": 1,
     "segment": "unmanaged",
     "market": "San Francisco",
@@ -119,10 +128,13 @@ const DASHBOARD_DATA = [
     "expansion_possible": "",
     "existing_confirmed": "San Francisco",
     "existing_possible": "",
-    "location_jd_count": 121,
-    "location_detail": "[{\"market\": \"Other\", \"jd_count\": 97, \"signal_strength\": \"confirmed\", \"loc_type\": \"expansion\", \"max_kw_score\": 5}, {\"market\": \"New York\", \"jd_count\": 10, \"signal_strength\": \"confirmed\", \"loc_type\": \"expansion\", \"max_kw_score\": 5}, {\"market\": \"San Francisco\", \"jd_count\": 10, \"signal_strength\": \"confirmed\", \"loc_type\": \"existing\", \"max_kw_score\": 5}, {\"market\": \"Washington DC\", \"jd_count\": 2, \"signal_strength\": \"noise\", \"loc_type\": \"expansion\", \"max_kw_score\": 5}, {\"market\": \"Dallas\", \"jd_count\": 1, \"signal_strength\": \"noise\", \"loc_type\": \"expansion\", \"max_kw_score\": 5}, {\"market\": \"Houston\", \"jd_count\": 1, \"signal_strength\": \"noise\", \"loc_type\": \"expansion\", \"max_kw_score\": 5}]",
+    "location_jd_count": 122,
+    "location_detail": "[{\"market\": \"Other\", \"jd_count\": 98, \"signal_strength\": \"confirmed\", \"loc_type\": \"expansion\", \"max_kw_score\": 5}, {\"market\": \"New York\", \"jd_count\": 10, \"signal_strength\": \"confirmed\", \"loc_type\": \"expansion\", \"max_kw_score\": 5}, {\"market\": \"San Francisco\", \"jd_count\": 10, \"signal_strength\": \"confirmed\", \"loc_type\": \"existing\", \"max_kw_score\": 5}, {\"market\": \"Washington DC\", \"jd_count\": 2, \"signal_strength\": \"noise\", \"loc_type\": \"expansion\", \"max_kw_score\": 5}, {\"market\": \"Dallas\", \"jd_count\": 1, \"signal_strength\": \"noise\", \"loc_type\": \"expansion\", \"max_kw_score\": 5}, {\"market\": \"Houston\", \"jd_count\": 1, \"signal_strength\": \"noise\", \"loc_type\": \"expansion\", \"max_kw_score\": 5}]",
     "known_markets": "San Francisco",
-    "office_cities": "[{\"city\": \"San Jose\", \"state\": \"California\", \"market\": \"San Francisco\"}]"
+    "office_cities": "[{\"city\": \"San Jose\", \"state\": \"California\", \"market\": \"San Francisco\"}]",
+    "company": "Cohere",
+    "confidence": "High",
+    "icp_tier": "Very Viable"
   },
   {
     "id": 4,
@@ -130,16 +142,16 @@ const DASHBOARD_DATA = [
     "domain": "taboola.com",
     "first_seen": "2026-04-16",
     "last_seen": "2026-05-01",
-    "times_seen": 12,
+    "times_seen": 13,
     "is_new": 0,
     "gtm_score": 67,
-    "top_keywords": "",
+    "top_keywords": "fully stocked kitchen, office lunch, stocked kitchen",
     "role_count": 40,
     "sample_title": "Senior Advertising Sales Manager, Enterprise",
     "sample_url": "https://www.taboola.com/careers/job/7646053?gh_jid=7646053",
     "location": "New York City (NYC), New York, United States",
     "perk_excerpt": "...trong> Enjoy comprehensive benefits (health, 401k, etc.), a fully stocked kitchen, and location-specific perks (gym partnerships, parking).</...",
-    "source": "",
+    "source": "Greenhouse",
     "notified": 1,
     "segment": "unmanaged",
     "market": "New York",
@@ -153,7 +165,10 @@ const DASHBOARD_DATA = [
     "location_jd_count": 40,
     "location_detail": "[{\"market\": \"Other\", \"jd_count\": 26, \"signal_strength\": \"confirmed\", \"loc_type\": \"expansion\", \"max_kw_score\": 7}, {\"market\": \"New York\", \"jd_count\": 9, \"signal_strength\": \"confirmed\", \"loc_type\": \"expansion\", \"max_kw_score\": 7}, {\"market\": \"Atlanta\", \"jd_count\": 4, \"signal_strength\": \"possible\", \"loc_type\": \"expansion\", \"max_kw_score\": 7}, {\"market\": \"Los Angeles\", \"jd_count\": 1, \"signal_strength\": \"noise\", \"loc_type\": \"expansion\", \"max_kw_score\": 7}]",
     "known_markets": "",
-    "office_cities": "[{\"city\": \"New York City\", \"state\": \"New York\", \"market\": \"Other\"}]"
+    "office_cities": "[{\"city\": \"New York City\", \"state\": \"New York\", \"market\": \"Other\"}]",
+    "company": "Taboola",
+    "confidence": "High",
+    "icp_tier": "Very Viable"
   },
   {
     "id": 19,
@@ -184,7 +199,10 @@ const DASHBOARD_DATA = [
     "location_jd_count": 0,
     "location_detail": null,
     "known_markets": null,
-    "office_cities": null
+    "office_cities": null,
+    "company": "Free Lunch",
+    "confidence": "High",
+    "icp_tier": "Very Viable"
   },
   {
     "id": 2,
@@ -192,16 +210,16 @@ const DASHBOARD_DATA = [
     "domain": "squarespace.com",
     "first_seen": "2026-04-16",
     "last_seen": "2026-05-01",
-    "times_seen": 12,
+    "times_seen": 13,
     "is_new": 0,
     "gtm_score": 63,
-    "top_keywords": "",
+    "top_keywords": "free lunch",
     "role_count": 27,
     "sample_title": "Software Engineering Team Manager - Help Experience",
     "sample_url": "http://www.squarespace.com/about/careers?gh_jid=7638529",
     "location": "Dublin",
     "perk_excerpt": "...</li> <li>7 Global Employee Resource Groups (ERGs)</li> <li>Free lunch and snacks</li> <li>Close proximity to cultural landmarks s...",
-    "source": "",
+    "source": "Greenhouse",
     "notified": 1,
     "segment": "unmanaged",
     "market": "Other",
@@ -215,7 +233,10 @@ const DASHBOARD_DATA = [
     "location_jd_count": 27,
     "location_detail": "[{\"market\": \"New York\", \"jd_count\": 20, \"signal_strength\": \"confirmed\", \"loc_type\": \"expansion\", \"max_kw_score\": 7}, {\"market\": \"Other\", \"jd_count\": 7, \"signal_strength\": \"confirmed\", \"loc_type\": \"expansion\", \"max_kw_score\": 7}]",
     "known_markets": "",
-    "office_cities": "[{\"city\": \"New York City\", \"state\": \"New York\", \"market\": \"Other\"}]"
+    "office_cities": "[{\"city\": \"New York City\", \"state\": \"New York\", \"market\": \"Other\"}]",
+    "company": "Squarespace",
+    "confidence": "High",
+    "icp_tier": "Very Viable"
   },
   {
     "id": 12,
@@ -223,16 +244,16 @@ const DASHBOARD_DATA = [
     "domain": "pubmatic.com",
     "first_seen": "2026-04-16",
     "last_seen": "2026-05-01",
-    "times_seen": 12,
+    "times_seen": 13,
     "is_new": 0,
     "gtm_score": 60,
-    "top_keywords": "",
+    "top_keywords": "catered lunch",
     "role_count": 47,
     "sample_title": "Associate Director/Director, Product Management, Conversational AI Advertising",
     "sample_url": "https://pubmatic.com/job/?gh_jid=5159565008",
     "location": "New York, US",
     "perk_excerpt": "...sement for mobile and fully stocked pantries plus in-office catered lunches 5 days per week.</p> <p><strong>Diversity and Inclusion</...",
-    "source": "",
+    "source": "Greenhouse",
     "notified": 1,
     "segment": "unmanaged",
     "market": "San Francisco",
@@ -246,7 +267,10 @@ const DASHBOARD_DATA = [
     "location_jd_count": 52,
     "location_detail": "[{\"market\": \"Other\", \"jd_count\": 29, \"signal_strength\": \"confirmed\", \"loc_type\": \"expansion\", \"max_kw_score\": 7}, {\"market\": \"New York\", \"jd_count\": 17, \"signal_strength\": \"confirmed\", \"loc_type\": \"expansion\", \"max_kw_score\": 7}, {\"market\": \"San Francisco\", \"jd_count\": 4, \"signal_strength\": \"possible\", \"loc_type\": \"existing\", \"max_kw_score\": 7}, {\"market\": \"Chicago\", \"jd_count\": 2, \"signal_strength\": \"noise\", \"loc_type\": \"expansion\", \"max_kw_score\": 7}]",
     "known_markets": "San Francisco",
-    "office_cities": "[{\"city\": \"Redwood City\", \"state\": \"California\", \"market\": \"San Francisco\"}]"
+    "office_cities": "[{\"city\": \"Redwood City\", \"state\": \"California\", \"market\": \"San Francisco\"}]",
+    "company": "Pubmatic",
+    "confidence": "High",
+    "icp_tier": "Very Viable"
   },
   {
     "id": 9,
@@ -254,16 +278,16 @@ const DASHBOARD_DATA = [
     "domain": "zocdoc.com",
     "first_seen": "2026-04-16",
     "last_seen": "2026-05-01",
-    "times_seen": 12,
+    "times_seen": 13,
     "is_new": 0,
     "gtm_score": 56,
-    "top_keywords": "",
-    "role_count": 42,
+    "top_keywords": "catered lunch",
+    "role_count": 44,
     "sample_title": "Provider Data Operations Senior Associate",
     "sample_url": "https://job-boards.greenhouse.io/zocdoc/jobs/7707307",
     "location": "New York, NY",
     "perk_excerpt": "...attractive medical insurance</li> <li>Amazing perks \u2013 think catered lunch every day, Ping Pong, etc.</li> <li>Daycare/creche facility...",
-    "source": "",
+    "source": "Greenhouse",
     "notified": 1,
     "segment": "unmanaged",
     "market": "Other",
@@ -274,10 +298,13 @@ const DASHBOARD_DATA = [
     "expansion_possible": "",
     "existing_confirmed": "",
     "existing_possible": "",
-    "location_jd_count": 46,
-    "location_detail": "[{\"market\": \"New York\", \"jd_count\": 31, \"signal_strength\": \"confirmed\", \"loc_type\": \"expansion\", \"max_kw_score\": 7}, {\"market\": \"Other\", \"jd_count\": 15, \"signal_strength\": \"confirmed\", \"loc_type\": \"expansion\", \"max_kw_score\": 7}]",
+    "location_jd_count": 48,
+    "location_detail": "[{\"market\": \"New York\", \"jd_count\": 33, \"signal_strength\": \"confirmed\", \"loc_type\": \"expansion\", \"max_kw_score\": 7}, {\"market\": \"Other\", \"jd_count\": 15, \"signal_strength\": \"confirmed\", \"loc_type\": \"expansion\", \"max_kw_score\": 7}]",
     "known_markets": "",
-    "office_cities": "[{\"city\": \"New York City\", \"state\": \"New York\", \"market\": \"Other\"}]"
+    "office_cities": "[{\"city\": \"New York City\", \"state\": \"New York\", \"market\": \"Other\"}]",
+    "company": "Zocdoc",
+    "confidence": "High",
+    "icp_tier": "Very Viable"
   },
   {
     "id": 10,
@@ -285,16 +312,16 @@ const DASHBOARD_DATA = [
     "domain": "lithic.com",
     "first_seen": "2026-04-16",
     "last_seen": "2026-05-01",
-    "times_seen": 12,
+    "times_seen": 13,
     "is_new": 0,
     "gtm_score": 55,
-    "top_keywords": "",
-    "role_count": 11,
+    "top_keywords": "catered lunch",
+    "role_count": 10,
     "sample_title": "Senior Software Engineer, Data Platform",
     "sample_url": "https://job-boards.greenhouse.io/lithic/jobs/5833301004",
     "location": "New York, New York, United States",
     "perk_excerpt": "...oyees receive:&nbsp;</p> <ul> <li>Commuter benefit</li> <li>Catered lunch every Tuesday and Thursday</li> </ul></div>...",
-    "source": "",
+    "source": "Greenhouse",
     "notified": 1,
     "segment": "unmanaged",
     "market": "Other",
@@ -305,10 +332,13 @@ const DASHBOARD_DATA = [
     "expansion_possible": "",
     "existing_confirmed": "",
     "existing_possible": "",
-    "location_jd_count": 15,
-    "location_detail": "[{\"market\": \"Other\", \"jd_count\": 9, \"signal_strength\": \"confirmed\", \"loc_type\": \"expansion\", \"max_kw_score\": 7}, {\"market\": \"New York\", \"jd_count\": 6, \"signal_strength\": \"confirmed\", \"loc_type\": \"expansion\", \"max_kw_score\": 7}]",
+    "location_jd_count": 14,
+    "location_detail": "[{\"market\": \"Other\", \"jd_count\": 9, \"signal_strength\": \"confirmed\", \"loc_type\": \"expansion\", \"max_kw_score\": 7}, {\"market\": \"New York\", \"jd_count\": 5, \"signal_strength\": \"confirmed\", \"loc_type\": \"expansion\", \"max_kw_score\": 7}]",
     "known_markets": "",
-    "office_cities": "[]"
+    "office_cities": "[]",
+    "company": "Lithic",
+    "confidence": "High",
+    "icp_tier": "Very Viable"
   },
   {
     "id": 69,
@@ -316,16 +346,16 @@ const DASHBOARD_DATA = [
     "domain": "airwallex.com",
     "first_seen": "2026-04-30",
     "last_seen": "2026-05-01",
-    "times_seen": 2,
+    "times_seen": 3,
     "is_new": 0,
     "gtm_score": 54,
-    "top_keywords": "",
+    "top_keywords": "daily lunch, fully stocked kitchen, stocked kitchen",
     "role_count": 24,
     "sample_title": "(Senior) Software Engineer, Global Payments, SH relo to SG",
     "sample_url": "https://jobs.ashbyhq.com/airwallex/d2770857-8f59-487e-9622-5c7ea64a54be",
     "location": "SG - Singapore",
     "perk_excerpt": "...people by providing collaborative open office space with a fully stocked kitchen. We organise regular team-building events and we give our p...",
-    "source": "",
+    "source": "Ashby",
     "notified": 1,
     "segment": "unmanaged",
     "market": "Other",
@@ -339,7 +369,10 @@ const DASHBOARD_DATA = [
     "location_jd_count": 25,
     "location_detail": "[{\"market\": \"Other\", \"jd_count\": 22, \"signal_strength\": \"confirmed\", \"loc_type\": \"expansion\", \"max_kw_score\": 7}, {\"market\": \"San Francisco\", \"jd_count\": 3, \"signal_strength\": \"possible\", \"loc_type\": \"expansion\", \"max_kw_score\": 7}]",
     "known_markets": "",
-    "office_cities": "[{\"city\": \"Guoco Tower\", \"state\": \"Victoria\", \"market\": \"Other\"}]"
+    "office_cities": "[{\"city\": \"Guoco Tower\", \"state\": \"Victoria\", \"market\": \"Other\"}]",
+    "company": "Airwallex",
+    "confidence": "High",
+    "icp_tier": "Very Viable"
   },
   {
     "id": 70,
@@ -347,16 +380,16 @@ const DASHBOARD_DATA = [
     "domain": "intercom.com",
     "first_seen": "2026-04-30",
     "last_seen": "2026-05-01",
-    "times_seen": 2,
+    "times_seen": 3,
     "is_new": 0,
     "gtm_score": 45,
-    "top_keywords": "",
+    "top_keywords": "catered lunch, fully stocked kitchen, stocked kitchen",
     "role_count": 65,
     "sample_title": "Account Executive, Mid-Market",
     "sample_url": "https://job-boards.greenhouse.io/intercom/jobs/7345114",
     "location": "Sydney, Australia",
     "perk_excerpt": "...itive salary and equity in a fast-growing start-up</li> <li>Catered lunch every weekday, plus a fully stocked kitchen</li> <li>Regula...",
-    "source": "",
+    "source": "Greenhouse",
     "notified": 1,
     "segment": "unmanaged",
     "market": "San Francisco",
@@ -370,7 +403,10 @@ const DASHBOARD_DATA = [
     "location_jd_count": 96,
     "location_detail": "[{\"market\": \"Other\", \"jd_count\": 95, \"signal_strength\": \"confirmed\", \"loc_type\": \"expansion\", \"max_kw_score\": 14}, {\"market\": \"Chicago\", \"jd_count\": 1, \"signal_strength\": \"noise\", \"loc_type\": \"expansion\", \"max_kw_score\": 7}]",
     "known_markets": "San Francisco",
-    "office_cities": "[{\"city\": \"San Francisco\", \"state\": \"California\", \"market\": \"San Francisco\"}]"
+    "office_cities": "[{\"city\": \"San Francisco\", \"state\": \"California\", \"market\": \"San Francisco\"}]",
+    "company": "Intercom",
+    "confidence": "High",
+    "icp_tier": "Very Viable"
   },
   {
     "id": 5,
@@ -378,16 +414,16 @@ const DASHBOARD_DATA = [
     "domain": "harrys.com",
     "first_seen": "2026-04-16",
     "last_seen": "2026-05-01",
-    "times_seen": 12,
+    "times_seen": 13,
     "is_new": 0,
     "gtm_score": 42,
-    "top_keywords": "",
+    "top_keywords": "fully stocked kitchen, stocked kitchen",
     "role_count": 8,
     "sample_title": "VP, Global Head of DTC",
     "sample_url": "https://job-boards.greenhouse.io/harrys/jobs/7389735",
     "location": "New York, NY",
     "perk_excerpt": "...d out with bagels on Wednesdays and lunch on Thursdays, and fully stocked kitchens with snacks, coffee, and drinks everyday.&nbsp; Can\u2019t forg...",
-    "source": "",
+    "source": "Greenhouse",
     "notified": 1,
     "segment": "unmanaged",
     "market": "New York",
@@ -401,7 +437,10 @@ const DASHBOARD_DATA = [
     "location_jd_count": 8,
     "location_detail": "[{\"market\": \"New York\", \"jd_count\": 8, \"signal_strength\": \"confirmed\", \"loc_type\": \"expansion\", \"max_kw_score\": 7}]",
     "known_markets": "",
-    "office_cities": "[{\"city\": \"New York City\", \"state\": \"New York\", \"market\": \"Other\"}]"
+    "office_cities": "[{\"city\": \"New York City\", \"state\": \"New York\", \"market\": \"Other\"}]",
+    "company": "Harrys",
+    "confidence": "High",
+    "icp_tier": "Very Viable"
   },
   {
     "id": 61,
@@ -409,30 +448,33 @@ const DASHBOARD_DATA = [
     "domain": "sharebite.com",
     "first_seen": "2026-04-17",
     "last_seen": "2026-05-01",
-    "times_seen": 8,
+    "times_seen": 9,
     "is_new": 0,
     "gtm_score": 42,
-    "top_keywords": "",
-    "role_count": 9,
+    "top_keywords": "meal stipend, sharebite",
+    "role_count": 10,
     "sample_title": "Job Application for Product Manager at Sharebite",
     "sample_url": "https://job-boards.greenhouse.io/sharebite/jobs/5887892004",
     "location": "New York, NY",
     "perk_excerpt": "...Job Application for Product Manager at Sharebite New # Product Manager Remote Apply ## Product Manager ### A...",
-    "source": "",
+    "source": "Exa",
     "notified": 1,
     "segment": "unmanaged",
-    "market": "New York",
+    "market": "Other",
     "ezcater_vertical": "",
     "zi_industry": "Supply Chain Management (SCM) Software",
     "loc_signal_strength": "expansion_confirmed",
-    "expansion_confirmed": "New York",
+    "expansion_confirmed": "Other",
     "expansion_possible": "",
     "existing_confirmed": "",
     "existing_possible": "",
-    "location_jd_count": 10,
-    "location_detail": "[{\"market\": \"New York\", \"jd_count\": 10, \"signal_strength\": \"confirmed\", \"loc_type\": \"expansion\", \"max_kw_score\": 15}]",
+    "location_jd_count": 12,
+    "location_detail": "[{\"market\": \"Other\", \"jd_count\": 12, \"signal_strength\": \"confirmed\", \"loc_type\": \"expansion\", \"max_kw_score\": 15}]",
     "known_markets": "",
-    "office_cities": "[]"
+    "office_cities": "[]",
+    "company": "Sharebite",
+    "confidence": "High",
+    "icp_tier": "Very Viable"
   },
   {
     "id": 60,
@@ -463,7 +505,10 @@ const DASHBOARD_DATA = [
     "location_jd_count": 5,
     "location_detail": "[{\"market\": \"New York\", \"jd_count\": 5, \"signal_strength\": \"confirmed\", \"loc_type\": \"expansion\", \"max_kw_score\": 5}]",
     "known_markets": "",
-    "office_cities": "[{\"city\": \"Long Island City\", \"state\": \"New York\", \"market\": \"Other\"}]"
+    "office_cities": "[{\"city\": \"Long Island City\", \"state\": \"New York\", \"market\": \"Other\"}]",
+    "company": "Agencywithin",
+    "confidence": "High",
+    "icp_tier": "Very Viable"
   },
   {
     "id": 72,
@@ -471,16 +516,16 @@ const DASHBOARD_DATA = [
     "domain": "flexport.com",
     "first_seen": "2026-04-30",
     "last_seen": "2026-05-01",
-    "times_seen": 2,
+    "times_seen": 3,
     "is_new": 0,
     "gtm_score": 39,
-    "top_keywords": "",
+    "top_keywords": "catered lunch, lunch stipend",
     "role_count": 8,
     "sample_title": "Staff Software Engineer: Applied AI",
     "sample_url": "https://boards.greenhouse.io/flexport/jobs/7311883?gh_jid=7311883",
     "location": "Amsterdam, Netherlands",
     "perk_excerpt": "...sp; thriving multinational environment&nbsp;</li> <li>Daily catered lunches incl. vegetarian options, breakfast, snacks and soft drin...",
-    "source": "",
+    "source": "Greenhouse",
     "notified": 1,
     "segment": "unmanaged",
     "market": "San Francisco",
@@ -494,7 +539,10 @@ const DASHBOARD_DATA = [
     "location_jd_count": 8,
     "location_detail": "[{\"market\": \"Other\", \"jd_count\": 8, \"signal_strength\": \"confirmed\", \"loc_type\": \"expansion\", \"max_kw_score\": 7}]",
     "known_markets": "San Francisco",
-    "office_cities": "[{\"city\": \"San Francisco\", \"state\": \"California\", \"market\": \"San Francisco\"}]"
+    "office_cities": "[{\"city\": \"San Francisco\", \"state\": \"California\", \"market\": \"San Francisco\"}]",
+    "company": "Flexport",
+    "confidence": "High",
+    "icp_tier": "Very Viable"
   },
   {
     "id": 73,
@@ -502,16 +550,16 @@ const DASHBOARD_DATA = [
     "domain": "parafin.com",
     "first_seen": "2026-04-30",
     "last_seen": "2026-05-01",
-    "times_seen": 2,
+    "times_seen": 3,
     "is_new": 0,
     "gtm_score": 38,
-    "top_keywords": "",
+    "top_keywords": "free lunch",
     "role_count": 25,
     "sample_title": "Senior Software Engineer, Spend & Banking",
     "sample_url": "https://jobs.ashbyhq.com/parafin/7a01ac7a-984b-4d10-a053-74bd24d46013",
     "location": "San Francisco, CA",
     "perk_excerpt": "...Work from home flexibility Unlimited PTO Commuter benefits Free lunches Paid parental leave 401(k) Employee assistance program If...",
-    "source": "",
+    "source": "Ashby",
     "notified": 1,
     "segment": "prospect",
     "market": "San Francisco",
@@ -525,7 +573,10 @@ const DASHBOARD_DATA = [
     "location_jd_count": 25,
     "location_detail": "[{\"market\": \"San Francisco\", \"jd_count\": 25, \"signal_strength\": \"confirmed\", \"loc_type\": \"expansion\", \"max_kw_score\": 7}]",
     "known_markets": "",
-    "office_cities": "[]"
+    "office_cities": "[]",
+    "company": "Parafin",
+    "confidence": "High",
+    "icp_tier": "Very Viable"
   },
   {
     "id": 20,
@@ -556,7 +607,10 @@ const DASHBOARD_DATA = [
     "location_jd_count": 0,
     "location_detail": null,
     "known_markets": null,
-    "office_cities": null
+    "office_cities": null,
+    "company": "Office Food Perks Are Getting Better",
+    "confidence": "High",
+    "icp_tier": "Very Viable"
   },
   {
     "id": 59,
@@ -587,7 +641,10 @@ const DASHBOARD_DATA = [
     "location_jd_count": 4,
     "location_detail": "[{\"market\": \"New York\", \"jd_count\": 4, \"signal_strength\": \"possible\", \"loc_type\": \"expansion\", \"max_kw_score\": 7}]",
     "known_markets": "Washington DC",
-    "office_cities": "[{\"city\": \"Washington\", \"state\": \"District of Columbia\", \"market\": \"Washington DC\"}]"
+    "office_cities": "[{\"city\": \"Washington\", \"state\": \"District of Columbia\", \"market\": \"Washington DC\"}]",
+    "company": "Morningconsult",
+    "confidence": "High",
+    "icp_tier": "Very Viable"
   },
   {
     "id": 11,
@@ -595,16 +652,16 @@ const DASHBOARD_DATA = [
     "domain": "ramp.com",
     "first_seen": "2026-04-16",
     "last_seen": "2026-05-01",
-    "times_seen": 12,
+    "times_seen": 13,
     "is_new": 0,
     "gtm_score": 31,
-    "top_keywords": "",
+    "top_keywords": "catered lunch",
     "role_count": 1,
     "sample_title": "Software Engineer Internship, Android ",
     "sample_url": "https://jobs.ashbyhq.com/ramp/67fadb77-43d8-4449-954b-d4cf2c6d3b8b",
     "location": "New York, NY (HQ)",
     "perk_excerpt": "...s $11,000 USD + housing stipend Ramp Benefits Apple Macbook Catered Lunches in the NYC office Benefits (for U.S.-based full-time empl...",
-    "source": "",
+    "source": "Ashby",
     "notified": 1,
     "segment": "managed",
     "market": "New York",
@@ -618,7 +675,10 @@ const DASHBOARD_DATA = [
     "location_jd_count": 1,
     "location_detail": "[{\"market\": \"New York\", \"jd_count\": 1, \"signal_strength\": \"noise\", \"loc_type\": \"expansion\", \"max_kw_score\": 7}]",
     "known_markets": "",
-    "office_cities": "[{\"city\": \"New York City\", \"state\": \"New York\", \"market\": \"Other\"}]"
+    "office_cities": "[{\"city\": \"New York City\", \"state\": \"New York\", \"market\": \"Other\"}]",
+    "company": "Ramp",
+    "confidence": "High",
+    "icp_tier": "Very Viable"
   },
   {
     "id": 53,
@@ -649,7 +709,10 @@ const DASHBOARD_DATA = [
     "location_jd_count": 4,
     "location_detail": "[{\"market\": \"New York\", \"jd_count\": 4, \"signal_strength\": \"possible\", \"loc_type\": \"expansion\", \"max_kw_score\": 17}]",
     "known_markets": "",
-    "office_cities": "[]"
+    "office_cities": "[]",
+    "company": "Gigaml",
+    "confidence": "High",
+    "icp_tier": "Very Viable"
   },
   {
     "id": 16,
@@ -657,16 +720,16 @@ const DASHBOARD_DATA = [
     "domain": "openai.com",
     "first_seen": "2026-04-16",
     "last_seen": "2026-05-01",
-    "times_seen": 12,
+    "times_seen": 13,
     "is_new": 0,
     "gtm_score": 28,
-    "top_keywords": "",
+    "top_keywords": "stocked kitchen",
     "role_count": 13,
     "sample_title": "Global Head of Benefits ",
     "sample_url": "https://jobs.ashbyhq.com/openai/3306b8e2-123c-4040-b490-08298f6dc88f",
     "location": "San Francisco",
     "perk_excerpt": "...ight-adjustable desks, conference rooms, phone booths, well-stocked kitchens full of snacks and drinks, three in-house prepared meals d...",
-    "source": "",
+    "source": "Ashby",
     "notified": 1,
     "segment": "managed",
     "market": "San Francisco",
@@ -680,7 +743,10 @@ const DASHBOARD_DATA = [
     "location_jd_count": 0,
     "location_detail": "[]",
     "known_markets": "San Francisco",
-    "office_cities": "[{\"city\": \"San Francisco\", \"state\": \"California\", \"market\": \"San Francisco\"}]"
+    "office_cities": "[{\"city\": \"San Francisco\", \"state\": \"California\", \"market\": \"San Francisco\"}]",
+    "company": "Openai",
+    "confidence": "High",
+    "icp_tier": "Viable"
   },
   {
     "id": 71,
@@ -688,16 +754,16 @@ const DASHBOARD_DATA = [
     "domain": "datadog.com",
     "first_seen": "2026-04-30",
     "last_seen": "2026-05-01",
-    "times_seen": 2,
+    "times_seen": 3,
     "is_new": 0,
     "gtm_score": 28,
-    "top_keywords": "",
+    "top_keywords": "catered lunch",
     "role_count": 2,
     "sample_title": "Software Engineer - Early Career",
     "sample_url": "https://careers.datadoghq.com/detail/7646452/?gh_jid=7646452",
     "location": "Lisbon, Portugal",
     "perk_excerpt": "...events</li> <li>Unlimited snacks and drinks in our office; catered lunches on Monday, Wednesday, and Friday</li> <li>Free, global me...",
-    "source": "",
+    "source": "Greenhouse",
     "notified": 1,
     "segment": "unmanaged",
     "market": "Other",
@@ -711,7 +777,10 @@ const DASHBOARD_DATA = [
     "location_jd_count": 3,
     "location_detail": "[{\"market\": \"Other\", \"jd_count\": 2, \"signal_strength\": \"noise\", \"loc_type\": \"expansion\", \"max_kw_score\": 7}, {\"market\": \"Boston\", \"jd_count\": 1, \"signal_strength\": \"noise\", \"loc_type\": \"expansion\", \"max_kw_score\": 7}]",
     "known_markets": "",
-    "office_cities": "[{\"city\": \"New York City\", \"state\": \"New York\", \"market\": \"Other\"}]"
+    "office_cities": "[{\"city\": \"New York City\", \"state\": \"New York\", \"market\": \"Other\"}]",
+    "company": "Datadog",
+    "confidence": "High",
+    "icp_tier": "Viable"
   },
   {
     "id": 14,
@@ -719,16 +788,16 @@ const DASHBOARD_DATA = [
     "domain": "okta.com",
     "first_seen": "2026-04-16",
     "last_seen": "2026-05-01",
-    "times_seen": 12,
+    "times_seen": 13,
     "is_new": 0,
     "gtm_score": 26,
-    "top_keywords": "",
+    "top_keywords": "catered lunch",
     "role_count": 1,
     "sample_title": "Sales Development Representative - German",
     "sample_url": "https://www.okta.com/company/careers/opportunity/7709578?gh_jid=7709578",
     "location": "Dublin, Ireland",
     "perk_excerpt": "...i style=\"font-weight: 400;\"><span style=\"font-weight: 400;\">Catered lunches &amp; snack program</span></li> <li style=\"font-weight: 4...",
-    "source": "",
+    "source": "Greenhouse",
     "notified": 1,
     "segment": "managed",
     "market": "San Francisco",
@@ -742,7 +811,10 @@ const DASHBOARD_DATA = [
     "location_jd_count": 2,
     "location_detail": "[{\"market\": \"Other\", \"jd_count\": 2, \"signal_strength\": \"noise\", \"loc_type\": \"expansion\", \"max_kw_score\": 7}]",
     "known_markets": "San Francisco",
-    "office_cities": "[{\"city\": \"San Francisco\", \"state\": \"California\", \"market\": \"San Francisco\"}]"
+    "office_cities": "[{\"city\": \"San Francisco\", \"state\": \"California\", \"market\": \"San Francisco\"}]",
+    "company": "Okta",
+    "confidence": "High",
+    "icp_tier": "Viable"
   },
   {
     "id": 7,
@@ -750,16 +822,16 @@ const DASHBOARD_DATA = [
     "domain": "klaviyo.com",
     "first_seen": "2026-04-16",
     "last_seen": "2026-05-01",
-    "times_seen": 12,
+    "times_seen": 13,
     "is_new": 0,
     "gtm_score": 25,
-    "top_keywords": "",
+    "top_keywords": "free lunch",
     "role_count": 1,
     "sample_title": "Senior Software Engineer, Internationalisation Platform",
     "sample_url": "https://www.klaviyo.com/careers/jobs?gh_jid=7568452003",
     "location": "London, UK",
     "perk_excerpt": "...y from customers and suggesting cool new approaches.</p> <p>Free lunch at our Aldgate office three times a week<br>Highly competit...",
-    "source": "",
+    "source": "Greenhouse",
     "notified": 1,
     "segment": "unmanaged",
     "market": "Boston",
@@ -773,7 +845,10 @@ const DASHBOARD_DATA = [
     "location_jd_count": 1,
     "location_detail": "[{\"market\": \"Other\", \"jd_count\": 1, \"signal_strength\": \"noise\", \"loc_type\": \"expansion\", \"max_kw_score\": 7}]",
     "known_markets": "Boston",
-    "office_cities": "[{\"city\": \"Boston\", \"state\": \"Massachusetts\", \"market\": \"Boston\"}]"
+    "office_cities": "[{\"city\": \"Boston\", \"state\": \"Massachusetts\", \"market\": \"Boston\"}]",
+    "company": "Klaviyo",
+    "confidence": "High",
+    "icp_tier": "Viable"
   },
   {
     "id": 21,
@@ -804,7 +879,10 @@ const DASHBOARD_DATA = [
     "location_jd_count": 0,
     "location_detail": null,
     "known_markets": null,
-    "office_cities": null
+    "office_cities": null,
+    "company": "Strategy Business",
+    "confidence": "High",
+    "icp_tier": "Viable"
   },
   {
     "id": 55,
@@ -835,7 +913,10 @@ const DASHBOARD_DATA = [
     "location_jd_count": 2,
     "location_detail": "[{\"market\": \"New York\", \"jd_count\": 2, \"signal_strength\": \"noise\", \"loc_type\": \"expansion\", \"max_kw_score\": 14}]",
     "known_markets": "",
-    "office_cities": "[]"
+    "office_cities": "[]",
+    "company": "Clear",
+    "confidence": "High",
+    "icp_tier": "Viable"
   },
   {
     "id": 22,
@@ -866,7 +947,10 @@ const DASHBOARD_DATA = [
     "location_jd_count": 0,
     "location_detail": null,
     "known_markets": null,
-    "office_cities": null
+    "office_cities": null,
+    "company": "New York @ Giga",
+    "confidence": "Medium",
+    "icp_tier": "Viable"
   },
   {
     "id": 67,
@@ -897,7 +981,10 @@ const DASHBOARD_DATA = [
     "location_jd_count": 0,
     "location_detail": null,
     "known_markets": null,
-    "office_cities": null
+    "office_cities": null,
+    "company": "Traba",
+    "confidence": "Medium",
+    "icp_tier": "Viable"
   },
   {
     "id": 74,
@@ -905,16 +992,16 @@ const DASHBOARD_DATA = [
     "domain": "instacart.com",
     "first_seen": "2026-04-30",
     "last_seen": "2026-05-01",
-    "times_seen": 2,
+    "times_seen": 3,
     "is_new": 0,
     "gtm_score": 22,
-    "top_keywords": "",
+    "top_keywords": "doordash",
     "role_count": 1,
     "sample_title": "Ads AI Analyst ",
     "sample_url": "https://instacart.careers/job/?gh_jid=7658241",
     "location": "Canada - Remote (ON, AB, BC, or NS Only)",
     "perk_excerpt": "...r ad platforms, including Amazon, Google, Meta, Shopify, or DoorDash.</li> </ul> <p>&nbsp;</p> <p>#LI-Remote</p><div class=\"cont...",
-    "source": "",
+    "source": "Greenhouse",
     "notified": 1,
     "segment": "unmanaged",
     "market": "San Francisco",
@@ -928,7 +1015,10 @@ const DASHBOARD_DATA = [
     "location_jd_count": 1,
     "location_detail": "[{\"market\": \"Other\", \"jd_count\": 1, \"signal_strength\": \"noise\", \"loc_type\": \"expansion\", \"max_kw_score\": 10}]",
     "known_markets": "San Francisco",
-    "office_cities": "[{\"city\": \"San Francisco\", \"state\": \"California\", \"market\": \"San Francisco\"}]"
+    "office_cities": "[{\"city\": \"San Francisco\", \"state\": \"California\", \"market\": \"San Francisco\"}]",
+    "company": "Instacart",
+    "confidence": "Medium",
+    "icp_tier": "Viable"
   },
   {
     "id": 13,
@@ -936,16 +1026,16 @@ const DASHBOARD_DATA = [
     "domain": "sofi.com",
     "first_seen": "2026-04-16",
     "last_seen": "2026-05-01",
-    "times_seen": 12,
+    "times_seen": 13,
     "is_new": 0,
     "gtm_score": 21,
-    "top_keywords": "",
+    "top_keywords": "fully stocked kitchen, stocked kitchen",
     "role_count": 2,
     "sample_title": "Production Sales Manager, Retail",
     "sample_url": "https://sofi.com/careers/job/7602827003?gh_jid=7602827003",
     "location": "WA - Seattle; CA - San Francisco; UT - Cottonwood Heights",
     "perk_excerpt": "...elehealth support.</div> <div>- Employer-paid lunches and a fully stocked kitchen.</div><div class=\"content-conclusion\"><div class=\"gmail_def...",
-    "source": "",
+    "source": "Greenhouse",
     "notified": 1,
     "segment": "unmanaged",
     "market": "San Francisco",
@@ -959,7 +1049,10 @@ const DASHBOARD_DATA = [
     "location_jd_count": 2,
     "location_detail": "[{\"market\": \"Austin\", \"jd_count\": 1, \"signal_strength\": \"noise\", \"loc_type\": \"expansion\", \"max_kw_score\": 7}, {\"market\": \"Other\", \"jd_count\": 1, \"signal_strength\": \"noise\", \"loc_type\": \"expansion\", \"max_kw_score\": 7}]",
     "known_markets": "San Francisco",
-    "office_cities": "[{\"city\": \"San Francisco\", \"state\": \"Virginia\", \"market\": \"San Francisco\"}]"
+    "office_cities": "[{\"city\": \"San Francisco\", \"state\": \"Virginia\", \"market\": \"San Francisco\"}]",
+    "company": "Sofi",
+    "confidence": "Medium",
+    "icp_tier": "Viable"
   },
   {
     "id": 23,
@@ -990,7 +1083,10 @@ const DASHBOARD_DATA = [
     "location_jd_count": 0,
     "location_detail": null,
     "known_markets": null,
-    "office_cities": null
+    "office_cities": null,
+    "company": "Home",
+    "confidence": "Medium",
+    "icp_tier": "Viable"
   },
   {
     "id": 54,
@@ -1021,7 +1117,10 @@ const DASHBOARD_DATA = [
     "location_jd_count": 0,
     "location_detail": null,
     "known_markets": null,
-    "office_cities": null
+    "office_cities": null,
+    "company": "Mirage",
+    "confidence": "Medium",
+    "icp_tier": "Viable"
   },
   {
     "id": 56,
@@ -1029,30 +1128,33 @@ const DASHBOARD_DATA = [
     "domain": "doordashusa.com",
     "first_seen": "2026-04-17",
     "last_seen": "2026-05-01",
-    "times_seen": 8,
+    "times_seen": 9,
     "is_new": 0,
     "gtm_score": 21,
-    "top_keywords": "",
-    "role_count": 3,
+    "top_keywords": "doordash",
+    "role_count": 4,
     "sample_title": "Job Application for Senior Manager, Restaurant Growth at DoorDash USA",
     "sample_url": "https://boards.greenhouse.io/doordashusa/jobs/7639415",
     "location": "New York, NY",
     "perk_excerpt": "...Job Application for Senior Manager, Restaurant Growth at DoorDash USA Back to jobs New # Senior Manager, Restaurant Growth Sa...",
-    "source": "",
+    "source": "Exa",
     "notified": 1,
     "segment": "prospect",
-    "market": "New York",
+    "market": "Other",
     "ezcater_vertical": "",
     "zi_industry": "",
     "loc_signal_strength": "expansion_possible",
     "expansion_confirmed": "",
-    "expansion_possible": "New York",
+    "expansion_possible": "Other",
     "existing_confirmed": "",
     "existing_possible": "",
-    "location_jd_count": 3,
-    "location_detail": "[{\"market\": \"New York\", \"jd_count\": 3, \"signal_strength\": \"possible\", \"loc_type\": \"expansion\", \"max_kw_score\": 10}]",
+    "location_jd_count": 4,
+    "location_detail": "[{\"market\": \"Other\", \"jd_count\": 4, \"signal_strength\": \"possible\", \"loc_type\": \"expansion\", \"max_kw_score\": 10}]",
     "known_markets": "",
-    "office_cities": "[]"
+    "office_cities": "[]",
+    "company": "Doordashusa",
+    "confidence": "Medium",
+    "icp_tier": "Viable"
   },
   {
     "id": 75,
@@ -1060,16 +1162,16 @@ const DASHBOARD_DATA = [
     "domain": "yotpo.com",
     "first_seen": "2026-04-30",
     "last_seen": "2026-05-01",
-    "times_seen": 2,
+    "times_seen": 3,
     "is_new": 0,
     "gtm_score": 21,
-    "top_keywords": "",
+    "top_keywords": "stocked kitchen",
     "role_count": 11,
     "sample_title": "Finance Applications Implementer",
     "sample_url": "https://www.yotpo.com/careers/gid-7552390?gh_jid=7552390",
     "location": "Sofia",
     "perk_excerpt": "...backed Hackathons, Tech conferences, workshops events, etc Stocked kitchen and bar.</li> <li>Equity in options.</li> <li>Hybrid workin...",
-    "source": "",
+    "source": "Greenhouse",
     "notified": 1,
     "segment": "unmanaged",
     "market": "Other",
@@ -1083,7 +1185,10 @@ const DASHBOARD_DATA = [
     "location_jd_count": 0,
     "location_detail": "[]",
     "known_markets": "",
-    "office_cities": "[{\"city\": \"Tel Aviv\", \"state\": \"Tel Aviv\", \"market\": \"Other\"}]"
+    "office_cities": "[{\"city\": \"Tel Aviv\", \"state\": \"Tel Aviv\", \"market\": \"Other\"}]",
+    "company": "Yotpo",
+    "confidence": "Medium",
+    "icp_tier": "Viable"
   },
   {
     "id": 76,
@@ -1091,16 +1196,16 @@ const DASHBOARD_DATA = [
     "domain": "tripadvisor.com",
     "first_seen": "2026-04-30",
     "last_seen": "2026-05-01",
-    "times_seen": 2,
+    "times_seen": 3,
     "is_new": 0,
     "gtm_score": 21,
-    "top_keywords": "",
+    "top_keywords": "daily lunch, lunch provided",
     "role_count": 1,
     "sample_title": "Back-end Engineer",
     "sample_url": "https://job-boards.greenhouse.io/tripadvisor/jobs/7825805",
     "location": "Reykjavik, Iceland",
     "perk_excerpt": "...ce in central Reykjavik</p> </li> <li> <p>\ufe0f Delicious daily lunch provided</p> </li> <li> <p>\u2615 Top-notch coffee and snacks to fuel you...",
-    "source": "",
+    "source": "Greenhouse",
     "notified": 1,
     "segment": "unmanaged",
     "market": "Other",
@@ -1114,7 +1219,10 @@ const DASHBOARD_DATA = [
     "location_jd_count": 1,
     "location_detail": "[{\"market\": \"Other\", \"jd_count\": 1, \"signal_strength\": \"noise\", \"loc_type\": \"expansion\", \"max_kw_score\": 7}]",
     "known_markets": "",
-    "office_cities": "[{\"city\": \"Needham\", \"state\": \"Massachusetts\", \"market\": \"Other\"}]"
+    "office_cities": "[{\"city\": \"Needham\", \"state\": \"Massachusetts\", \"market\": \"Other\"}]",
+    "company": "Tripadvisor",
+    "confidence": "Medium",
+    "icp_tier": "Viable"
   },
   {
     "id": 24,
@@ -1145,7 +1253,10 @@ const DASHBOARD_DATA = [
     "location_jd_count": 0,
     "location_detail": null,
     "known_markets": null,
-    "office_cities": null
+    "office_cities": null,
+    "company": "gm.careers",
+    "confidence": "Medium",
+    "icp_tier": "Viable"
   },
   {
     "id": 65,
@@ -1176,7 +1287,10 @@ const DASHBOARD_DATA = [
     "location_jd_count": 4,
     "location_detail": "[{\"market\": \"New York\", \"jd_count\": 4, \"signal_strength\": \"possible\", \"loc_type\": \"expansion\", \"max_kw_score\": 5}]",
     "known_markets": "",
-    "office_cities": "[]"
+    "office_cities": "[]",
+    "company": "Mistral",
+    "confidence": "Medium",
+    "icp_tier": "Viable"
   },
   {
     "id": 25,
@@ -1207,27 +1321,30 @@ const DASHBOARD_DATA = [
     "location_jd_count": 0,
     "location_detail": null,
     "known_markets": null,
-    "office_cities": null
+    "office_cities": null,
+    "company": "Built In",
+    "confidence": "Medium",
+    "icp_tier": "Viable"
   },
   {
-    "id": 57,
-    "name": "Toojaysdeli",
-    "domain": "toojaysdeli.com",
-    "first_seen": "2026-04-17",
+    "id": 84,
+    "name": "Minio",
+    "domain": "minio.com",
+    "first_seen": "2026-05-01",
     "last_seen": "2026-05-01",
-    "times_seen": 8,
-    "is_new": 0,
-    "gtm_score": 18,
-    "top_keywords": "",
+    "times_seen": 1,
+    "is_new": 1,
+    "gtm_score": 19,
+    "top_keywords": "doordash, office lunch",
     "role_count": 1,
-    "sample_title": "Job Application for Catering Prep Coordinator at TooJay\u2019s Deli \u2022 Bakery \u2022 Restaurant",
-    "sample_url": "https://job-boards.greenhouse.io/toojaysdeli/jobs/4413995008",
-    "location": "New York, NY",
-    "perk_excerpt": "...e Catering Prep Coordinator packs, delivers and sets up the catered lunches and events offsite. - Manage inventory of supplies and eq...",
-    "source": "",
-    "notified": 1,
+    "sample_title": "Job Application for Workplace Experience Partner at MinIO",
+    "sample_url": "https://job-boards.greenhouse.io/minio/jobs/5098674008",
+    "location": null,
+    "perk_excerpt": "...s - Coordinate daily office lunches, including ordering via DoorDash or working with caterers - Ensure lunch setup and cleanup r...",
+    "source": "Exa",
+    "notified": 0,
     "segment": "prospect",
-    "market": "New York",
+    "market": "Other",
     "ezcater_vertical": "",
     "zi_industry": "",
     "loc_signal_strength": "noise",
@@ -1235,10 +1352,47 @@ const DASHBOARD_DATA = [
     "expansion_possible": "",
     "existing_confirmed": "",
     "existing_possible": "",
-    "location_jd_count": 2,
-    "location_detail": "[{\"market\": \"New York\", \"jd_count\": 2, \"signal_strength\": \"noise\", \"loc_type\": \"expansion\", \"max_kw_score\": 14}]",
+    "location_jd_count": 1,
+    "location_detail": "[{\"market\": \"Other\", \"jd_count\": 1, \"signal_strength\": \"noise\", \"loc_type\": \"expansion\", \"max_kw_score\": 10}]",
     "known_markets": "",
-    "office_cities": "[]"
+    "office_cities": "[]",
+    "company": "Minio",
+    "confidence": "Medium",
+    "icp_tier": "Viable"
+  },
+  {
+    "id": 57,
+    "name": "Toojaysdeli",
+    "domain": "toojaysdeli.com",
+    "first_seen": "2026-04-17",
+    "last_seen": "2026-05-01",
+    "times_seen": 9,
+    "is_new": 0,
+    "gtm_score": 18,
+    "top_keywords": "catered lunch, catered meals",
+    "role_count": 1,
+    "sample_title": "Job Application for Catering Prep Coordinator at TooJay\u2019s Deli \u2022 Bakery \u2022 Restaurant",
+    "sample_url": "https://job-boards.greenhouse.io/toojaysdeli/jobs/4413995008",
+    "location": "New York, NY",
+    "perk_excerpt": "...e Catering Prep Coordinator packs, delivers and sets up the catered lunches and events offsite. - Manage inventory of supplies and eq...",
+    "source": "Exa",
+    "notified": 1,
+    "segment": "prospect",
+    "market": "Other",
+    "ezcater_vertical": "",
+    "zi_industry": "",
+    "loc_signal_strength": "noise",
+    "expansion_confirmed": "",
+    "expansion_possible": "",
+    "existing_confirmed": "",
+    "existing_possible": "",
+    "location_jd_count": 1,
+    "location_detail": "[{\"market\": \"Other\", \"jd_count\": 1, \"signal_strength\": \"noise\", \"loc_type\": \"expansion\", \"max_kw_score\": 14}]",
+    "known_markets": "",
+    "office_cities": "[]",
+    "company": "Toojaysdeli",
+    "confidence": "Medium",
+    "icp_tier": "Viable"
   },
   {
     "id": 58,
@@ -1269,7 +1423,10 @@ const DASHBOARD_DATA = [
     "location_jd_count": 0,
     "location_detail": null,
     "known_markets": null,
-    "office_cities": null
+    "office_cities": null,
+    "company": "Kira",
+    "confidence": "Medium",
+    "icp_tier": "Viable"
   },
   {
     "id": 26,
@@ -1300,7 +1457,10 @@ const DASHBOARD_DATA = [
     "location_jd_count": 0,
     "location_detail": null,
     "known_markets": null,
-    "office_cities": null
+    "office_cities": null,
+    "company": "Glassdoor",
+    "confidence": "Medium",
+    "icp_tier": "Monitor"
   },
   {
     "id": 32,
@@ -1331,7 +1491,10 @@ const DASHBOARD_DATA = [
     "location_jd_count": 1,
     "location_detail": "[{\"market\": \"New York\", \"jd_count\": 1, \"signal_strength\": \"noise\", \"loc_type\": \"expansion\", \"max_kw_score\": 7}]",
     "known_markets": "",
-    "office_cities": "[{\"city\": \"Lehi\", \"state\": \"Utah\", \"market\": \"Other\"}]"
+    "office_cities": "[{\"city\": \"Lehi\", \"state\": \"Utah\", \"market\": \"Other\"}]",
+    "company": "Via",
+    "confidence": "Medium",
+    "icp_tier": "Monitor"
   },
   {
     "id": 68,
@@ -1362,7 +1525,10 @@ const DASHBOARD_DATA = [
     "location_jd_count": 3,
     "location_detail": "[{\"market\": \"New York\", \"jd_count\": 3, \"signal_strength\": \"possible\", \"loc_type\": \"expansion\", \"max_kw_score\": 5}]",
     "known_markets": "",
-    "office_cities": "[]"
+    "office_cities": "[]",
+    "company": "Cloaked",
+    "confidence": "Medium",
+    "icp_tier": "Monitor"
   },
   {
     "id": 62,
@@ -1393,7 +1559,10 @@ const DASHBOARD_DATA = [
     "location_jd_count": 1,
     "location_detail": "[{\"market\": \"New York\", \"jd_count\": 1, \"signal_strength\": \"noise\", \"loc_type\": \"expansion\", \"max_kw_score\": 7}]",
     "known_markets": "",
-    "office_cities": "[]"
+    "office_cities": "[]",
+    "company": "Auctor",
+    "confidence": "Medium",
+    "icp_tier": "Monitor"
   },
   {
     "id": 83,
@@ -1401,17 +1570,17 @@ const DASHBOARD_DATA = [
     "domain": "pro.com",
     "first_seen": "2026-05-01",
     "last_seen": "2026-05-01",
-    "times_seen": 1,
-    "is_new": 1,
+    "times_seen": 2,
+    "is_new": 0,
     "gtm_score": 15,
-    "top_keywords": "",
+    "top_keywords": "stocked kitchen",
     "role_count": 1,
     "sample_title": "Workplace Specialist",
     "sample_url": "https://www.opendoor.com/careers/open-positions?gh_jid=4678108006",
     "location": "San Francisco, California, United States",
     "perk_excerpt": "...moving environment. If you find satisfaction in a perfectly stocked kitchen, a smoothly run event, and a building that just&nbsp;<em>wo...",
-    "source": "",
-    "notified": 0,
+    "source": "Greenhouse",
+    "notified": 1,
     "segment": "unmanaged",
     "market": "San Francisco",
     "ezcater_vertical": "Construction and Engineering",
@@ -1424,7 +1593,10 @@ const DASHBOARD_DATA = [
     "location_jd_count": 0,
     "location_detail": "[]",
     "known_markets": "San Francisco",
-    "office_cities": "[{\"city\": \"San Francisco\", \"state\": \"Arizona\", \"market\": \"San Francisco\"}]"
+    "office_cities": "[{\"city\": \"San Francisco\", \"state\": \"Arizona\", \"market\": \"San Francisco\"}]",
+    "company": "Opendoor",
+    "confidence": "Medium",
+    "icp_tier": "Monitor"
   },
   {
     "id": 27,
@@ -1455,7 +1627,10 @@ const DASHBOARD_DATA = [
     "location_jd_count": 0,
     "location_detail": null,
     "known_markets": null,
-    "office_cities": null
+    "office_cities": null,
+    "company": "Forkable",
+    "confidence": "Medium",
+    "icp_tier": "Monitor"
   },
   {
     "id": 77,
@@ -1463,16 +1638,16 @@ const DASHBOARD_DATA = [
     "domain": "slope.com",
     "first_seen": "2026-04-30",
     "last_seen": "2026-05-01",
-    "times_seen": 2,
+    "times_seen": 3,
     "is_new": 0,
     "gtm_score": 14,
-    "top_keywords": "",
+    "top_keywords": "doordash",
     "role_count": 1,
     "sample_title": "Risk Operations",
     "sample_url": "https://jobs.ashbyhq.com/slope/20219acc-4e08-4634-8d93-314ffb5b320a",
     "location": "TBD",
     "perk_excerpt": "...ion Square Ventures) and angels (Sam Altman and founders of Doordash, Dropbox, Plaid, Opendoor, Unity) in the world Work with se...",
-    "source": "",
+    "source": "Ashby",
     "notified": 1,
     "segment": "prospect",
     "market": "Other",
@@ -1486,7 +1661,10 @@ const DASHBOARD_DATA = [
     "location_jd_count": 1,
     "location_detail": "[{\"market\": \"Other\", \"jd_count\": 1, \"signal_strength\": \"noise\", \"loc_type\": \"expansion\", \"max_kw_score\": 10}]",
     "known_markets": "",
-    "office_cities": "[]"
+    "office_cities": "[]",
+    "company": "Slope",
+    "confidence": "Medium",
+    "icp_tier": "Monitor"
   },
   {
     "id": 78,
@@ -1517,7 +1695,10 @@ const DASHBOARD_DATA = [
     "location_jd_count": 0,
     "location_detail": null,
     "known_markets": null,
-    "office_cities": null
+    "office_cities": null,
+    "company": "Homeshare",
+    "confidence": "Medium",
+    "icp_tier": "Monitor"
   },
   {
     "id": 63,
@@ -1548,7 +1729,10 @@ const DASHBOARD_DATA = [
     "location_jd_count": 0,
     "location_detail": null,
     "known_markets": null,
-    "office_cities": null
+    "office_cities": null,
+    "company": "Insight Partners",
+    "confidence": "Medium",
+    "icp_tier": "Monitor"
   },
   {
     "id": 18,
@@ -1556,16 +1740,16 @@ const DASHBOARD_DATA = [
     "domain": "braze.com",
     "first_seen": "2026-04-16",
     "last_seen": "2026-05-01",
-    "times_seen": 12,
+    "times_seen": 13,
     "is_new": 0,
     "gtm_score": 12,
-    "top_keywords": "",
+    "top_keywords": "office lunch",
     "role_count": 1,
     "sample_title": "Account Executive, Japan",
     "sample_url": "https://boards.greenhouse.io/braze/jobs/7516233?gh_jid=7516233",
     "location": "Tokyo",
     "perk_excerpt": "...y</li> <li>Braze \u5185\u3067\u652f\u63f4\u30b3\u30df\u30e5\u30cb\u30c6\u30a3\u3092\u69cb\u7bc9\u3059\u308b\u5f93\u696d\u54e1\u30ea\u30bd\u30fc\u30b9\u30b0\u30eb\u30fc\u30d7</li> <li>\u6bce\u9031\u6c34\u66dc\u65e5\u306e Office Lunch Offering</li> <li>\u4ed6\u90e8\u7f72\u3068\u306e\u30e9\u30f3\u30c1\u4f1a</li> <li>Referral Program</li>...",
-    "source": "",
+    "source": "Greenhouse",
     "notified": 1,
     "segment": "unmanaged",
     "market": "Other",
@@ -1579,7 +1763,10 @@ const DASHBOARD_DATA = [
     "location_jd_count": 0,
     "location_detail": "[]",
     "known_markets": "",
-    "office_cities": "[{\"city\": \"New York City\", \"state\": \"New York\", \"market\": \"Other\"}]"
+    "office_cities": "[{\"city\": \"New York City\", \"state\": \"New York\", \"market\": \"Other\"}]",
+    "company": "Braze",
+    "confidence": "Medium",
+    "icp_tier": "Monitor"
   },
   {
     "id": 28,
@@ -1610,7 +1797,10 @@ const DASHBOARD_DATA = [
     "location_jd_count": 0,
     "location_detail": null,
     "known_markets": null,
-    "office_cities": null
+    "office_cities": null,
+    "company": "Top Companies on Rise",
+    "confidence": "Medium",
+    "icp_tier": "Monitor"
   },
   {
     "id": 29,
@@ -1641,7 +1831,10 @@ const DASHBOARD_DATA = [
     "location_jd_count": 0,
     "location_detail": null,
     "known_markets": null,
-    "office_cities": null
+    "office_cities": null,
+    "company": "Built In NYC",
+    "confidence": "Medium",
+    "icp_tier": "Monitor"
   },
   {
     "id": 15,
@@ -1672,7 +1865,10 @@ const DASHBOARD_DATA = [
     "location_jd_count": 0,
     "location_detail": null,
     "known_markets": null,
-    "office_cities": null
+    "office_cities": null,
+    "company": "Seatgeek",
+    "confidence": "Low",
+    "icp_tier": "Monitor"
   },
   {
     "id": 64,
@@ -1703,7 +1899,10 @@ const DASHBOARD_DATA = [
     "location_jd_count": 1,
     "location_detail": "[{\"market\": \"New York\", \"jd_count\": 1, \"signal_strength\": \"noise\", \"loc_type\": \"expansion\", \"max_kw_score\": 5}]",
     "known_markets": "",
-    "office_cities": "[]"
+    "office_cities": "[]",
+    "company": "Cloaked App",
+    "confidence": "Low",
+    "icp_tier": "Monitor"
   },
   {
     "id": 30,
@@ -1734,7 +1933,10 @@ const DASHBOARD_DATA = [
     "location_jd_count": 0,
     "location_detail": null,
     "known_markets": null,
-    "office_cities": null
+    "office_cities": null,
+    "company": "#1 Corporate Lunch",
+    "confidence": "Low",
+    "icp_tier": "Monitor"
   },
   {
     "id": 66,
@@ -1765,7 +1967,10 @@ const DASHBOARD_DATA = [
     "location_jd_count": 0,
     "location_detail": null,
     "known_markets": null,
-    "office_cities": null
+    "office_cities": null,
+    "company": "Fuzzproductions",
+    "confidence": "Low",
+    "icp_tier": "Monitor"
   },
   {
     "id": 31,
@@ -1796,7 +2001,10 @@ const DASHBOARD_DATA = [
     "location_jd_count": 0,
     "location_detail": null,
     "known_markets": null,
-    "office_cities": null
+    "office_cities": null,
+    "company": "Office Catering in Manhattan",
+    "confidence": "Low",
+    "icp_tier": "Monitor"
   },
   {
     "id": 33,
@@ -1827,7 +2035,10 @@ const DASHBOARD_DATA = [
     "location_jd_count": 0,
     "location_detail": null,
     "known_markets": null,
-    "office_cities": null
+    "office_cities": null,
+    "company": "Blog.Caterplace",
+    "confidence": "Low",
+    "icp_tier": "Monitor"
   },
   {
     "id": 34,
@@ -1858,7 +2069,10 @@ const DASHBOARD_DATA = [
     "location_jd_count": 0,
     "location_detail": null,
     "known_markets": null,
-    "office_cities": null
+    "office_cities": null,
+    "company": "Builtinnyc",
+    "confidence": "Low",
+    "icp_tier": "Monitor"
   },
   {
     "id": 35,
@@ -1889,7 +2103,10 @@ const DASHBOARD_DATA = [
     "location_jd_count": 0,
     "location_detail": null,
     "known_markets": null,
-    "office_cities": null
+    "office_cities": null,
+    "company": "Builtin",
+    "confidence": "Low",
+    "icp_tier": "Monitor"
   },
   {
     "id": 79,
@@ -1897,16 +2114,16 @@ const DASHBOARD_DATA = [
     "domain": "aftership.com",
     "first_seen": "2026-04-30",
     "last_seen": "2026-05-01",
-    "times_seen": 2,
+    "times_seen": 3,
     "is_new": 0,
     "gtm_score": 9,
-    "top_keywords": "",
+    "top_keywords": "office lunch",
     "role_count": 8,
     "sample_title": "Manager, Solutions Engineering",
-    "sample_url": "https://job-boards.greenhouse.io/aftership/jobs/5981360004",
+    "sample_url": "https://job-boards.greenhouse.io/aftership/jobs/5981364004",
     "location": "Toronto",
     "perk_excerpt": "...reer progression &amp; professional development</li> <li>In-office lunch and commuter benefits for those located in our hub location...",
-    "source": "",
+    "source": "Greenhouse",
     "notified": 1,
     "segment": "prospect",
     "market": "Other",
@@ -1920,7 +2137,10 @@ const DASHBOARD_DATA = [
     "location_jd_count": 0,
     "location_detail": "[]",
     "known_markets": "",
-    "office_cities": "[]"
+    "office_cities": "[]",
+    "company": "Aftership",
+    "confidence": "Low",
+    "icp_tier": "Monitor"
   },
   {
     "id": 80,
@@ -1951,7 +2171,44 @@ const DASHBOARD_DATA = [
     "location_jd_count": 0,
     "location_detail": null,
     "known_markets": null,
-    "office_cities": null
+    "office_cities": null,
+    "company": "Lux1",
+    "confidence": "Low",
+    "icp_tier": "Monitor"
+  },
+  {
+    "id": 85,
+    "name": "Zerocater",
+    "domain": "zerocater.com",
+    "first_seen": "2026-05-01",
+    "last_seen": "2026-05-01",
+    "times_seen": 1,
+    "is_new": 1,
+    "gtm_score": 9,
+    "top_keywords": "catered lunch",
+    "role_count": 1,
+    "sample_title": "Join Zerocater, Food-Tech Career Opportunities | Zerocater",
+    "sample_url": "https://boards.greenhouse.io/zerocater/jobs/6984337",
+    "location": null,
+    "perk_excerpt": "...n care of. In case you didn\u2019t already guess, we offer daily catered lunch from hundreds of local vendors. ### Match made in heaven We...",
+    "source": "Exa",
+    "notified": 0,
+    "segment": "prospect",
+    "market": "Other",
+    "ezcater_vertical": "",
+    "zi_industry": "",
+    "loc_signal_strength": "noise",
+    "expansion_confirmed": "",
+    "expansion_possible": "",
+    "existing_confirmed": "",
+    "existing_possible": "",
+    "location_jd_count": 1,
+    "location_detail": "[{\"market\": \"Other\", \"jd_count\": 1, \"signal_strength\": \"noise\", \"loc_type\": \"expansion\", \"max_kw_score\": 7}]",
+    "known_markets": "",
+    "office_cities": "[]",
+    "company": "Zerocater",
+    "confidence": "Low",
+    "icp_tier": "Monitor"
   },
   {
     "id": 81,
@@ -1959,16 +2216,16 @@ const DASHBOARD_DATA = [
     "domain": "harvey.com",
     "first_seen": "2026-04-30",
     "last_seen": "2026-05-01",
-    "times_seen": 2,
+    "times_seen": 3,
     "is_new": 0,
     "gtm_score": 8,
-    "top_keywords": "",
+    "top_keywords": "office lunch",
     "role_count": 3,
     "sample_title": "Enterprise Account Executive, APAC",
     "sample_url": "https://jobs.ashbyhq.com/harvey/859b90d6-a371-42ba-a5a2-a4a4ca2ab4a7",
     "location": "Sydney",
     "perk_excerpt": "...parental leave for all parents. Wellness & Perks: Daily in-office lunch, wellness memberships through Wellhub, and monthly commutin...",
-    "source": "",
+    "source": "Ashby",
     "notified": 1,
     "segment": "prospect",
     "market": "Other",
@@ -1982,7 +2239,10 @@ const DASHBOARD_DATA = [
     "location_jd_count": 0,
     "location_detail": "[]",
     "known_markets": "",
-    "office_cities": "[]"
+    "office_cities": "[]",
+    "company": "Harvey",
+    "confidence": "Low",
+    "icp_tier": "Monitor"
   },
   {
     "id": 17,
@@ -1990,16 +2250,16 @@ const DASHBOARD_DATA = [
     "domain": "virtu.com",
     "first_seen": "2026-04-16",
     "last_seen": "2026-05-01",
-    "times_seen": 12,
+    "times_seen": 13,
     "is_new": 0,
     "gtm_score": 7,
-    "top_keywords": "",
+    "top_keywords": "stocked kitchen",
     "role_count": 1,
     "sample_title": "Trading Operations Specialist",
     "sample_url": "https://job-boards.greenhouse.io/virtu/jobs/7596640002",
     "location": "New York",
     "perk_excerpt": "...re rewarded for their contributions to the firm.</li> <li>A stocked kitchen with breakfast and snacks, along with a barista bar.</li> <...",
-    "source": "",
+    "source": "Greenhouse",
     "notified": 1,
     "segment": "prospect",
     "market": "New York",
@@ -2013,7 +2273,10 @@ const DASHBOARD_DATA = [
     "location_jd_count": 0,
     "location_detail": "[]",
     "known_markets": "",
-    "office_cities": "[]"
+    "office_cities": "[]",
+    "company": "Virtu",
+    "confidence": "Low",
+    "icp_tier": "Monitor"
   },
   {
     "id": 36,
@@ -2044,7 +2307,10 @@ const DASHBOARD_DATA = [
     "location_jd_count": 0,
     "location_detail": null,
     "known_markets": null,
-    "office_cities": null
+    "office_cities": null,
+    "company": "Debut",
+    "confidence": "Low",
+    "icp_tier": "Monitor"
   },
   {
     "id": 37,
@@ -2075,7 +2341,10 @@ const DASHBOARD_DATA = [
     "location_jd_count": 0,
     "location_detail": null,
     "known_markets": null,
-    "office_cities": null
+    "office_cities": null,
+    "company": "Fellfel",
+    "confidence": "Low",
+    "icp_tier": "Monitor"
   },
   {
     "id": 82,
@@ -2083,19 +2352,19 @@ const DASHBOARD_DATA = [
     "domain": "try.com",
     "first_seen": "2026-04-30",
     "last_seen": "2026-05-01",
-    "times_seen": 2,
+    "times_seen": 3,
     "is_new": 0,
     "gtm_score": 5,
-    "top_keywords": "",
+    "top_keywords": "office lunch",
     "role_count": 1,
     "sample_title": "Job Application for Social Media Associate - Los Angeles, CA at Picnic Delivery",
     "sample_url": "http://job-boards.greenhouse.io/try-picnic/jobs/8184780002",
     "location": "New York, NY",
     "perk_excerpt": "...videos - Capture and produce content featuring restaurants, office lunches, team moments, and brand storytelling - Maintain a consis...",
-    "source": "",
+    "source": "Exa",
     "notified": 1,
     "segment": "prospect",
-    "market": "New York",
+    "market": "Other",
     "ezcater_vertical": "",
     "zi_industry": "",
     "loc_signal_strength": "noise",
@@ -2106,7 +2375,10 @@ const DASHBOARD_DATA = [
     "location_jd_count": 0,
     "location_detail": "[]",
     "known_markets": "",
-    "office_cities": "[]"
+    "office_cities": "[]",
+    "company": "Try Picnic",
+    "confidence": "Low",
+    "icp_tier": "Monitor"
   },
   {
     "id": 38,
@@ -2137,7 +2409,10 @@ const DASHBOARD_DATA = [
     "location_jd_count": 0,
     "location_detail": null,
     "known_markets": null,
-    "office_cities": null
+    "office_cities": null,
+    "company": "Fooda",
+    "confidence": "Low",
+    "icp_tier": "Monitor"
   },
   {
     "id": 39,
@@ -2168,7 +2443,10 @@ const DASHBOARD_DATA = [
     "location_jd_count": 0,
     "location_detail": null,
     "known_markets": null,
-    "office_cities": null
+    "office_cities": null,
+    "company": "Lunch Catering NYC",
+    "confidence": "Low",
+    "icp_tier": "Monitor"
   },
   {
     "id": 40,
@@ -2199,7 +2477,10 @@ const DASHBOARD_DATA = [
     "location_jd_count": 0,
     "location_detail": null,
     "known_markets": null,
-    "office_cities": null
+    "office_cities": null,
+    "company": "Sifted",
+    "confidence": "Low",
+    "icp_tier": "Monitor"
   },
   {
     "id": 41,
@@ -2230,7 +2511,10 @@ const DASHBOARD_DATA = [
     "location_jd_count": 0,
     "location_detail": null,
     "known_markets": null,
-    "office_cities": null
+    "office_cities": null,
+    "company": "Martinandfitch",
+    "confidence": "Low",
+    "icp_tier": "Monitor"
   },
   {
     "id": 42,
@@ -2261,7 +2545,10 @@ const DASHBOARD_DATA = [
     "location_jd_count": 0,
     "location_detail": null,
     "known_markets": null,
-    "office_cities": null
+    "office_cities": null,
+    "company": "n\u00fcu Catering",
+    "confidence": "Low",
+    "icp_tier": "Monitor"
   },
   {
     "id": 43,
@@ -2292,7 +2579,10 @@ const DASHBOARD_DATA = [
     "location_jd_count": 0,
     "location_detail": null,
     "known_markets": null,
-    "office_cities": null
+    "office_cities": null,
+    "company": "Redtablecatering",
+    "confidence": "Low",
+    "icp_tier": "Monitor"
   },
   {
     "id": 44,
@@ -2323,7 +2613,10 @@ const DASHBOARD_DATA = [
     "location_jd_count": 0,
     "location_detail": null,
     "known_markets": null,
-    "office_cities": null
+    "office_cities": null,
+    "company": "Metrocateringnyc",
+    "confidence": "Low",
+    "icp_tier": "Monitor"
   },
   {
     "id": 45,
@@ -2354,7 +2647,10 @@ const DASHBOARD_DATA = [
     "location_jd_count": 0,
     "location_detail": null,
     "known_markets": null,
-    "office_cities": null
+    "office_cities": null,
+    "company": "Lunch Delivery",
+    "confidence": "Low",
+    "icp_tier": "Monitor"
   },
   {
     "id": 46,
@@ -2385,7 +2681,10 @@ const DASHBOARD_DATA = [
     "location_jd_count": 0,
     "location_detail": null,
     "known_markets": null,
-    "office_cities": null
+    "office_cities": null,
+    "company": "Corporate Event Catering NYC",
+    "confidence": "Low",
+    "icp_tier": "Monitor"
   },
   {
     "id": 47,
@@ -2416,7 +2715,10 @@ const DASHBOARD_DATA = [
     "location_jd_count": 0,
     "location_detail": null,
     "known_markets": null,
-    "office_cities": null
+    "office_cities": null,
+    "company": "Elite Caterers NY",
+    "confidence": "Low",
+    "icp_tier": "Monitor"
   },
   {
     "id": 48,
@@ -2447,7 +2749,10 @@ const DASHBOARD_DATA = [
     "location_jd_count": 0,
     "location_detail": null,
     "known_markets": null,
-    "office_cities": null
+    "office_cities": null,
+    "company": "CaterCow",
+    "confidence": "Low",
+    "icp_tier": "Monitor"
   },
   {
     "id": 49,
@@ -2478,7 +2783,10 @@ const DASHBOARD_DATA = [
     "location_jd_count": 0,
     "location_detail": null,
     "known_markets": null,
-    "office_cities": null
+    "office_cities": null,
+    "company": "Corporate Catering NYC",
+    "confidence": "Low",
+    "icp_tier": "Monitor"
   },
   {
     "id": 50,
@@ -2509,7 +2817,10 @@ const DASHBOARD_DATA = [
     "location_jd_count": 0,
     "location_detail": null,
     "known_markets": null,
-    "office_cities": null
+    "office_cities": null,
+    "company": "Mangia.Nyc",
+    "confidence": "Low",
+    "icp_tier": "Monitor"
   },
   {
     "id": 51,
@@ -2540,7 +2851,10 @@ const DASHBOARD_DATA = [
     "location_jd_count": 0,
     "location_detail": null,
     "known_markets": null,
-    "office_cities": null
+    "office_cities": null,
+    "company": "Office Catering NYC",
+    "confidence": "Low",
+    "icp_tier": "Monitor"
   },
   {
     "id": 52,
@@ -2571,15 +2885,18 @@ const DASHBOARD_DATA = [
     "location_jd_count": 0,
     "location_detail": null,
     "known_markets": null,
-    "office_cities": null
+    "office_cities": null,
+    "company": "Menus & Prices 2026",
+    "confidence": "Low",
+    "icp_tier": "Monitor"
   }
 ];
 
 const DASHBOARD_STATS = {
-  "total_companies": 83,
-  "new_today": 1,
-  "total_runs": 11,
-  "last_run_date": "2026-04-30",
-  "last_run_new": 14,
+  "total_companies": 85,
+  "new_today": 3,
+  "total_runs": 12,
+  "last_run_date": "2026-05-01",
+  "last_run_new": 1,
   "run_date": "2026-05-01"
 };
