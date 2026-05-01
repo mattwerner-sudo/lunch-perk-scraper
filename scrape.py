@@ -2,13 +2,17 @@
 Main scraper runner.
 
 Usage:
-  python3 scrape.py                     # full run: scrape → verify → enrich → notify
-  python3 scrape.py --sources gh lv    # specific sources only
-  python3 scrape.py --no-verify        # skip live verification
-  python3 scrape.py --no-notify        # skip Slack notification
-  python3 scrape.py --dry-run          # preview only, no writes
+  python3 scrape.py                          # full run: scrape → verify → enrich → notify
+  python3 scrape.py --sources gh lv          # specific sources only
+  python3 scrape.py --sources ts             # TheirStack account monitor (default mode)
+  python3 scrape.py --sources ts --ts-mode discovery   # TheirStack net-new discovery
+  python3 scrape.py --sources ts --ts-days 14          # TheirStack: last 14 days
+  python3 scrape.py --sources ts --ts-domains 500      # TheirStack: test with 500 domains
+  python3 scrape.py --no-verify              # skip live verification
+  python3 scrape.py --no-notify             # skip Slack notification
+  python3 scrape.py --dry-run               # preview only, no writes
 
-Sources: gh gd lv ab bn wd js ap wf ex fc
+Sources: gh gd lv ab bn wd js ap wf ex fc ts
 """
 import argparse
 import csv
@@ -33,6 +37,7 @@ SOURCES = {
     "wf": ("Wellfound",               "scrapers.wellfound",         "scrape"),
     "ex": ("Exa",                     "scrapers.exa_scraper",       "scrape"),
     "fc": ("Firecrawl",               "scrapers.firecrawl_scraper", "scrape"),
+    "ts": ("TheirStack",              "scrapers.theirstack",        "scrape"),
 }
 
 FIELDNAMES = [
@@ -42,7 +47,7 @@ FIELDNAMES = [
 ]
 
 
-def _run_one(key: str, dry_run: bool) -> tuple[str, list[dict]]:
+def _run_one(key: str, dry_run: bool, scraper_kwargs: dict | None = None) -> tuple[str, list[dict]]:
     """Run a single scraper and return (label, records). Never raises."""
     label, module_path, fn_name = SOURCES[key]
     try:
@@ -52,8 +57,9 @@ def _run_one(key: str, dry_run: bool) -> tuple[str, list[dict]]:
         log.error(f"Failed to load {label}: {e}")
         return label, []
     records = []
+    kwargs = scraper_kwargs or {}
     try:
-        for record in fn():
+        for record in fn(**kwargs):
             records.append(record)
             if dry_run and len(records) >= 5:
                 break
@@ -63,24 +69,36 @@ def _run_one(key: str, dry_run: bool) -> tuple[str, list[dict]]:
     return label, records
 
 
-def scrape_all(selected_sources: list[str], dry_run: bool) -> list[dict]:
+def scrape_all(
+    selected_sources: list[str],
+    dry_run: bool,
+    scraper_kwargs: dict[str, dict] | None = None,
+) -> list[dict]:
+    """
+    scraper_kwargs: optional per-source kwargs dict, e.g.
+      {"ts": {"mode": "discovery", "max_age_days": 14}}
+    """
     raw = []
+    kwargs_map = scraper_kwargs or {}
     # I/O-bound scrapers run in parallel; cap workers to avoid hammering rate limits
     max_workers = min(len(selected_sources), 5)
     log.info(f"Running {len(selected_sources)} scrapers ({max_workers} parallel workers)")
     with ThreadPoolExecutor(max_workers=max_workers) as pool:
-        futures = {pool.submit(_run_one, key, dry_run): key for key in selected_sources}
+        futures = {
+            pool.submit(_run_one, key, dry_run, kwargs_map.get(key)): key
+            for key in selected_sources
+        }
         for future in as_completed(futures):
             _, records = future.result()
             raw.extend(records)
     return raw
 
 
-def run(selected_sources, dry_run, verify, notify):
+def run(selected_sources, dry_run, verify, notify, scraper_kwargs=None):
     db.init()
 
     # ── 1. Scrape ──────────────────────────────────────────────────────────
-    raw = scrape_all(selected_sources, dry_run)
+    raw = scrape_all(selected_sources, dry_run, scraper_kwargs)
     log.info(f"Total raw matches: {len(raw)}")
 
     if dry_run:
@@ -155,10 +173,18 @@ def main():
     parser.add_argument("--no-notify",  action="store_true")
     parser.add_argument("--dry-run",    action="store_true")
     # Targeted mode: scrape directly against managed + ICP unmanaged account list
-    parser.add_argument("--targeted",   action="store_true",
+    parser.add_argument("--targeted",    action="store_true",
                         help="Scrape directly against account list (targeted mode)")
     parser.add_argument("--tier2-sample", type=int, default=1000,
                         help="Number of unmanaged ICP accounts per targeted run (default: 1000)")
+    # TheirStack-specific flags
+    parser.add_argument("--ts-mode",    choices=["account_monitor", "discovery"],
+                        default="account_monitor",
+                        help="TheirStack mode: account_monitor (default) or discovery")
+    parser.add_argument("--ts-days",    type=int, default=7,
+                        help="TheirStack: how many days back to search (default: 7)")
+    parser.add_argument("--ts-domains", type=int, default=None,
+                        help="TheirStack: cap domain count for testing (e.g. 500)")
     args = parser.parse_args()
 
     if args.targeted and args.sources != ["gh", "lv", "ab", "wd", "js", "ap", "wf"]:
@@ -191,11 +217,22 @@ def main():
                 send_new_companies_alert(new_cos, stats)
         return
 
+    # Build per-source kwargs
+    scraper_kwargs = {}
+    if "ts" in args.sources:
+        scraper_kwargs["ts"] = {
+            "mode":          args.ts_mode,
+            "max_age_days":  args.ts_days,
+            "domain_limit":  args.ts_domains,
+            "dry_run":       args.dry_run,
+        }
+
     run(
         selected_sources=args.sources,
         dry_run=args.dry_run,
         verify=not args.no_verify and not args.dry_run,
         notify=not args.no_notify and not args.dry_run,
+        scraper_kwargs=scraper_kwargs,
     )
 
 
