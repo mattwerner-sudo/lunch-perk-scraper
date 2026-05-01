@@ -35,7 +35,7 @@ BASE_URL = "https://api.theirstack.com/v1/jobs/search"
 # ── Tuning constants ──────────────────────────────────────────────────────────
 DOMAIN_BATCH_SIZE   = 100    # domains per request (safe payload limit)
 RESULTS_PER_PAGE    = 25     # jobs per page (25 = 25 credits/request)
-MAX_PAGES_PER_BATCH = 4      # max pages to fetch per domain batch (100 credits cap)
+MAX_PAGES_PER_BATCH = 1      # 1 page per batch = 25 credits max per 100 domains
 REQUEST_DELAY       = 0.26   # seconds between requests — stays under 4 req/sec limit
 MAX_AGE_DAYS        = 7      # only jobs posted in the last N days
 
@@ -255,22 +255,12 @@ def _fetch_batch(
     Pages through results up to MAX_PAGES_PER_BATCH.
     Mutates seen_urls (dedup) and credit_counter (tracking).
     """
-    # Job title pre-filter: roles that commonly describe food perks in JDs.
-    # TheirStack's description-level filter is plan-restricted (silently ignored).
-    # Title filter IS confirmed working and limits credit spend significantly —
-    # without it we'd pull every job from every domain regardless of relevance.
-    # We then run find_food_keywords() locally on the returned description field.
-    TITLE_PROXY_FILTER = [
-        "facilities", "office manager", "workplace", "people operations",
-        "human resources", "hr manager", "hr director", "total rewards",
-        "employee experience", "office operations", "procurement",
-        "office coordinator", "executive assistant", "chief of staff",
-        "culture", "benefits manager", "real estate", "corporate services",
-    ]
-
+    # No title filter — food perks appear in any role (engineer, analyst, PM)
+    # not just HR/facilities. Credit spend is controlled by MAX_PAGES_PER_BATCH=1:
+    # 25 jobs × 189 batches = ~4,700 credits max for a full run (~$4.70).
+    # find_food_keywords() runs locally on the returned description field.
     base_payload = {
         "company_domain_or":      domain_batch,
-        "job_title_pattern_or":   TITLE_PROXY_FILTER,
         "posted_at_max_age_days": posted_at_max_age_days,
         "job_country_code_or":    ["US"],
         "limit":                  RESULTS_PER_PAGE,
@@ -365,10 +355,6 @@ def scrape(
         sample_batch = all_domains[:DOMAIN_BATCH_SIZE]
         probe = _post({
             "company_domain_or":      sample_batch,
-            "job_title_pattern_or":   [
-                "facilities", "office manager", "workplace", "people operations",
-                "human resources", "hr manager", "total rewards", "employee experience",
-            ],
             "posted_at_max_age_days": max_age_days,
             "job_country_code_or":    ["US"],
             "limit":                  5,
@@ -412,14 +398,7 @@ def _scrape_discovery(
     Finds companies with food perks outside our known account universe.
     Caps at 5 pages (125 results / 125 credits) by default.
     """
-    DISCOVERY_TITLES = [
-        "facilities", "office manager", "workplace", "people operations",
-        "human resources", "hr manager", "total rewards", "employee experience",
-        "office coordinator", "chief of staff", "culture", "benefits manager",
-    ]
-
     payload = {
-        "job_title_pattern_or":   DISCOVERY_TITLES,
         "posted_at_max_age_days": max_age_days,
         "job_country_code_or":    ["US"],
         "limit":                  RESULTS_PER_PAGE,
