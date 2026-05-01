@@ -95,10 +95,14 @@ PERSONA_SIGNALS = {
 }
 
 # ── Location signal thresholds ────────────────────────────────────────────────
-# Multiple JDs from the same company+city all mentioning food = confirmed office
-# with an active food program. Single JD is noise; 3+ is signal; 5+ is strong.
-LOCATION_SIG_WEAK   = 3   # "possible" — office likely has food perks
-LOCATION_SIG_STRONG = 5   # "confirmed" — high-confidence target location
+# Unit of analysis: (company, market) — two offices are two independent signals.
+# Quality gate: only JDs with keyword score >= LOCATION_MIN_KW_SCORE count.
+# This filters "stocked kitchen" noise (score=3) from real programs (score>=5).
+LOCATION_SIG_WEAK       = 3   # "possible" — office likely has food perks
+LOCATION_SIG_STRONG     = 5   # "confirmed" — high-confidence target location
+LOCATION_MIN_KW_SCORE   = 5   # minimum keyword score to count a JD as signal
+                               # (meal stipend=5, free lunch=7, doordash=10 pass;
+                               #  stocked kitchen=3 is filtered out)
 
 CONFIDENCE_TIERS = {
     range(25, 999): "High",
@@ -200,123 +204,116 @@ def infer_domain(company: str) -> str:
     return f"{slug}.com" if slug else "unknown.com"
 
 
-def _location_signals(rows: list[dict]) -> dict:
-    """
-    Stat-sig location model: group job rows by normalized city/market and count
-    how many distinct JDs per location mention food keywords.
-
-    Returns a dict with:
-      confirmed_locations  — list of locations with >= LOCATION_SIG_STRONG JDs
-      possible_locations   — list of locations with >= LOCATION_SIG_WEAK JDs (below strong)
-      location_score_boost — score bonus earned from location signal density
-      location_detail      — list of {location, market, jd_count, signal_strength} for dashboard
-    """
-    loc_counts: dict[str, list[dict]] = defaultdict(list)
-    for r in rows:
-        loc = (r.get("location") or "").strip()
-        if not loc:
-            loc = "Unknown"
-        # Normalize to metro market for grouping — avoids "New York, NY" vs "NYC" splits
-        market = infer_market(loc)
-        key = market if market != "Other" else loc
-        loc_counts[key].append(r)
-
-    confirmed, possible, detail = [], [], []
-    boost = 0
-    for loc_key, loc_rows in loc_counts.items():
-        n = len(loc_rows)
-        if n >= LOCATION_SIG_STRONG:
-            confirmed.append(loc_key)
-            boost += 10
-            strength = "confirmed"
-        elif n >= LOCATION_SIG_WEAK:
-            possible.append(loc_key)
-            boost += 5
-            strength = "possible"
-        else:
-            strength = "noise"
-        detail.append({"location": loc_key, "jd_count": n, "signal_strength": strength})
-
-    detail.sort(key=lambda x: -x["jd_count"])
-    return {
-        "confirmed_locations":  confirmed,
-        "possible_locations":   possible,
-        "location_score_boost": boost,
-        "location_detail":      detail,
-    }
+def _kw_score_for_row(kws_matched: str) -> int:
+    """Sum KEYWORD_SCORE values for matched keywords on a single JD."""
+    kws = kws_matched.lower()
+    return sum(v for k, v in KEYWORD_SCORE.items() if k in kws)
 
 
-def rollup_to_companies(df: pd.DataFrame) -> pd.DataFrame:
+def rollup_to_companies(df: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame]:
     """
     Collapse job-level rows into one row per company.
-    Aggregates: role count, all unique keywords, best score, best source, sample role/URL.
-    Applies location stat-sig model: 3+ JDs at same location = possible, 5+ = confirmed.
-    """
-    df["company"] = df["company"].fillna("").astype(str)
-    df["gtm_score"] = df.apply(score_row, axis=1)
-    df["company_norm"] = df["company"].str.strip().str.lower()
-    df = df[df["company_norm"] != ""]  # drop rows with no company name
 
+    Location stat-sig model (vectorized):
+    - Unit of analysis: (company, market) — two cities = two independent signals
+    - Quality gate: only JDs with keyword score >= LOCATION_MIN_KW_SCORE count
+      (filters stocked kitchen noise; requires real food program keywords)
+    - Score boost: +10 per confirmed office (5+ quality JDs), +5 per possible (3+)
+    - Each office independent: Chicago confirmed + NYC possible = +15 total
+
+    Returns:
+      companies_df  — one row per company
+      locations_df  — one row per (company, market), for company_locations table
+    """
+    df = df.copy()
+    df["company"] = df["company"].fillna("").astype(str)
+    df["company_norm"] = df["company"].str.strip().str.lower()
+    df = df[df["company_norm"] != ""]
+
+    # Vectorize market + keyword score — compute once across all rows
+    df["market"]   = df["location"].fillna("").apply(infer_market)
+    df["kw_score"] = df["food_keywords_matched"].fillna("").apply(_kw_score_for_row)
+    df["gtm_score"] = df.apply(score_row, axis=1)
+
+    # ── Location stat-sig: group by (company, market), quality-gated ──────────
+    quality = df[df["kw_score"] >= LOCATION_MIN_KW_SCORE]
+    loc_counts    = quality.groupby(["company_norm", "market"]).size().rename("jd_count")
+    loc_max_score = quality.groupby(["company_norm", "market"])["kw_score"].max().rename("max_kw_score")
+    loc_stats = pd.concat([loc_counts, loc_max_score], axis=1).reset_index()
+
+    def _strength(n):
+        if n >= LOCATION_SIG_STRONG: return "confirmed"
+        if n >= LOCATION_SIG_WEAK:   return "possible"
+        return "noise"
+
+    loc_stats["signal_strength"] = loc_stats["jd_count"].apply(_strength)
+
+    # Score boost: per office, independently
+    loc_stats["loc_boost"] = loc_stats["signal_strength"].map(
+        {"confirmed": 10, "possible": 5, "noise": 0}
+    )
+
+    # Company-level location boost = sum of boosts across all offices
+    company_loc_boost = loc_stats.groupby("company_norm")["loc_boost"].sum().rename("location_score_boost")
+
+    # Build locations_df for the company_locations table (one row per company+market)
+    locations_df = loc_stats.rename(columns={"market": "market"}).copy()
+
+    # ── Per-company rollup ─────────────────────────────────────────────────────
     groups = defaultdict(list)
     for _, row in df.iterrows():
         groups[row["company_norm"]].append(row.to_dict())
 
     records = []
     for norm_name, rows in groups.items():
-        # Pick the best row as the "representative"
         best = max(rows, key=lambda r: r.get("gtm_score", 0))
 
-        # Unique job titles — deduplicate across sources (same title from
-        # LinkedIn and Greenhouse counts as ONE role, not two)
         unique_titles = {
             str(r.get("title", "") or "").strip().lower()
             for r in rows
             if str(r.get("title", "") or "").strip()
         }
 
-        # Aggregate all unique food keywords seen across every role
         all_kws = set()
         for r in rows:
             for kw in str(r.get("food_keywords_matched", "")).split(", "):
                 if kw.strip():
                     all_kws.add(kw.strip())
 
-        # All sources that found this company
         sources_seen = list({r.get("source", "") for r in rows})
-
-        # Source hierarchy: prefer highest-signal source
         source_priority = list(SOURCE_BONUS.keys())
         best_source = next(
             (s for s in source_priority if s in sources_seen),
             sources_seen[0] if sources_seen else "",
         )
-
-        # All sources as a readable string for the dashboard
         all_sources = ", ".join(sorted(sources_seen))
 
-        score = best["gtm_score"]
+        score        = best["gtm_score"]
         company_name = best["company"].strip()
         location_str = best.get("location", "")
 
-        # Location stat-sig model: multiple JDs at same city = confirmed food program
-        loc_sig = _location_signals(rows)
-        score += loc_sig["location_score_boost"]
+        # Apply per-office location boost (vectorized result, 0 if no quality JDs)
+        score += int(company_loc_boost.get(norm_name, 0))
 
-        # Account segmentation — domain-first, three tiers
+        # Account segmentation
         domain = infer_domain(company_name)
-        seg, acct_row = account_lookup.lookup(company_name, domain)
+        seg, acct_row    = account_lookup.lookup(company_name, domain)
         ezcater_vertical = acct_row["ezcater_vertical"] if acct_row else ""
         zi_industry      = acct_row["zi_industry"]      if acct_row else ""
-        # Score boosts: managed (rep-owned) > unmanaged (no rep yet) > prospect (unknown)
         if seg == "managed":
             score += 15
         elif seg == "unmanaged":
             score += 8
 
-        # Derive overall location signal strength for display
-        if loc_sig["confirmed_locations"]:
+        # Pull per-office detail for this company from loc_stats
+        co_locs = loc_stats[loc_stats["company_norm"] == norm_name].sort_values("jd_count", ascending=False)
+        confirmed_locs = co_locs[co_locs["signal_strength"] == "confirmed"]["market"].tolist()
+        possible_locs  = co_locs[co_locs["signal_strength"] == "possible"]["market"].tolist()
+        loc_detail     = co_locs[["market", "jd_count", "signal_strength", "max_kw_score"]].to_dict(orient="records")
+
+        if confirmed_locs:
             loc_signal_strength = "confirmed"
-        elif loc_sig["possible_locations"]:
+        elif possible_locs:
             loc_signal_strength = "possible"
         else:
             loc_signal_strength = "noise"
@@ -342,17 +339,16 @@ def rollup_to_companies(df: pd.DataFrame) -> pd.DataFrame:
             "sample_url":             best.get("url", ""),
             "perk_excerpt":           best.get("perk_excerpt", "")[:200],
             "date_first_seen":        best.get("date_posted", ""),
-            "is_new":                 1,  # will be updated by db.py on upsert
-            # Location signal fields
+            "is_new":                 1,
             "loc_signal_strength":    loc_signal_strength,
-            "confirmed_locations":    ", ".join(loc_sig["confirmed_locations"]),
-            "possible_locations":     ", ".join(loc_sig["possible_locations"]),
-            "location_jd_count":      len(rows),  # total JDs with food signals, all locations
-            "location_detail":        json.dumps(loc_sig["location_detail"]),
+            "confirmed_locations":    ", ".join(confirmed_locs),
+            "possible_locations":     ", ".join(possible_locs),
+            "location_jd_count":      int(co_locs["jd_count"].sum()),
+            "location_detail":        json.dumps(loc_detail),
         })
 
-    result = pd.DataFrame(records).sort_values("gtm_score", ascending=False)
-    return result.reset_index(drop=True)
+    companies_df = pd.DataFrame(records).sort_values("gtm_score", ascending=False).reset_index(drop=True)
+    return companies_df, locations_df
 
 
 def export_dashboard_js(companies_df: pd.DataFrame, stats: dict, path: str = "dashboard_data.js"):
@@ -379,12 +375,15 @@ def run():
     print(f"Raw job records   : {len(df)}")
 
     # Roll up to company level
-    companies = rollup_to_companies(df)
+    companies, locations_df = rollup_to_companies(df)
     print(f"Unique companies  : {len(companies)}")
 
     # Persist to SQLite — get net new vs updated
     records = companies.to_dict(orient="records")
     new_cos, updated_cos = db.upsert_companies(records)
+
+    # Persist per-office location signals
+    db.upsert_company_locations(locations_df.to_dict(orient="records"))
 
     # Velocity tracking — record weekly signal counts
     db.record_velocity(records)

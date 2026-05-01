@@ -86,6 +86,23 @@ def init():
             checked_at  TEXT NOT NULL
         );
 
+        -- One row per (company, market): queryable location signal table.
+        -- Replaces the JSON blob in companies.location_detail for anything
+        -- requiring a real query (e.g. "all companies with confirmed Chicago office").
+        CREATE TABLE IF NOT EXISTS company_locations (
+            id              INTEGER PRIMARY KEY AUTOINCREMENT,
+            company_name    TEXT NOT NULL,
+            market          TEXT NOT NULL,
+            jd_count        INTEGER DEFAULT 0,
+            signal_strength TEXT DEFAULT 'noise',
+            max_kw_score    INTEGER DEFAULT 0,
+            last_seen       TEXT NOT NULL,
+            UNIQUE(company_name, market)
+        );
+
+        CREATE INDEX IF NOT EXISTS idx_cloc_market
+            ON company_locations(market, signal_strength);
+
         CREATE TABLE IF NOT EXISTS runs (
             id          INTEGER PRIMARY KEY AUTOINCREMENT,
             ran_at      TEXT NOT NULL,
@@ -297,6 +314,62 @@ def get_new_unnotified() -> list[dict]:
             "SELECT * FROM companies WHERE is_new=1 AND notified=0 ORDER BY gtm_score DESC"
         ).fetchall()
         return [dict(r) for r in rows]
+
+
+def upsert_company_locations(records: list[dict]):
+    """
+    Persist per-office location signals (one row per company+market).
+    Replaces the JSON blob approach — fully queryable.
+    records come from locations_df in enrich.rollup_to_companies().
+    """
+    today = date.today().isoformat()
+    with _conn() as con:
+        for r in records:
+            company = r.get("company_norm") or r.get("company_name", "")
+            market  = r.get("market", "")
+            if not company or not market:
+                continue
+            con.execute("""
+                INSERT INTO company_locations
+                    (company_name, market, jd_count, signal_strength, max_kw_score, last_seen)
+                VALUES (?, ?, ?, ?, ?, ?)
+                ON CONFLICT(company_name, market) DO UPDATE SET
+                    jd_count        = excluded.jd_count,
+                    signal_strength = excluded.signal_strength,
+                    max_kw_score    = excluded.max_kw_score,
+                    last_seen       = excluded.last_seen
+            """, (
+                company,
+                market,
+                r.get("jd_count", 0),
+                r.get("signal_strength", "noise"),
+                r.get("max_kw_score", 0),
+                today,
+            ))
+
+
+def get_confirmed_offices(market: str | None = None, min_strength: str = "confirmed") -> list[dict]:
+    """
+    Query company_locations directly — e.g. 'show me all confirmed Chicago offices'.
+    min_strength: 'confirmed' returns only confirmed; 'possible' returns both.
+    """
+    strength_filter = ("confirmed",) if min_strength == "confirmed" else ("confirmed", "possible")
+    placeholders = ",".join("?" * len(strength_filter))
+    query = f"""
+        SELECT cl.company_name, cl.market, cl.jd_count, cl.signal_strength, cl.max_kw_score,
+               c.gtm_score, c.segment, c.top_keywords, c.sample_url
+        FROM company_locations cl
+        LEFT JOIN companies c ON c.name = cl.company_name
+        WHERE cl.signal_strength IN ({placeholders})
+    """
+    params = list(strength_filter)
+    if market:
+        query += " AND cl.market = ?"
+        params.append(market)
+    query += " ORDER BY cl.jd_count DESC, c.gtm_score DESC"
+    with _conn() as con:
+        rows = con.execute(query, params).fetchall()
+    return [dict(r) for r in rows]
 
 
 def cleanup_stale(ats_cache_days: int = 90, velocity_weeks: int = 52):
