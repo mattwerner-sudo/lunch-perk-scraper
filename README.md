@@ -1,110 +1,125 @@
-# NYC Lunch Perk Job Scraper
+# Lunch Perk Job Scraper
 
-Identifies companies offering food perks (DoorDash, Grubhub, free lunch, etc.)
-to NYC employees by analyzing their job postings. Built for GTM / ABM targeting.
+Identifies companies offering food perks (DoorDash, Grubhub, free lunch, catered meals, meal stipends, etc.) by analyzing job postings **nationwide**. Scores and segments companies for GTM / outbound targeting across managed accounts, unmanaged accounts, and net-new prospects.
+
+## What it does
+
+- Scrapes 11+ job sources weekly for food perk signals in job descriptions
+- Scores each company by keyword strength, source credibility, and hiring volume
+- Segments results: **managed** (rep-owned), **unmanaged** (in CRM, no rep), **prospect** (net-new)
+- Detects **office expansion** — when a company posts food-perk JDs in a city not in their billing data (greenfield sale signal)
+- Routes Slack alerts by territory market
+- Publishes a live dashboard to GitHub Pages after every run
 
 ## Setup
 
 ```bash
-cd ~/lunch-perk-scraper
 python -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
-playwright install chromium   # only needed if adding browser-based scrapers later
+cp .env.example .env   # add your API keys
 ```
+
+### Required API keys (`.env`)
+
+| Key | Used for |
+|---|---|
+| `SLACK_WEBHOOK_URL` | Prospect alerts |
+| `APIFY_API_TOKEN` | LinkedIn scraping via Apify |
+| `EXA_API_KEY` | Exa semantic search |
+| `FIRECRAWL_API_KEY` | Firecrawl ATS discovery |
+| `THEIRSTACK_API_KEY` | TheirStack job search (account monitor + discovery) |
 
 ## Run
 
 ```bash
-# Full run — all sources + live verification (removes stale/closed listings)
+# Full run — all sources, live verification, Slack alert
 python3 scrape.py
 
-# Quick test — only Greenhouse + Lever, first 5 results each, no verification
-python3 scrape.py --sources gh lv --dry-run
+# Dry run — preview only, no writes, no credits spent
+python3 scrape.py --dry-run
 
 # Specific sources
-python3 scrape.py --sources gh lv ab gd   # Greenhouse, Lever, Ashby, Glassdoor
+python3 scrape.py --sources gh lv ab ts --no-notify
 
-# Skip live verification (faster, but CSV may include stale listings)
-python3 scrape.py --no-verify
+# TheirStack account monitor (checks all managed + ICP unmanaged domains)
+python3 scrape.py --sources ts
 
-# After scraping, enrich + score for GTM
-python3 enrich.py
+# TheirStack discovery (net-new companies, no domain filter)
+python3 scrape.py --sources ts --ts-mode discovery
+
+# Targeted ATS scraper (direct per-account ATS polling)
+python3 scrape.py --targeted
 ```
-
-## Output files
-
-| File | Description |
-|------|-------------|
-| `lunch_perk_jobs.csv` | Raw scraped matches |
-| `lunch_perk_jobs_enriched.csv` | Deduped, scored, with inferred domain |
-| `slack_summary.txt` | Copy-paste summary for your GTM Slack channel |
 
 ## Sources
 
-| Key | Source | Why it works |
-|-----|--------|-------------|
-| `gh` | Greenhouse | Public JSON API, full JD content, no auth needed |
-| `lv` | Lever | Public JSON API, full JD, no auth needed |
-| `ab` | Ashby | Fast-growing SaaS ATS, JSON API |
-| `bn` | Built In NYC | Lists company perk profiles explicitly — highest signal |
-| `wd` | Workday | Enterprise companies (banks, media, etc.) |
-| `gd` | Glassdoor Benefits | Employee-verified food perks; filtered to NYC companies |
+| Key | Source | Notes |
+|---|---|---|
+| `gh` | Greenhouse | Public JSON API, full JD content |
+| `lv` | Lever | Public JSON API, full JD |
+| `ab` | Ashby | Fast-growing SaaS ATS |
+| `bn` | Built In NYC | Company perk profiles — highest signal |
+| `wd` | Workday | Enterprise companies |
+| `gd` | Glassdoor Benefits | Employee-verified perks |
+| `js` | JobSpy (Indeed/Google) | Broad job board coverage |
+| `ap` | Apify LinkedIn | LinkedIn job postings |
+| `wf` | Wellfound | Startup/tech companies |
+| `ex` | Exa | Semantic search across ATS domains |
+| `fc` | Firecrawl | ATS discovery via web crawl |
+| `ts` | TheirStack | Job search API — account monitor + discovery |
 
-## Adding more companies
+## Output
 
-**Greenhouse / Lever / Ashby:** Add the company's ATS slug to the list in the
-respective scraper file. The slug is the subdomain in their careers URL:
-- `https://boards.greenhouse.io/SLUG` → add `"SLUG"` to `GREENHOUSE_SLUGS`
-- `https://jobs.lever.co/SLUG` → add `"SLUG"` to `LEVER_SLUGS`
-- `https://jobs.ashbyhq.com/SLUG` → add `"SLUG"` to `ASHBY_SLUGS`
+| File | Description |
+|---|---|
+| `lunch_perk_jobs.csv` | Raw scraped matches |
+| `lunch_perk_jobs_enriched.csv` | Deduped, scored, segmented by account |
+| `dashboard_data.js` | Powers the live dashboard |
 
-## Configuration
+**Live dashboard:** [mattwerner-sudo.github.io/lunch-perk-scraper](https://mattwerner-sudo.github.io/lunch-perk-scraper/)
 
-Edit `config.py` to:
-- Add/remove food perk keywords (`FOOD_KEYWORDS`)
-- Add/remove NYC location signals (`NYC_SIGNALS`)
-- Tune request delays (`DELAY_BETWEEN_REQUESTS`)
+## Scoring
 
-## GTM Workflow
+| Signal | Score |
+|---|---|
+| DoorDash / Grubhub / UberEats mention | +10 |
+| Free lunch / catered meals | +7 |
+| Meal stipend / food stipend | +5 |
+| Stocked kitchen | +3 |
+| Glassdoor Benefits source | +8 |
+| Built In perk badge | +6 |
+| Managed account | +15 |
+| Unmanaged account | +8 |
+| Expansion confirmed (new office signal) | +15 |
+| Expansion possible | +8 |
+| Existing office confirmed | +10 |
+
+**Confidence tiers:** High ≥25 · Medium ≥12 · Low <12
+
+## Location & Expansion Detection
+
+Billing address data (from CRM export) is authoritative for territory routing. Job description locations are used for **expansion detection**: if a company posts food-perk JDs in a city not in their billing data, that's a signal they're opening a new office — a greenfield sale opportunity.
+
+## Account Segmentation
+
+- **managed** — account has an assigned rep (`managed_accounts.csv`)
+- **unmanaged** — in CRM, no assigned rep (`unmanaged_accounts.csv`)
+- **prospect** — not in either list
+
+Segment ≠ customer status. Do not assume managed = customer.
+
+## Territory Routing
+
+Edit `territories.csv` to assign reps to markets. Each row maps a metro market to a rep name, Slack handle, and webhook env var. 17 markets supported. Once filled in, Slack alerts route automatically to the right rep.
+
+## Architecture
 
 ```
-scrape.py → lunch_perk_jobs.csv
-     ↓
-enrich.py → lunch_perk_jobs_enriched.csv  (scored, deduped)
-     ↓
-Import to Salesforce / HubSpot / Clay
-     ↓
-Segment by gtm_score → prioritize top 20% for outbound
+scrape.py (parallel ThreadPoolExecutor)
+    → scrapers/          one module per source
+    → verify_live.py     confirm job URLs are still live
+    → enrich.py          rollup → score → expansion detection → export
+    → db.py              SQLite persistence (WAL mode)
+    → notify_slack.py    territory-routed Slack alerts
+    → dashboard_data.js  static dashboard on GitHub Pages
 ```
-
-## Other Data Signals to Layer In (2nd/3rd Party)
-
-Beyond job postings, here are other ways to identify NYC companies with food perks:
-
-### High-signal (direct evidence)
-- **DoorDash for Work / Grubhub Corporate accounts** — companies purchasing
-  corporate accounts often announce it in press releases or Slack communities
-- **Built In NYC company profiles** — structured perk fields, highly accurate
-- **Glassdoor "Benefits" tab** — employees self-report perks; scrape-able
-- **Levels.fyi company profiles** — tech companies list food perks explicitly
-- **LinkedIn company pages** — "Life" tab often mentions office perks
-
-### Medium-signal (inferred)
-- **Office lease size** (CoStar, LoopNet) — large NYC tenants likely have
-  catered lunches as retention
-- **Headcount 100–2000 in NYC** — sweet spot for corporate lunch programs;
-  too small = no budget, too large = cafeteria
-- **G2 Crowd / Capterra tech stack** — companies using DoorDash for Work's
-  API or Forkable's platform are findable via G2 integrations
-
-### Intent signals
-- **Job postings for "Office Manager" or "Facilities" in NYC** that mention
-  food vendor management = high probability they have a lunch program
-- **"Workplace Experience" or "Employee Experience" manager roles** — these
-  people own the lunch program budget
-
-### Communities to monitor
-- **Slack communities**: Demand Collective, RevGenius, Pavilion, Sales Assembly
-  — members often mention their company perks organically
-- **Twitter/X and LinkedIn** — employees posting about "free lunch" or tagging
-  @DoorDash_ForWork or @GrubhubCorporate
