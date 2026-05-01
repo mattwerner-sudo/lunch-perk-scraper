@@ -195,7 +195,7 @@ MARKET_SIGNALS: dict[str, list[str]] = {
 
 def infer_market(location: str) -> str:
     """Map a location string to a named metro market."""
-    loc = (location or "").lower()
+    loc = (str(location) if location and location == location else "").lower()
     for market, signals in MARKET_SIGNALS.items():
         if any(sig in loc for sig in signals):
             return market
