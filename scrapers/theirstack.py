@@ -182,7 +182,7 @@ def _fetch_batch(
         "company_domain_or":          domain_batch,
         "job_description_pattern_or": FOOD_PATTERNS,
         "posted_at_max_age_days":     posted_at_max_age_days,
-        "country_code_or":            ["US"],
+        "job_country_code_or":        ["US"],
         "limit":                      RESULTS_PER_PAGE,
         "order_by":                   [{"field": "date_posted", "desc": True}],
     }
@@ -279,7 +279,7 @@ def scrape(
             "company_domain_or":          sample_batch,
             "job_description_pattern_or": FOOD_PATTERNS,
             "posted_at_max_age_days":     max_age_days,
-            "country_code_or":            ["US"],
+            "job_country_code_or":        ["US"],
             "limit":                      RESULTS_PER_PAGE,
         })
         projected = round(count * (len(all_domains) / len(sample_batch)))
@@ -318,7 +318,7 @@ def _scrape_discovery(
     payload = {
         "job_description_pattern_or": FOOD_PATTERNS,
         "posted_at_max_age_days":     max_age_days,
-        "country_code_or":            ["US"],
+        "job_country_code_or":        ["US"],
         "limit":                      RESULTS_PER_PAGE,
         "order_by":                   [{"field": "date_posted", "desc": True}],
     }
