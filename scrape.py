@@ -161,6 +161,9 @@ def main():
                         help="Number of unmanaged ICP accounts per targeted run (default: 1000)")
     args = parser.parse_args()
 
+    if args.targeted and args.sources != ["gh", "lv", "ab", "wd", "js", "ap", "wf"]:
+        parser.error("--targeted and --sources cannot be used together. Pick one mode.")
+
     if args.targeted:
         from targeted_scraper import run_targeted
         import csv as csv_mod
@@ -170,6 +173,9 @@ def main():
         )
         if not raw or args.dry_run:
             return
+        if not args.no_verify:
+            from verify_live import verify_jobs
+            raw = verify_jobs(raw, max_workers=10)
         with open(OUTPUT_CSV, "w", newline="", encoding="utf-8") as f:
             writer = csv_mod.DictWriter(f, fieldnames=FIELDNAMES, extrasaction="ignore")
             writer.writeheader()

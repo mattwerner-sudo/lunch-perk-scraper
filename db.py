@@ -74,6 +74,13 @@ def init():
         _add_column_if_missing(con, "companies", "zi_industry",      "TEXT")
         con.executescript("""
 
+        CREATE TABLE IF NOT EXISTS ats_cache (
+            domain      TEXT PRIMARY KEY,
+            ats_type    TEXT NOT NULL,
+            ats_slug    TEXT NOT NULL,
+            checked_at  TEXT NOT NULL
+        );
+
         CREATE TABLE IF NOT EXISTS runs (
             id          INTEGER PRIMARY KEY AUTOINCREMENT,
             ran_at      TEXT NOT NULL,
@@ -82,6 +89,7 @@ def init():
             new_count   INTEGER
         );
         """)
+    cleanup_stale()
 
 
 def upsert_companies(records: list[dict]) -> tuple[list[dict], list[dict]]:
@@ -267,6 +275,25 @@ def get_new_unnotified() -> list[dict]:
             "SELECT * FROM companies WHERE is_new=1 AND notified=0 ORDER BY gtm_score DESC"
         ).fetchall()
         return [dict(r) for r in rows]
+
+
+def cleanup_stale(ats_cache_days: int = 90, velocity_weeks: int = 52):
+    """
+    Remove expired ATS cache entries and old velocity records.
+    ats_cache_days: entries older than this are re-detected on next lookup
+    velocity_weeks: velocity rows older than this are pruned (keeps ~1 year)
+    """
+    with _conn() as con:
+        ats_deleted = con.execute(
+            "DELETE FROM ats_cache WHERE checked_at < date('now', ?)",
+            (f"-{ats_cache_days} days",)
+        ).rowcount
+        # ISO week arithmetic: drop weeks older than velocity_weeks ago
+        velocity_deleted = con.execute("""
+            DELETE FROM company_velocity
+            WHERE week < strftime('%Y-%W', date('now', ?))
+        """, (f"-{velocity_weeks * 7} days",)).rowcount
+    return {"ats_cache_deleted": ats_deleted, "velocity_rows_deleted": velocity_deleted}
 
 
 def get_stats() -> dict:

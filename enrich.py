@@ -177,9 +177,21 @@ def infer_market(location: str) -> str:
 
 
 def infer_domain(company: str) -> str:
+    """
+    Best-effort domain inference from company name.
+    Checks account_lookup first (has real domains from CSVs),
+    then falls back to slugified full name (not just first word).
+    """
+    # Prefer real domain from account lists
+    row = account_lookup.lookup(company)
+    if row and row[1] and row[1].get("domain"):
+        from ats_fingerprint import _norm_domain
+        return _norm_domain(row[1]["domain"])
+
+    # Fallback: slugify full name
     clean = re.sub(r"[^a-zA-Z0-9 ]", "", company).strip().lower()
-    slug = clean.split()[0] if clean else "unknown"
-    return f"{slug}.com"
+    slug  = re.sub(r"\s+", "", clean)  # collapse all spaces → no gaps
+    return f"{slug}.com" if slug else "unknown.com"
 
 
 def rollup_to_companies(df: pd.DataFrame) -> pd.DataFrame:

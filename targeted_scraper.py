@@ -183,37 +183,88 @@ def _scrape_ashby(slug: str, company: str) -> list[dict]:
 
 
 def _scrape_exa_targeted(domain: str, company: str) -> list[dict]:
-    """Exa fallback for custom career pages."""
-    try:
-        from scrapers.exa_scraper import _search_exa, _extract_records
-        query = f'site:{domain} careers jobs "free lunch" OR "catered meals" OR "meal stipend" OR "food stipend"'
-        return _extract_records(query, company_hint=company)
-    except Exception as e:
-        log.debug(f"Exa targeted fallback failed for {domain}: {e}")
+    """Exa fallback for custom/unknown career pages."""
+    import os, requests as _requests
+    api_key = os.getenv("EXA_API_KEY", "")
+    if not api_key:
         return []
 
+    queries = [
+        f'"{company}" jobs "free lunch" OR "catered meals" OR "meal stipend" OR "food stipend" OR "stocked kitchen"',
+        f'site:{domain} jobs "free lunch" OR "catered meals" OR "meal stipend"',
+    ]
+    records = []
+    seen = set()
+    for query in queries:
+        try:
+            resp = _requests.post(
+                "https://api.exa.ai/search",
+                json={
+                    "query": query,
+                    "numResults": 10,
+                    "useAutoprompt": False,
+                    "type": "keyword",
+                    "contents": {"text": {"maxCharacters": 3000, "includeHtmlTags": False}},
+                },
+                headers={"x-api-key": api_key, "Content-Type": "application/json"},
+                timeout=20,
+            )
+            resp.raise_for_status()
+            for result in resp.json().get("results", []):
+                url = result.get("url", "")
+                if not url or url in seen:
+                    continue
+                seen.add(url)
+                text = clean_text(result.get("text", "") or "")
+                kws  = find_food_keywords(text)
+                if not kws:
+                    continue
+                records.append({
+                    "source":               "Targeted-Exa",
+                    "company":              company,
+                    "title":                result.get("title", ""),
+                    "location":             "",
+                    "remote":               "",
+                    "food_keywords_matched": ", ".join(kws),
+                    "keyword_count":        len(kws),
+                    "perk_excerpt":         excerpt(text, kws[0]),
+                    "date_posted":          (result.get("publishedDate") or "")[:10],
+                    "url":                  url,
+                })
+        except Exception as e:
+            log.debug(f"Exa targeted fallback failed for {domain}: {e}")
+    return records
 
-def _scrape_account(account: dict) -> list[dict]:
-    """Route one account to the right scraper. Never raises."""
+
+def _scrape_account(account: dict, retries: int = 2) -> list[dict]:
+    """Route one account to the right scraper. Retries on transient failures."""
     domain  = account.get("_domain", "")
     company = account.get("Account Name", domain)
     if not domain:
         return []
-    try:
-        ats_type, slug = get_ats(domain)
-        if ats_type == "greenhouse":
-            return _scrape_greenhouse(slug, company)
-        elif ats_type == "lever":
-            return _scrape_lever(slug, company)
-        elif ats_type == "ashby":
-            return _scrape_ashby(slug, company)
-        elif ats_type == "exa":
-            return _scrape_exa_targeted(domain, company)
-        else:
-            return []  # unsupported ATS (Workday, iCIMS, Taleo) — future phases
-    except Exception as e:
-        log.error(f"  Targeted scrape failed for {company} ({domain}): {e}")
-        return []
+
+    SCRAPER_MAP = {
+        "greenhouse": _scrape_greenhouse,
+        "lever":      _scrape_lever,
+        "ashby":      _scrape_ashby,
+        "exa":        lambda slug, co: _scrape_exa_targeted(domain, co),
+    }
+
+    for attempt in range(1, retries + 2):  # 1 + retries total attempts
+        try:
+            ats_type, slug = get_ats(domain)
+            scraper = SCRAPER_MAP.get(ats_type)
+            if not scraper:
+                return []  # unsupported ATS (Workday, iCIMS, Taleo) — future phases
+            return scraper(slug, company)
+        except Exception as e:
+            if attempt <= retries:
+                wait = attempt * 2
+                log.warning(f"  Retry {attempt}/{retries} for {company} ({domain}) in {wait}s: {e}")
+                time.sleep(wait)
+            else:
+                log.error(f"  Gave up on {company} ({domain}) after {retries} retries: {e}")
+    return []
 
 
 def run_targeted(
@@ -241,14 +292,20 @@ def run_targeted(
     all_records: list[dict]   = []
     writer_done = threading.Event()
 
+    writer_error: list[Exception] = []
+
     def writer_thread():
-        while not writer_done.is_set() or not result_queue.empty():
-            try:
-                records = result_queue.get(timeout=0.5)
-                all_records.extend(records)
-                result_queue.task_done()
-            except queue.Empty:
-                continue
+        try:
+            while not writer_done.is_set() or not result_queue.empty():
+                try:
+                    records = result_queue.get(timeout=0.5)
+                    all_records.extend(records)
+                    result_queue.task_done()
+                except queue.Empty:
+                    continue
+        except Exception as e:
+            writer_error.append(e)
+            log.error(f"Write queue thread crashed: {e}", exc_info=True)
 
     writer = threading.Thread(target=writer_thread, daemon=True)
     writer.start()
@@ -286,7 +343,11 @@ def run_targeted(
                     log.info(f"  ✓ {acc['Account Name']}: {len(records)} perk matches")
 
     writer_done.set()
-    writer.join()
+    writer.join(timeout=30)
+    if writer.is_alive():
+        log.error("Write queue thread did not exit cleanly — some records may be lost")
+    if writer_error:
+        log.error(f"Write queue failed with: {writer_error[0]}")
 
     # ── Observability report ──────────────────────────────────────────────────
     stats = coverage_stats()
