@@ -28,16 +28,16 @@ SCRAPE_TIMEOUT           = 45
 # Queries scoped tightly to ATS domains — finds job postings we missed
 # in our hardcoded slug lists
 FIRECRAWL_QUERIES = [
-    'site:greenhouse.io "catered lunch" OR "catered meals" "New York"',
-    'site:greenhouse.io "meal stipend" OR "food stipend" "New York"',
-    'site:greenhouse.io "DoorDash" OR "Sharebite" OR "Forkable" "New York"',
-    'site:lever.co "catered lunch" OR "catered meals" "New York"',
-    'site:lever.co "meal stipend" OR "food stipend" "New York"',
-    'site:ashbyhq.com "catered lunch" OR "meal stipend" "New York"',
-    'site:ashbyhq.com "DoorDash" OR "Sharebite" "New York"',
-    'site:myworkdayjobs.com "catered lunch" OR "meal stipend" "New York"',
-    'site:smartrecruiters.com "catered lunch" OR "free lunch" "New York"',
-    'site:bamboohr.com "catered lunch" OR "meal stipend" "New York"',
+    'site:greenhouse.io "catered lunch" OR "catered meals"',
+    'site:greenhouse.io "meal stipend" OR "food stipend"',
+    'site:greenhouse.io "DoorDash" OR "Sharebite" OR "Forkable"',
+    'site:lever.co "catered lunch" OR "catered meals"',
+    'site:lever.co "meal stipend" OR "food stipend"',
+    'site:ashbyhq.com "catered lunch" OR "meal stipend"',
+    'site:ashbyhq.com "DoorDash" OR "Sharebite"',
+    'site:myworkdayjobs.com "catered lunch" OR "meal stipend"',
+    'site:smartrecruiters.com "catered lunch" OR "free lunch"',
+    'site:bamboohr.com "catered lunch" OR "meal stipend"',
 ]
 
 # ATS URL → employer name extraction
@@ -138,7 +138,7 @@ def scrape() -> Iterator[dict]:
                 "source":                "Firecrawl",
                 "company":               company,
                 "title":                 title_str,
-                "location":              "New York, NY",
+                "location":              "",
                 "remote":                "Unknown",
                 "food_keywords_matched": ", ".join(matched),
                 "keyword_count":         len(matched),

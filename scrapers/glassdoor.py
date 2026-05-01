@@ -48,9 +48,9 @@ GD_HEADERS = {
 
 
 def scrape() -> Iterator[dict]:
-    """Main entry point — yields job records for NYC companies with food perks."""
+    """Main entry point — yields job records for companies with food perks nationwide."""
     companies = _find_companies_with_food_perks()
-    log.info(f"Glassdoor: found {len(companies)} companies with food perks in NYC")
+    log.info(f"Glassdoor: found {len(companies)} companies with food perks")
 
     for co in companies:
         yield from _get_company_jobs(co)
@@ -64,12 +64,10 @@ def _find_companies_with_food_perks() -> list[dict]:
     companies = {}  # employer_id → record (deduplicate across benefit categories)
 
     for benefit_label, benefit_slug in FOOD_BENEFIT_CATEGORIES:
-        # Glassdoor benefits search — filtered to New York City
-        # The locationId for NYC metro on Glassdoor is 1132348
+        # Glassdoor benefits search — nationwide (no location filter)
         url = (
-            "https://www.glassdoor.com/Benefits/new-york-city-"
-            f"{benefit_slug}-SRCH_IL.0,13_IM615_KO14,"
-            f"{14 + len(benefit_slug)}.htm"
+            "https://www.glassdoor.com/Benefits/"
+            f"{benefit_slug}-SRCH_KO0,{len(benefit_slug)}.htm"
         )
         resp = get(url, headers=GD_HEADERS)
         if not resp:
@@ -143,11 +141,7 @@ def _get_company_jobs(co: dict) -> Iterator[dict]:
         f"https://www.glassdoor.com/Jobs/{co_name.replace(' ', '-')}"
         f"-Jobs-E{eid}.htm"
     )
-    params = {
-        "sc.occupationParam": "marketing",
-        "locT": "C",
-        "locId": "1132348",  # New York City metro
-    }
+    params = {}
     resp = get(api_url, headers=GD_HEADERS, params=params)
     if not resp:
         return
@@ -198,7 +192,7 @@ def _get_company_jobs(co: dict) -> Iterator[dict]:
             "source": "Glassdoor Benefits",
             "company": co_name,
             "title": "(see all open roles)",
-            "location": "New York, NY",
+            "location": "",
             "url": api_url,
             "date_posted": "",
             "food_keywords_matched": co["benefit_label"],

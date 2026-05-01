@@ -30,20 +30,20 @@ POLL_INTERVAL  = 10   # seconds between status checks
 MAX_WAIT       = 600  # 10 minutes max per run
 RESULTS_LIMIT  = 100  # results per keyword search
 
-# Search directly for food perk keywords on LinkedIn in NYC
+# Search for food perk keywords on LinkedIn — nationwide, no location filter
 LINKEDIN_SEARCHES = [
-    {"keyword": "free lunch",    "location": "New York City, New York"},
-    {"keyword": "catered lunch", "location": "New York City, New York"},
-    {"keyword": "catered meals", "location": "New York City, New York"},
-    {"keyword": "DoorDash",      "location": "New York City, New York"},
-    {"keyword": "GrubHub",       "location": "New York City, New York"},
-    {"keyword": "Uber Eats",     "location": "New York City, New York"},
-    {"keyword": "Forkable",      "location": "New York City, New York"},
-    {"keyword": "Sharebite",     "location": "New York City, New York"},
-    {"keyword": "meal stipend",  "location": "New York City, New York"},
-    {"keyword": "lunch stipend", "location": "New York City, New York"},
-    {"keyword": "stocked kitchen","location": "New York City, New York"},
-    {"keyword": "meal credit",   "location": "New York City, New York"},
+    {"keyword": "free lunch",     "location": "United States"},
+    {"keyword": "catered lunch",  "location": "United States"},
+    {"keyword": "catered meals",  "location": "United States"},
+    {"keyword": "DoorDash",       "location": "United States"},
+    {"keyword": "GrubHub",        "location": "United States"},
+    {"keyword": "Uber Eats",      "location": "United States"},
+    {"keyword": "Forkable",       "location": "United States"},
+    {"keyword": "Sharebite",      "location": "United States"},
+    {"keyword": "meal stipend",   "location": "United States"},
+    {"keyword": "lunch stipend",  "location": "United States"},
+    {"keyword": "stocked kitchen","location": "United States"},
+    {"keyword": "meal credit",    "location": "United States"},
 ]
 
 
@@ -57,7 +57,7 @@ def _start_run(search: dict) -> tuple[str, str, str]:
     linkedin_url = (
         f"https://www.linkedin.com/jobs/search/"
         f"?keywords={encoded_keyword}"
-        f"&location=New+York+City%2C+New+York"
+        f"&location=United+States"
         f"&position=1&pageNum=0"
     )
     input_payload = {
@@ -182,7 +182,7 @@ def scrape() -> Iterator[dict]:
                     "source":                "Apify/LinkedIn",
                     "company":               company,
                     "title":                 title,
-                    "location":              location or "New York, NY",
+                    "location":              location,
                     "remote":                "Remote" if item.get("workplaceType") == "Remote" else "On-site",
                     "food_keywords_matched": ", ".join(matched_keywords),
                     "keyword_count":         len(matched_keywords),

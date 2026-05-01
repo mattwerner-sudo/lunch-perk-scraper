@@ -44,11 +44,11 @@ INCLUDE_DOMAINS = [
 ]
 
 EXA_QUERIES = [
-    "catered lunch free meals employee benefit New York",
-    "DoorDash GrubHub Sharebite Forkable employee perk office New York",
-    "meal stipend food stipend lunch credit New York",
-    "fully stocked kitchen catered breakfast lunch New York",
-    "daily lunch catered meals office New York",
+    "catered lunch free meals employee benefit",
+    "DoorDash GrubHub Sharebite Forkable employee perk office",
+    "meal stipend food stipend lunch credit",
+    "fully stocked kitchen catered breakfast lunch",
+    "daily lunch catered meals office",
 ]
 
 # ATS URL patterns → extract employer slug from URL
@@ -168,7 +168,7 @@ def scrape() -> Iterator[dict]:
                 "source":                "Exa",
                 "company":               company,
                 "title":                 title_str,
-                "location":              "New York, NY",
+                "location":              "",
                 "remote":                "Unknown",
                 "food_keywords_matched": ", ".join(matched),
                 "keyword_count":         len(matched),

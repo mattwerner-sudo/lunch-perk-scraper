@@ -35,13 +35,13 @@ def scrape() -> Iterator[dict]:
     seen_urls = set()  # deduplicate across queries
 
     for query in SEARCH_QUERIES:
-        log.info(f"JobSpy: searching '{query}' in New York City")
+        log.info(f"JobSpy: searching '{query}' nationwide")
 
         try:
             df = scrape_jobs(
                 site_name=JOBSPY_SOURCES,
                 search_term=query,
-                location="New York City, NY",
+                location="United States",
                 results_wanted=RESULTS_PER_QUERY,
                 hours_old=HOURS_OLD,
                 linkedin_fetch_description=True,
@@ -113,7 +113,7 @@ def scrape() -> Iterator[dict]:
                 "source": f"JobSpy/{source_site}",
                 "company": company,
                 "title": title,
-                "location": location or "New York, NY",
+                "location": location,
                 "remote": remote,
                 "food_keywords_matched": ", ".join(matched_keywords),
                 "keyword_count": len(matched_keywords),
