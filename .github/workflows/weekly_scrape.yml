@@ -41,8 +41,6 @@ jobs:
       - name: Run scraper
         env:
           SLACK_WEBHOOK_URL:           ${{ secrets.SLACK_WEBHOOK_URL }}
-          SLACK_WEBHOOK_MANAGED_URL:   ${{ secrets.SLACK_WEBHOOK_MANAGED_URL }}
-          SLACK_WEBHOOK_UNMANAGED_URL: ${{ secrets.SLACK_WEBHOOK_UNMANAGED_URL }}
           APIFY_API_TOKEN:             ${{ secrets.APIFY_API_TOKEN }}
           EXA_API_KEY:                 ${{ secrets.EXA_API_KEY }}
           FIRECRAWL_API_KEY:           ${{ secrets.FIRECRAWL_API_KEY }}
@@ -79,5 +77,5 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: .
-          include_files: index.html,dashboard_data.js
+          exclude_assets: '*.py,*.csv,*.db,*.log,*.txt,requirements.txt,scrapers,memory,.venv'
           commit_message: "deploy: dashboard update $(date +'%Y-%m-%d')"
