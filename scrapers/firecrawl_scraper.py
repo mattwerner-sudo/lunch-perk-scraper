@@ -85,6 +85,9 @@ def _firecrawl_search(query: str) -> list[dict]:
             headers={"Authorization": f"Bearer {API_KEY}"},
             timeout=60,
         )
+        if resp.status_code == 402:
+            log.warning("Firecrawl: out of credits (402) — skipping remaining queries")
+            return None  # sentinel: caller should stop
         resp.raise_for_status()
         return resp.json().get("data", [])
     except Exception as e:
@@ -102,6 +105,8 @@ def scrape() -> Iterator[dict]:
     for query in FIRECRAWL_QUERIES:
         log.info(f"Firecrawl: searching — '{query[:70]}'")
         results = _firecrawl_search(query)
+        if results is None:  # out of credits sentinel
+            break
         log.info(f"Firecrawl: {len(results)} results")
 
         for result in results:

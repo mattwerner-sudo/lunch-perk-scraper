@@ -1,187 +1,178 @@
 """
-Built In NYC scraper.
+Built In scraper (nationwide).
 
-Built In NYC (https://www.builtinnyc.com/jobs) is a curated tech job board
-that explicitly lists company perks — making it one of the highest-signal
-sources for food perk detection. Companies fill out structured perk profiles.
+Built In (builtinnyc.com, builtin.com) curates tech job boards with
+explicit company perk profiles — high-signal for food perks.
 
-We scrape two layers:
-1. Company profiles for explicit perk badges ("Free Daily Lunches", etc.)
-2. Job listings for keyword mentions in JDs
+Their internal API endpoints changed and now return 405. We fall back to
+scraping the public HTML search results directly.
 """
 import json
 import logging
 import re
+import time
 from typing import Iterator
 
 from bs4 import BeautifulSoup
 
-from utils import get, find_food_keywords, is_in_target_location, excerpt, clean_text, SESSION
+from utils import get, find_food_keywords, is_in_target_location, excerpt, clean_text
 
 log = logging.getLogger(__name__)
 
-# Built In NYC uses a GraphQL-like internal API.
-BUILTIN_API = "https://api.builtin.com/jobs/search"
-COMPANY_API  = "https://api.builtin.com/companies"
+BUILTIN_SITES = [
+    "https://www.builtinnyc.com",
+    "https://www.builtinchicago.org",
+    "https://www.builtinla.com",
+    "https://www.builtinboston.com",
+    "https://www.builtinaustin.com",
+    "https://www.builtinseattle.com",
+    "https://builtin.com",
+]
 
-# Built In perk slugs that map to food benefits
+HEADERS = {
+    "User-Agent": (
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
+        "AppleWebKit/537.36 (KHTML, like Gecko) "
+        "Chrome/124.0.0.0 Safari/537.36"
+    ),
+    "Accept": "text/html,application/xhtml+xml,*/*;q=0.9",
+    "Accept-Language": "en-US,en;q=0.9",
+}
+
+FOOD_KEYWORDS_SEARCH = [
+    "free lunch",
+    "catered meals",
+    "meal stipend",
+    "DoorDash",
+    "stocked kitchen",
+]
+
+# Built In perk badge slugs to check on company profile pages
 FOOD_PERK_SLUGS = [
     "free-daily-lunches",
     "catered-meals",
-    "company-provided-meals",
     "meal-stipend",
-    "food-stipend",
     "snacks-and-coffee",
     "fully-stocked-kitchen",
 ]
 
 
 def scrape() -> Iterator[dict]:
+    yield from _scrape_builtin_search()
+
+
+def _scrape_builtin_search() -> Iterator[dict]:
     """
-    Strategy A: Search jobs in NYC, fetch each JD for food keywords.
-    Strategy B: Pull companies with food perks, then surface their open roles.
+    Search builtin.com for jobs mentioning food perks via their public search pages.
+    Falls back gracefully if the site structure changes.
     """
-    yield from _scrape_jobs()
-    yield from _scrape_companies_with_food_perks()
+    seen_urls: set[str] = set()
 
+    for keyword in FOOD_KEYWORDS_SEARCH:
+        encoded = keyword.replace(" ", "+")
+        url = f"https://builtin.com/jobs/search?q={encoded}"
+        log.info(f"Built In: searching '{keyword}'")
 
-def _scrape_jobs() -> Iterator[dict]:
-    """Page through Built In NYC job listings and check each JD."""
-    page = 1
-    per_page = 50
-
-    while True:
-        params = {
-            "city": "New York City",
-            "page": page,
-            "per_page": per_page,
-            "sort": "date",
-        }
-        # Built In API requires POST with JSON body, not GET with query params
-        import time as _time
-        _time.sleep(1)
-        try:
-            resp = SESSION.post(BUILTIN_API, json=params, timeout=20)
-            resp.raise_for_status()
-        except Exception as e:
-            log.warning(f"Built In NYC POST failed: {e}")
-            resp = None
+        resp = get(url, headers=HEADERS)
         if not resp:
-            break
+            log.warning(f"Built In: no response for '{keyword}'")
+            continue
 
-        try:
-            data = resp.json()
-        except json.JSONDecodeError:
-            break
+        soup = BeautifulSoup(resp.text, "lxml")
 
-        jobs = data.get("jobs", data.get("data", []))
-        if not jobs:
-            break
-
-        log.info(f"Built In NYC jobs: page {page}, {len(jobs)} results")
-
-        for job in jobs:
-            url = job.get("url", "") or job.get("applyUrl", "")
-            title = job.get("title", "") or job.get("jobTitle", "")
-            company = job.get("company", {})
-            company_name = company.get("name", "") if isinstance(company, dict) else str(company)
-            location = job.get("location", "") or "New York, NY"
-
-            # Fetch full JD from the detail URL
-            jd_text = _fetch_builtin_jd(url)
-            if not jd_text:
+        # Try __NEXT_DATA__ JSON
+        next_data = soup.find("script", id="__NEXT_DATA__")
+        jobs_found = 0
+        if next_data:
+            try:
+                data = json.loads(next_data.string)
+                job_list = (
+                    data.get("props", {})
+                        .get("pageProps", {})
+                        .get("jobs", [])
+                    or data.get("props", {})
+                        .get("pageProps", {})
+                        .get("jobListings", [])
+                )
+                for job in job_list:
+                    result = _parse_job_record(job, keyword, seen_urls)
+                    if result:
+                        jobs_found += 1
+                        yield result
+                log.info(f"Built In '{keyword}': {jobs_found} matches via __NEXT_DATA__")
+                time.sleep(1.5)
                 continue
+            except Exception:
+                pass
 
-            matched_keywords = find_food_keywords(jd_text)
-            if not matched_keywords:
+        # Fallback: parse job cards from HTML
+        cards = soup.select("[data-id='job-card'], .job-card, [class*='JobCard'], article[class*='job']")
+        for card in cards:
+            title_el   = card.select_one("h2, h3, [class*='title']")
+            company_el = card.select_one("[class*='company'], [class*='employer']")
+            link_el    = card.select_one("a[href*='/jobs/']")
+            if not link_el:
                 continue
-
-            snip = excerpt(jd_text, matched_keywords[0])
-
+            href = link_el.get("href", "")
+            job_url = href if href.startswith("http") else f"https://builtin.com{href}"
+            if job_url in seen_urls:
+                continue
+            seen_urls.add(job_url)
+            title   = title_el.get_text(strip=True) if title_el else ""
+            company = company_el.get_text(strip=True) if company_el else ""
+            location = ""
+            loc_el = card.select_one("[class*='location'], [data-testid='location']")
+            if loc_el:
+                location = loc_el.get_text(strip=True)
+            if not is_in_target_location(location):
+                continue
+            jobs_found += 1
             yield {
-                "source": "Built In NYC",
-                "company": company_name,
-                "title": title,
-                "location": location,
-                "url": url,
-                "date_posted": job.get("datePosted", "")[:10] if job.get("datePosted") else "",
-                "food_keywords_matched": ", ".join(matched_keywords),
-                "keyword_count": len(matched_keywords),
-                "perk_excerpt": snip,
-                "remote": job.get("remote", ""),
+                "source":                "Built In",
+                "company":               company,
+                "title":                 title,
+                "location":              location,
+                "remote":                "",
+                "food_keywords_matched": keyword,
+                "keyword_count":         1,
+                "perk_excerpt":          f"Found via Built In search for '{keyword}'",
+                "date_posted":           "",
+                "url":                   job_url,
             }
 
-        total = data.get("total", 0)
-        if page * per_page >= total:
-            break
-        page += 1
+        log.info(f"Built In '{keyword}': {jobs_found} matches via HTML")
+        time.sleep(1.5)
 
 
-def _fetch_builtin_jd(url: str) -> str:
-    """Fetch and parse a Built In job detail page."""
-    if not url or not url.startswith("http"):
-        return ""
-    resp = get(url)
-    if not resp:
-        return ""
-    soup = BeautifulSoup(resp.text, "lxml")
-    # Built In wraps the JD in a div with data-id="job-description"
-    jd_div = soup.find(attrs={"data-id": "job-description"}) or \
-             soup.find("div", class_=re.compile(r"job.?description", re.I)) or \
-             soup.find("section", class_=re.compile(r"description", re.I))
-    if jd_div:
-        return clean_text(jd_div.get_text(" ", strip=True))
-    return clean_text(soup.get_text(" ", strip=True))[:5000]
+def _parse_job_record(job: dict, keyword: str, seen_urls: set) -> dict | None:
+    url = job.get("url") or job.get("jobUrl") or job.get("applyUrl") or ""
+    if not url or url in seen_urls:
+        return None
+    seen_urls.add(url)
 
+    title    = job.get("title") or job.get("jobTitle") or ""
+    company  = job.get("company") or ""
+    if isinstance(company, dict):
+        company = company.get("name") or ""
+    location = job.get("location") or job.get("locationName") or ""
+    desc_raw = job.get("description") or job.get("body") or ""
+    full_text = clean_text(str(desc_raw))
 
-def _scrape_companies_with_food_perks() -> Iterator[dict]:
-    """
-    Pull companies that have food perk badges on Built In NYC,
-    then surface their open NYC roles.
-    """
-    for perk_slug in FOOD_PERK_SLUGS:
-        params = {
-            "city": "New York City",
-            "perks": perk_slug,
-            "per_page": 100,
-        }
-        import time as _time
-        _time.sleep(1)
-        try:
-            resp = SESSION.post(COMPANY_API, json=params, timeout=20)
-            resp.raise_for_status()
-        except Exception as e:
-            log.warning(f"Built In NYC company API failed for {perk_slug}: {e}")
-            resp = None
-        if not resp:
-            continue
-        try:
-            data = resp.json()
-        except json.JSONDecodeError:
-            continue
+    if not is_in_target_location(f"{location} {full_text}"):
+        return None
 
-        companies = data.get("companies", data.get("data", []))
-        log.info(f"Built In NYC perk '{perk_slug}': {len(companies)} companies")
+    matched = find_food_keywords(full_text) or [keyword]
+    snip = excerpt(full_text, matched[0]) if full_text else f"Found via Built In search for '{keyword}'"
 
-        for co in companies:
-            co_name = co.get("name", "")
-            jobs_url = co.get("jobsUrl", "") or co.get("url", "")
-
-            # Each company record often has a jobs list embedded
-            for job in co.get("jobs", []):
-                title = job.get("title", "")
-                location = job.get("location", "")
-                url = job.get("url", "")
-
-                yield {
-                    "source": "Built In NYC (Company Perk)",
-                    "company": co_name,
-                    "title": title,
-                    "location": location,
-                    "url": url,
-                    "date_posted": "",
-                    "food_keywords_matched": perk_slug.replace("-", " "),
-                    "keyword_count": 1,
-                    "perk_excerpt": f"Company lists '{perk_slug.replace('-',' ')}' as a perk on Built In NYC",
-                    "remote": job.get("remote", ""),
-                }
+    return {
+        "source":                "Built In",
+        "company":               str(company),
+        "title":                 str(title),
+        "location":              str(location),
+        "remote":                "",
+        "food_keywords_matched": ", ".join(matched),
+        "keyword_count":         len(matched),
+        "perk_excerpt":          snip,
+        "date_posted":           (job.get("datePosted") or "")[:10],
+        "url":                   url,
+    }

@@ -32,6 +32,8 @@ log = logging.getLogger(__name__)
 API_KEY  = os.getenv("THEIRSTACK_API_KEY", "")
 BASE_URL = "https://api.theirstack.com/v1/jobs/search"
 
+_out_of_credits = False  # set on first 402 — stops all subsequent batches
+
 # ── Tuning constants ──────────────────────────────────────────────────────────
 DOMAIN_BATCH_SIZE   = 100    # domains per request (safe payload limit)
 RESULTS_PER_PAGE    = 25     # jobs per page (25 = 25 credits/request)
@@ -77,10 +79,14 @@ HEADERS = {
 
 def _post(payload: dict) -> dict | None:
     """Single TheirStack API call. Returns parsed JSON or None on failure."""
+    global _out_of_credits
+    if _out_of_credits:
+        return None
     try:
         resp = requests.post(BASE_URL, json=payload, headers=HEADERS, timeout=30)
         if resp.status_code == 402:
-            log.error("TheirStack: out of credits — stopping")
+            log.error("TheirStack: out of credits — stopping all batches")
+            _out_of_credits = True
             return None
         if resp.status_code == 422:
             log.error(f"TheirStack: invalid request — {resp.text[:200]}")

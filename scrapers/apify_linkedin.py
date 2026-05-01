@@ -154,17 +154,31 @@ def scrape() -> Iterator[dict]:
                 log.error(f"Apify result fetch failed for '{keyword}': {e}")
                 continue
 
+            if items:
+                log.info(f"Apify '{keyword}': first item keys = {list(items[0].keys())}")
             for item in items:
                 url = str(item.get("jobUrl") or item.get("url") or "")
                 if not url or url in seen_urls:
                     continue
                 seen_urls.add(url)
 
-                company  = str(item.get("companyName") or item.get("company") or "")
-                title    = str(item.get("title") or item.get("jobTitle") or "")
-                location = str(item.get("location") or "")
-                desc_raw = str(item.get("description") or item.get("jobDescription") or "")
+                company  = str(item.get("companyName") or item.get("company") or item.get("company_name") or "")
+                title    = str(item.get("title") or item.get("jobTitle") or item.get("job_title") or "")
+                location = str(item.get("location") or item.get("place") or "")
+                # Actor field names vary by version — try all known keys
+                desc_raw = str(
+                    item.get("description") or
+                    item.get("jobDescription") or
+                    item.get("job_description") or
+                    item.get("descriptionHtml") or
+                    item.get("descriptionText") or
+                    item.get("text") or
+                    item.get("body") or
+                    ""
+                )
                 full_text = clean_text(desc_raw)
+                if not full_text:
+                    log.debug(f"Apify: empty description for {url} — item keys: {list(item.keys())[:10]}")
 
                 if not is_in_target_location(f"{location} {full_text}"):
                     continue

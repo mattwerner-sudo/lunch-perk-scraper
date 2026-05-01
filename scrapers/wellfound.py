@@ -36,9 +36,6 @@ HEADERS = {
     "x-requested-with": "XMLHttpRequest",
 }
 
-# NYC location IDs on Wellfound
-NYC_LOCATION_ID = "1"  # New York City
-
 # Search terms mapped to our food keywords
 WELLFOUND_SEARCHES = [
     "free lunch",
@@ -52,7 +49,7 @@ WELLFOUND_SEARCHES = [
 
 
 def scrape() -> Iterator[dict]:
-    """Scrape Wellfound for NYC jobs mentioning food perks."""
+    """Scrape Wellfound for jobs mentioning food perks — nationwide."""
     yield from _scrape_via_search()
 
 
@@ -103,7 +100,7 @@ def _scrape_via_search() -> Iterator[dict]:
                 "source":                "Wellfound",
                 "company":               company,
                 "title":                 title,
-                "location":              location or "New York, NY",
+                "location":              location or "",
                 "remote":                _infer_remote(location, full_text),
                 "food_keywords_matched": ", ".join(matched),
                 "keyword_count":         len(matched),
@@ -118,9 +115,9 @@ def _scrape_via_search() -> Iterator[dict]:
 def _graphql_search(keyword: str) -> list[dict]:
     """Query Wellfound's GraphQL API for jobs."""
     query = """
-    query JobSearchResults($query: String!, $locationId: String) {
+    query JobSearchResults($query: String!) {
       talent {
-        jobListings(query: $query, locationId: $locationId, first: 50) {
+        jobListings(query: $query, first: 50) {
           edges {
             node {
               id
@@ -143,7 +140,6 @@ def _graphql_search(keyword: str) -> list[dict]:
     """
     variables = {
         "query": keyword,
-        "locationId": NYC_LOCATION_ID,
     }
     try:
         resp = requests.post(
@@ -171,7 +167,7 @@ def _graphql_search(keyword: str) -> list[dict]:
                 "title":       node.get("title", ""),
                 "description": node.get("description", ""),
                 "company":     startup.get("name", ""),
-                "location":    ", ".join(location_names) if location_names else "New York, NY",
+                "location":    ", ".join(location_names) if location_names else "",
                 "postedAt":    node.get("postedAt", ""),
             })
         return results
@@ -183,8 +179,7 @@ def _graphql_search(keyword: str) -> list[dict]:
 def _html_search(keyword: str) -> list[dict]:
     """Fall back to HTML scraping of Wellfound job search."""
     params = {
-        "q":        keyword,
-        "location": "New York City",
+        "q": keyword,
     }
     resp = get(JOBS_URL, params=params, headers=HEADERS)
     if not resp:
@@ -209,7 +204,7 @@ def _html_search(keyword: str) -> list[dict]:
                     "title":       j.get("title", ""),
                     "description": j.get("description", ""),
                     "company":     j.get("companyName", ""),
-                    "location":    j.get("locationName", "New York, NY"),
+                    "location":    j.get("locationName", ""),
                 })
             return results
         except Exception:
@@ -228,7 +223,7 @@ def _html_search(keyword: str) -> list[dict]:
         if title and url:
             results.append({
                 "url": url, "title": title, "company": company,
-                "description": "", "location": "New York, NY",
+                "description": "", "location": "",
             })
     return results
 
