@@ -25,14 +25,17 @@ nav{background:#0d0c22;color:#fff;display:flex;align-items:center;justify-conten
 .badge-new{background:#22c55e;color:#fff;font-size:10px;font-weight:800;padding:2px 7px;border-radius:999px;letter-spacing:.04em;text-transform:uppercase;margin-left:6px}
 .badge-managed{background:#f59e0b;color:#fff;font-size:10px;font-weight:800;padding:2px 7px;border-radius:999px;letter-spacing:.04em;text-transform:uppercase;margin-left:6px}
 .badge-unmanaged{background:#6366f1;color:#fff;font-size:10px;font-weight:800;padding:2px 7px;border-radius:999px;letter-spacing:.04em;text-transform:uppercase;margin-left:6px}
-.badge-loc-confirmed{background:#0ea5e9;color:#fff;font-size:10px;font-weight:800;padding:2px 7px;border-radius:999px;letter-spacing:.04em;text-transform:uppercase;margin-left:6px}
-.badge-loc-possible{background:#e0f2fe;color:#0369a1;font-size:10px;font-weight:800;padding:2px 7px;border-radius:999px;letter-spacing:.04em;text-transform:uppercase;margin-left:6px}
+.badge-expansion-confirmed{background:#7c3aed;color:#fff;font-size:10px;font-weight:800;padding:2px 7px;border-radius:999px;letter-spacing:.04em;text-transform:uppercase;margin-left:6px}
+.badge-expansion-possible{background:#ede9fe;color:#6d28d9;font-size:10px;font-weight:800;padding:2px 7px;border-radius:999px;letter-spacing:.04em;text-transform:uppercase;margin-left:6px}
+.badge-existing-confirmed{background:#0ea5e9;color:#fff;font-size:10px;font-weight:800;padding:2px 7px;border-radius:999px;letter-spacing:.04em;text-transform:uppercase;margin-left:6px}
+.badge-existing-possible{background:#e0f2fe;color:#0369a1;font-size:10px;font-weight:800;padding:2px 7px;border-radius:999px;letter-spacing:.04em;text-transform:uppercase;margin-left:6px}
 .loc-detail{margin-top:8px;font-size:12px;color:#6e6d7a}
 .loc-detail table{width:100%;border-collapse:collapse;margin-top:4px}
 .loc-detail td{padding:3px 8px;border-bottom:1px solid #f3f3f4}
 .loc-detail td:first-child{font-weight:600;color:#0d0c22}
-.loc-sig-confirmed{color:#0ea5e9;font-weight:700}
-.loc-sig-possible{color:#a16207;font-weight:700}
+.loc-type-expansion{color:#7c3aed;font-weight:700}
+.loc-type-existing{color:#0ea5e9;font-weight:700}
+.loc-sig-confirmed{font-weight:600}
 .loc-sig-noise{color:#9ca3af}
 
 /* ── Hero ── */
@@ -289,7 +292,7 @@ function init() {
   buildChips('f-market', 'market', markets);
 
   buildChips('f-confidence', 'confidence', ['High', 'Medium', 'Low']);
-  buildChips('f-loc-signal', 'loc_signal_strength', ['confirmed', 'possible', 'noise']);
+  buildChips('f-loc-signal', 'loc_signal_strength', ['expansion_confirmed', 'expansion_possible', 'existing_confirmed', 'existing_possible', 'noise']);
 
   const sources = [...new Set(DASHBOARD_DATA.map(c => c.best_source || c.source).filter(Boolean))].sort();
   buildChips('f-source', 'source', sources);
@@ -388,10 +391,14 @@ function cardHTML(c) {
     : c.segment === 'unmanaged'
     ? '<span class="badge-unmanaged">Target</span>'
     : '';
-  const locBadge = c.loc_signal_strength === 'confirmed'
-    ? '<span class="badge-loc-confirmed">📍 Confirmed Location</span>'
-    : c.loc_signal_strength === 'possible'
-    ? '<span class="badge-loc-possible">📍 Possible Location</span>'
+  const locBadge = c.loc_signal_strength === 'expansion_confirmed'
+    ? `<span class="badge-expansion-confirmed">🏗️ Expanding: ${c.expansion_confirmed}</span>`
+    : c.loc_signal_strength === 'expansion_possible'
+    ? `<span class="badge-expansion-possible">🏗️ Possible Expansion: ${c.expansion_possible}</span>`
+    : c.loc_signal_strength === 'existing_confirmed'
+    ? `<span class="badge-existing-confirmed">📍 Active: ${c.existing_confirmed}</span>`
+    : c.loc_signal_strength === 'existing_possible'
+    ? `<span class="badge-existing-possible">📍 Possible: ${c.existing_possible}</span>`
     : '';
   const rolePlural = c.role_count === 1 ? 'role' : 'roles';
   const excerpt = c.perk_excerpt ? `<div class="detail-excerpt">"${c.perk_excerpt}"</div>` : '';
@@ -432,16 +439,20 @@ function cardHTML(c) {
       ${c.known_markets ? `<div class="meta-item"><label>Known Markets</label><span>${c.known_markets}</span></div>` : ''}
     </div>
     ${(() => {
-      // JD-derived location signal breakdown
       let detail = [];
       try { detail = JSON.parse(c.location_detail || '[]'); } catch(e) {}
       const sigRows = detail.length
-        ? `<div class="loc-detail"><strong>JD signal by location</strong><table>${
-            detail.map(d => `<tr><td>${d.location}</td><td>${d.jd_count} JDs</td><td class="loc-sig-${d.signal_strength}">${d.signal_strength}</td></tr>`).join('')
-          }</table></div>`
+        ? `<div class="loc-detail"><strong>JD location signals</strong><table>
+            <tr style="font-size:11px;color:#9ca3af"><td>Market</td><td>JDs</td><td>Strength</td><td>Type</td></tr>
+            ${detail.map(d => `<tr>
+              <td>${d.market}</td>
+              <td>${d.jd_count}</td>
+              <td class="loc-sig-${d.signal_strength}">${d.signal_strength}</td>
+              <td class="loc-type-${d.loc_type || ''}">${d.loc_type === 'expansion' ? '🏗️ Expansion' : d.loc_type === 'existing' ? '📍 Existing' : '—'}</td>
+            </tr>`).join('')}
+          </table></div>`
         : '';
 
-      // Known billing office cities
       let offices = [];
       try { offices = JSON.parse(c.office_cities || '[]'); } catch(e) {}
       const officeRows = offices.length

@@ -103,16 +103,28 @@ def _company_block(co: dict) -> dict:
     velocity_tag = "  :fire: *Accelerating*" if accelerating else ""
     location_tag = f" :round_pushpin: {market}" if market and market != "Other" else ""
     vertical_tag = f"  `{vertical}`" if vertical else ""
-    role_label = f"{role_count} role{'s' if role_count != 1 else ''} mentioning food perks"
+    role_label   = f"{role_count} role{'s' if role_count != 1 else ''} mentioning food perks"
+
+    # Expansion signal — highest-value, call out explicitly
+    loc_strength       = co.get("loc_signal_strength", "")
+    expansion_confirmed = co.get("expansion_confirmed", "")
+    expansion_possible  = co.get("expansion_possible", "")
+    if expansion_confirmed:
+        expansion_tag = f"\n:construction: *Expanding to: {expansion_confirmed}* — new office signal from JDs"
+    elif expansion_possible:
+        expansion_tag = f"\n:construction: Possible expansion: {expansion_possible} — watch list"
+    else:
+        expansion_tag = ""
 
     text = (
         f"{seg_tag}{'  ' if seg_tag else ''}*<{url}|{co['company']}>*"
         f"  `score: {score}`{location_tag}{vertical_tag}{velocity_tag}\n"
         f"{src_label}\n"
         f":pushpin: _{role_label}_ — `{keywords}`\n"
+        f"{expansion_tag}"
     )
     if perk:
-        text += f'> "{perk}"\n'
+        text += f'\n> "{perk}"\n'
 
     return {"type": "section", "text": {"type": "mrkdwn", "text": text}}
 

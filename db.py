@@ -73,8 +73,10 @@ def init():
         _add_column_if_missing(con, "companies", "ezcater_vertical",     "TEXT")
         _add_column_if_missing(con, "companies", "zi_industry",          "TEXT")
         _add_column_if_missing(con, "companies", "loc_signal_strength",  "TEXT DEFAULT 'noise'")
-        _add_column_if_missing(con, "companies", "confirmed_locations",  "TEXT")
-        _add_column_if_missing(con, "companies", "possible_locations",   "TEXT")
+        _add_column_if_missing(con, "companies", "expansion_confirmed",  "TEXT")
+        _add_column_if_missing(con, "companies", "expansion_possible",   "TEXT")
+        _add_column_if_missing(con, "companies", "existing_confirmed",   "TEXT")
+        _add_column_if_missing(con, "companies", "existing_possible",    "TEXT")
         _add_column_if_missing(con, "companies", "location_jd_count",    "INTEGER DEFAULT 0")
         _add_column_if_missing(con, "companies", "location_detail",      "TEXT")
         _add_column_if_missing(con, "companies", "known_markets",        "TEXT")
@@ -145,80 +147,55 @@ def upsert_companies(records: list[dict]) -> tuple[list[dict], list[dict]]:
                          gtm_score, top_keywords, role_count, sample_title,
                          sample_url, location, perk_excerpt, source, notified,
                          segment, market, ezcater_vertical, zi_industry,
-                         loc_signal_strength, confirmed_locations,
-                         possible_locations, location_jd_count, location_detail,
-                         known_markets, office_cities)
-                    VALUES (?,?,?,?,1,1,?,?,?,?,?,?,?,?,0,?,?,?,?,?,?,?,?,?,?,?)
+                         loc_signal_strength, expansion_confirmed, expansion_possible,
+                         existing_confirmed, existing_possible,
+                         location_jd_count, location_detail, known_markets, office_cities)
+                    VALUES (?,?,?,?,1,1,?,?,?,?,?,?,?,?,0,?,?,?,?,?,?,?,?,?,?,?,?,?)
                 """, (
-                    name,
-                    r.get("inferred_domain", ""),
-                    today, today,
-                    r.get("gtm_score", 0),
-                    r.get("food_keywords_matched", ""),
+                    name, r.get("inferred_domain", ""), today, today,
+                    r.get("gtm_score", 0), r.get("food_keywords_matched", ""),
                     r.get("role_count", 1),
                     r.get("sample_title", r.get("title", "")),
                     r.get("sample_url", r.get("url", "")),
-                    r.get("location", ""),
-                    r.get("perk_excerpt", ""),
-                    r.get("source", ""),
-                    r.get("segment", "prospect"),
-                    r.get("market", ""),
-                    r.get("ezcater_vertical", ""),
-                    r.get("zi_industry", ""),
-                    r.get("loc_signal_strength", "noise"),
-                    r.get("confirmed_locations", ""),
-                    r.get("possible_locations", ""),
-                    r.get("location_jd_count", 0),
-                    r.get("location_detail", "[]"),
-                    r.get("known_markets", ""),
-                    r.get("office_cities", "[]"),
+                    r.get("location", ""), r.get("perk_excerpt", ""),
+                    r.get("source", ""), r.get("segment", "prospect"),
+                    r.get("market", ""), r.get("ezcater_vertical", ""),
+                    r.get("zi_industry", ""), r.get("loc_signal_strength", "noise"),
+                    r.get("expansion_confirmed", ""), r.get("expansion_possible", ""),
+                    r.get("existing_confirmed", ""), r.get("existing_possible", ""),
+                    r.get("location_jd_count", 0), r.get("location_detail", "[]"),
+                    r.get("known_markets", ""), r.get("office_cities", "[]"),
                 ))
                 new_cos.append(r)
             else:
                 con.execute("""
                     UPDATE companies SET
-                        last_seen            = ?,
-                        times_seen           = times_seen + 1,
-                        is_new               = 0,
-                        gtm_score            = MAX(gtm_score, ?),
-                        top_keywords         = ?,
-                        role_count           = ?,
-                        sample_title         = ?,
-                        sample_url           = ?,
-                        perk_excerpt         = ?,
-                        source               = ?,
-                        segment              = ?,
-                        market               = ?,
-                        ezcater_vertical     = ?,
-                        zi_industry          = ?,
-                        loc_signal_strength  = ?,
-                        confirmed_locations  = ?,
-                        possible_locations   = ?,
-                        location_jd_count    = ?,
-                        location_detail      = ?,
-                        known_markets        = ?,
-                        office_cities        = ?
+                        last_seen           = ?, times_seen = times_seen + 1, is_new = 0,
+                        gtm_score           = MAX(gtm_score, ?),
+                        top_keywords        = ?, role_count = ?,
+                        sample_title        = ?, sample_url = ?,
+                        perk_excerpt        = ?, source     = ?,
+                        segment             = ?, market     = ?,
+                        ezcater_vertical    = ?, zi_industry = ?,
+                        loc_signal_strength = ?,
+                        expansion_confirmed = ?, expansion_possible = ?,
+                        existing_confirmed  = ?, existing_possible  = ?,
+                        location_jd_count   = ?, location_detail    = ?,
+                        known_markets       = ?, office_cities       = ?
                     WHERE name = ?
                 """, (
-                    today,
-                    r.get("gtm_score", 0),
-                    r.get("food_keywords_matched", ""),
+                    today, r.get("gtm_score", 0), r.get("food_keywords_matched", ""),
                     r.get("role_count", 1),
                     r.get("sample_title", r.get("title", "")),
                     r.get("sample_url", r.get("url", "")),
-                    r.get("perk_excerpt", ""),
-                    r.get("source", ""),
-                    r.get("segment", "prospect"),
-                    r.get("market", ""),
-                    r.get("ezcater_vertical", ""),
-                    r.get("zi_industry", ""),
+                    r.get("perk_excerpt", ""), r.get("source", ""),
+                    r.get("segment", "prospect"), r.get("market", ""),
+                    r.get("ezcater_vertical", ""), r.get("zi_industry", ""),
                     r.get("loc_signal_strength", "noise"),
-                    r.get("confirmed_locations", ""),
-                    r.get("possible_locations", ""),
-                    r.get("location_jd_count", 0),
-                    r.get("location_detail", "[]"),
-                    r.get("known_markets", ""),
-                    r.get("office_cities", "[]"),
+                    r.get("expansion_confirmed", ""), r.get("expansion_possible", ""),
+                    r.get("existing_confirmed", ""), r.get("existing_possible", ""),
+                    r.get("location_jd_count", 0), r.get("location_detail", "[]"),
+                    r.get("known_markets", ""), r.get("office_cities", "[]"),
                     name,
                 ))
                 updated_cos.append(r)

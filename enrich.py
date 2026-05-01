@@ -96,14 +96,29 @@ PERSONA_SIGNALS = {
 }
 
 # ── Location signal thresholds ────────────────────────────────────────────────
-# Unit of analysis: (company, market) — two offices are two independent signals.
+# Two distinct signals, different sales motions:
+#
+#   EXISTING office  — JD market matches a known billing address office.
+#                      Signal: active food program at a location we know about.
+#                      Sales motion: account maintenance / upsell.
+#
+#   EXPANSION market — JD market does NOT appear in billing data.
+#                      Signal: company is opening a new office and hiring there.
+#                      Sales motion: greenfield — sell them a food program before
+#                      they've set one up. Highest-value signal in the system.
+#
 # Quality gate: only JDs with keyword score >= LOCATION_MIN_KW_SCORE count.
-# This filters "stocked kitchen" noise (score=3) from real programs (score>=5).
-LOCATION_SIG_WEAK       = 3   # "possible" — office likely has food perks
-LOCATION_SIG_STRONG     = 5   # "confirmed" — high-confidence target location
-LOCATION_MIN_KW_SCORE   = 5   # minimum keyword score to count a JD as signal
-                               # (meal stipend=5, free lunch=7, doordash=10 pass;
-                               #  stocked kitchen=3 is filtered out)
+# Filters "stocked kitchen" noise (score=3); requires real food program keywords.
+
+LOCATION_SIG_WEAK       = 3   # "possible" — 3+ quality JDs at one location
+LOCATION_SIG_STRONG     = 5   # "confirmed" — 5+ quality JDs at one location
+LOCATION_MIN_KW_SCORE   = 5   # minimum per-JD keyword score to count as signal
+
+# Score boosts — expansion is worth more than confirmation of existing office
+BOOST_EXISTING_CONFIRMED  = 10   # confirmed food program at known office
+BOOST_EXISTING_POSSIBLE   =  5   # possible food program at known office
+BOOST_EXPANSION_CONFIRMED = 15   # 5+ JDs at a city not in billing data — high conviction
+BOOST_EXPANSION_POSSIBLE  =  8   # 3+ JDs at unknown city — watch list
 
 CONFIDENCE_TIERS = {
     range(25, 999): "High",
@@ -215,50 +230,40 @@ def rollup_to_companies(df: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame]:
     """
     Collapse job-level rows into one row per company.
 
-    Location stat-sig model (vectorized):
-    - Unit of analysis: (company, market) — two cities = two independent signals
-    - Quality gate: only JDs with keyword score >= LOCATION_MIN_KW_SCORE count
-      (filters stocked kitchen noise; requires real food program keywords)
-    - Score boost: +10 per confirmed office (5+ quality JDs), +5 per possible (3+)
-    - Each office independent: Chicago confirmed + NYC possible = +15 total
+    Location model — two distinct signals, different sales motions:
+      existing  — JD market matches a known billing-address office.
+                  Confirms active food program. Sales: upsell/maintain.
+      expansion — JD market NOT in billing data. Company is opening a new
+                  office and hiring there. Sales: greenfield, highest value.
+
+    Vectorized: market and kw_score computed as DataFrame columns before groupby.
+    Per-location scoring is independent — two confirmed expansions = 2× boost.
 
     Returns:
-      companies_df  — one row per company
-      locations_df  — one row per (company, market), for company_locations table
+      companies_df — one row per company (for CSV + dashboard)
+      locations_df — one row per (company, market) (for company_locations table)
     """
     df = df.copy()
     df["company"] = df["company"].fillna("").astype(str)
     df["company_norm"] = df["company"].str.strip().str.lower()
     df = df[df["company_norm"] != ""]
 
-    # Vectorize market + keyword score — compute once across all rows
-    df["market"]   = df["location"].fillna("").apply(infer_market)
-    df["kw_score"] = df["food_keywords_matched"].fillna("").apply(_kw_score_for_row)
+    # Vectorize: compute market and kw_score for every JD row in one pass
+    df["market"]    = df["location"].fillna("").apply(infer_market)
+    df["kw_score"]  = df["food_keywords_matched"].fillna("").apply(_kw_score_for_row)
     df["gtm_score"] = df.apply(score_row, axis=1)
 
-    # ── Location stat-sig: group by (company, market), quality-gated ──────────
+    # ── Location stat-sig: (company, market), quality-gated ───────────────────
     quality = df[df["kw_score"] >= LOCATION_MIN_KW_SCORE]
     loc_counts    = quality.groupby(["company_norm", "market"]).size().rename("jd_count")
     loc_max_score = quality.groupby(["company_norm", "market"])["kw_score"].max().rename("max_kw_score")
     loc_stats = pd.concat([loc_counts, loc_max_score], axis=1).reset_index()
-
-    def _strength(n):
-        if n >= LOCATION_SIG_STRONG: return "confirmed"
-        if n >= LOCATION_SIG_WEAK:   return "possible"
-        return "noise"
-
-    loc_stats["signal_strength"] = loc_stats["jd_count"].apply(_strength)
-
-    # Score boost: per office, independently
-    loc_stats["loc_boost"] = loc_stats["signal_strength"].map(
-        {"confirmed": 10, "possible": 5, "noise": 0}
+    loc_stats["signal_strength"] = loc_stats["jd_count"].apply(
+        lambda n: "confirmed" if n >= LOCATION_SIG_STRONG else ("possible" if n >= LOCATION_SIG_WEAK else "noise")
     )
 
-    # Company-level location boost = sum of boosts across all offices
-    company_loc_boost = loc_stats.groupby("company_norm")["loc_boost"].sum().rename("location_score_boost")
-
-    # Build locations_df for the company_locations table (one row per company+market)
-    locations_df = loc_stats.rename(columns={"market": "market"}).copy()
+    # Build locations_df for company_locations table — expansion type added per-company below
+    locations_df = loc_stats.copy()
 
     # ── Per-company rollup ─────────────────────────────────────────────────────
     groups = defaultdict(list)
@@ -267,14 +272,15 @@ def rollup_to_companies(df: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame]:
 
     records = []
     for norm_name, rows in groups.items():
-        best = max(rows, key=lambda r: r.get("gtm_score", 0))
+        best         = max(rows, key=lambda r: r.get("gtm_score", 0))
+        company_name = best["company"].strip()
+        location_str = best.get("location", "")
+        score        = best["gtm_score"]
 
         unique_titles = {
             str(r.get("title", "") or "").strip().lower()
-            for r in rows
-            if str(r.get("title", "") or "").strip()
+            for r in rows if str(r.get("title", "") or "").strip()
         }
-
         all_kws = set()
         for r in rows:
             for kw in str(r.get("food_keywords_matched", "")).split(", "):
@@ -287,14 +293,6 @@ def rollup_to_companies(df: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame]:
             (s for s in source_priority if s in sources_seen),
             sources_seen[0] if sources_seen else "",
         )
-        all_sources = ", ".join(sorted(sources_seen))
-
-        score        = best["gtm_score"]
-        company_name = best["company"].strip()
-        location_str = best.get("location", "")
-
-        # Apply per-office location boost (vectorized result, 0 if no quality JDs)
-        score += int(company_loc_boost.get(norm_name, 0))
 
         # Account segmentation
         domain = infer_domain(company_name)
@@ -306,59 +304,98 @@ def rollup_to_companies(df: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame]:
         elif seg == "unmanaged":
             score += 8
 
-        # Pull per-office detail for this company from loc_stats
-        co_locs = loc_stats[loc_stats["company_norm"] == norm_name].sort_values("jd_count", ascending=False)
-        confirmed_locs = co_locs[co_locs["signal_strength"] == "confirmed"]["market"].tolist()
-        possible_locs  = co_locs[co_locs["signal_strength"] == "possible"]["market"].tolist()
-        loc_detail     = co_locs[["market", "jd_count", "signal_strength", "max_kw_score"]].to_dict(orient="records")
+        # ── Expansion detection ────────────────────────────────────────────────
+        # Cross-reference JD markets against known billing offices.
+        # Markets in JDs but NOT in billing data = expansion candidates.
+        known_markets  = location_lookup.get_markets(domain)   # from billing CSVs
+        co_locs = loc_stats[loc_stats["company_norm"] == norm_name].copy()
+        co_locs["loc_type"] = co_locs["market"].apply(
+            lambda m: "existing" if (m != "Other" and m in known_markets) else "expansion"
+        )
 
-        if confirmed_locs:
-            loc_signal_strength = "confirmed"
-        elif possible_locs:
-            loc_signal_strength = "possible"
+        for _, loc_row in co_locs.iterrows():
+            strength  = loc_row["signal_strength"]
+            loc_type  = loc_row["loc_type"]
+            if loc_type == "expansion":
+                score += BOOST_EXPANSION_CONFIRMED if strength == "confirmed" else (
+                         BOOST_EXPANSION_POSSIBLE  if strength == "possible"  else 0)
+            else:  # existing
+                score += BOOST_EXISTING_CONFIRMED  if strength == "confirmed" else (
+                         BOOST_EXISTING_POSSIBLE   if strength == "possible"  else 0)
+
+        # Partition for dashboard + Slack
+        expansion_confirmed = co_locs[
+            (co_locs["loc_type"] == "expansion") & (co_locs["signal_strength"] == "confirmed")
+        ]["market"].tolist()
+        expansion_possible = co_locs[
+            (co_locs["loc_type"] == "expansion") & (co_locs["signal_strength"] == "possible")
+        ]["market"].tolist()
+        existing_confirmed = co_locs[
+            (co_locs["loc_type"] == "existing") & (co_locs["signal_strength"] == "confirmed")
+        ]["market"].tolist()
+        existing_possible = co_locs[
+            (co_locs["loc_type"] == "existing") & (co_locs["signal_strength"] == "possible")
+        ]["market"].tolist()
+
+        # Overall signal strength: expansion confirmed > expansion possible > existing confirmed > …
+        if expansion_confirmed:
+            loc_signal_strength = "expansion_confirmed"
+        elif expansion_possible:
+            loc_signal_strength = "expansion_possible"
+        elif existing_confirmed:
+            loc_signal_strength = "existing_confirmed"
+        elif existing_possible:
+            loc_signal_strength = "existing_possible"
         else:
             loc_signal_strength = "noise"
 
-        # Market: billing address is authoritative; JD string is fallback
-        known_markets  = location_lookup.get_markets(domain)
+        loc_detail = co_locs[
+            ["market", "jd_count", "signal_strength", "loc_type", "max_kw_score"]
+        ].sort_values("jd_count", ascending=False).to_dict(orient="records")
+
+        # Market for territory routing: billing address primary, JD fallback
         primary_market = location_lookup.get_primary_market(domain)
         if primary_market == "Other":
             primary_market = infer_market(location_str)
 
-        # Known office cities for dashboard display
         office_cities = location_lookup.get_all_office_cities(domain)
 
         records.append({
-            "company":                company_name,
-            "inferred_domain":        domain,
-            "gtm_score":              score,
-            "confidence":             get_confidence(score),
-            "icp_tier":               _icp_tier(score),
-            "segment":                seg,
-            "market":                 primary_market,
-            "known_markets":          ", ".join(sorted(known_markets)) if known_markets else "",
-            "office_cities":          json.dumps(office_cities),
-            "ezcater_vertical":       ezcater_vertical,
-            "zi_industry":            zi_industry,
-            "unique_roles_with_perk": len(unique_titles),
-            "role_count":             len(unique_titles),
-            "top_keywords":           ", ".join(sorted(all_kws)),
-            "best_source":            best_source,
-            "all_sources":            all_sources,
-            "location":               location_str,
-            "remote":                 best.get("remote", ""),
-            "sample_title":           best.get("title", ""),
-            "sample_url":             best.get("url", ""),
-            "perk_excerpt":           best.get("perk_excerpt", "")[:200],
-            "date_first_seen":        best.get("date_posted", ""),
-            "is_new":                 1,
-            "loc_signal_strength":    loc_signal_strength,
-            "confirmed_locations":    ", ".join(confirmed_locs),
-            "possible_locations":     ", ".join(possible_locs),
-            "location_jd_count":      int(co_locs["jd_count"].sum()),
-            "location_detail":        json.dumps(loc_detail),
+            "company":                  company_name,
+            "inferred_domain":          domain,
+            "gtm_score":                score,
+            "confidence":               get_confidence(score),
+            "icp_tier":                 _icp_tier(score),
+            "segment":                  seg,
+            "market":                   primary_market,
+            "known_markets":            ", ".join(sorted(known_markets)) if known_markets else "",
+            "office_cities":            json.dumps(office_cities),
+            "ezcater_vertical":         ezcater_vertical,
+            "zi_industry":              zi_industry,
+            "unique_roles_with_perk":   len(unique_titles),
+            "role_count":               len(unique_titles),
+            "top_keywords":             ", ".join(sorted(all_kws)),
+            "best_source":              best_source,
+            "all_sources":              ", ".join(sorted(sources_seen)),
+            "location":                 location_str,
+            "remote":                   best.get("remote", ""),
+            "sample_title":             best.get("title", ""),
+            "sample_url":               best.get("url", ""),
+            "perk_excerpt":             best.get("perk_excerpt", "")[:200],
+            "date_first_seen":          best.get("date_posted", ""),
+            "is_new":                   1,
+            # Location signal — split by type
+            "loc_signal_strength":      loc_signal_strength,
+            "expansion_confirmed":      ", ".join(expansion_confirmed),
+            "expansion_possible":       ", ".join(expansion_possible),
+            "existing_confirmed":       ", ".join(existing_confirmed),
+            "existing_possible":        ", ".join(existing_possible),
+            "location_jd_count":        int(co_locs["jd_count"].sum()),
+            "location_detail":          json.dumps(loc_detail),
         })
 
+    # Annotate locations_df with loc_type per company for the DB table
+    # (requires re-joining known_markets per company — done lazily at persist time)
     companies_df = pd.DataFrame(records).sort_values("gtm_score", ascending=False).reset_index(drop=True)
     return companies_df, locations_df
 
