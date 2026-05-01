@@ -154,31 +154,26 @@ def scrape() -> Iterator[dict]:
                 log.error(f"Apify result fetch failed for '{keyword}': {e}")
                 continue
 
-            if items:
-                log.info(f"Apify '{keyword}': first item keys = {list(items[0].keys())}")
             for item in items:
-                url = str(item.get("jobUrl") or item.get("url") or "")
+                # Confirmed field names from actor response logs
+                url = str(item.get("applyUrl") or item.get("link") or item.get("jobUrl") or item.get("url") or "")
                 if not url or url in seen_urls:
                     continue
                 seen_urls.add(url)
 
-                company  = str(item.get("companyName") or item.get("company") or item.get("company_name") or "")
-                title    = str(item.get("title") or item.get("jobTitle") or item.get("job_title") or "")
-                location = str(item.get("location") or item.get("place") or "")
-                # Actor field names vary by version — try all known keys
+                company  = str(item.get("companyName") or item.get("company") or "")
+                title    = str(item.get("title") or item.get("jobTitle") or "")
+                location = str(item.get("location") or "")
+                # descriptionText is plain text; descriptionHtml is HTML fallback
                 desc_raw = str(
+                    item.get("descriptionText") or
+                    item.get("descriptionHtml") or
                     item.get("description") or
                     item.get("jobDescription") or
-                    item.get("job_description") or
-                    item.get("descriptionHtml") or
-                    item.get("descriptionText") or
-                    item.get("text") or
                     item.get("body") or
                     ""
                 )
                 full_text = clean_text(desc_raw)
-                if not full_text:
-                    log.debug(f"Apify: empty description for {url} — item keys: {list(item.keys())[:10]}")
 
                 if not is_in_target_location(f"{location} {full_text}"):
                     continue
@@ -197,7 +192,7 @@ def scrape() -> Iterator[dict]:
                     "company":               company,
                     "title":                 title,
                     "location":              location,
-                    "remote":                "Remote" if item.get("workplaceType") == "Remote" else "On-site",
+                    "remote":                "Remote" if (item.get("workRemoteAllowed") or "remote" in str(item.get("workplaceTypes", "")).lower()) else "On-site",
                     "food_keywords_matched": ", ".join(matched_keywords),
                     "keyword_count":         len(matched_keywords),
                     "perk_excerpt":          snip,

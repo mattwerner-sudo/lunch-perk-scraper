@@ -379,6 +379,8 @@ def scrape(
         return
 
     for batch_num, start in enumerate(range(0, len(all_domains), DOMAIN_BATCH_SIZE), 1):
+        if _out_of_credits:
+            break
         batch = all_domains[start : start + DOMAIN_BATCH_SIZE]
         log.info(f"TheirStack: batch {batch_num}/{total_batches} ({len(batch)} domains)")
 
