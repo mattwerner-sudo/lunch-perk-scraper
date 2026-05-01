@@ -48,7 +48,7 @@ jobs:
           SUMBLE_API_KEY:              ${{ secrets.SUMBLE_API_KEY }}
         # Skip glassdoor (403 in cloud) — run it locally if needed
         # Tee output to scraper.log so we can surface the tail on failure
-        run: python3 scrape.py --sources gh lv ab bn wd js ap wf ex fc ts --no-verify 2>&1 | tee scraper.log; test ${PIPESTATUS[0]} -eq 0
+        run: python3 scrape.py --sources da gh lv ab bn wd js ap wf ex fc ts --no-verify 2>&1 | tee scraper.log; test ${PIPESTATUS[0]} -eq 0
 
       - name: Show last 150 lines of log on failure
         if: failure()

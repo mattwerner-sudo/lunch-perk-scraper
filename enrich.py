@@ -293,8 +293,29 @@ def rollup_to_companies(df: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame]:
             sources_seen[0] if sources_seen else "",
         )
 
+        # Self-referential filter: food platforms whose own name is the keyword
+        # e.g. DoorDash matching "doordash" — it's their own product, not a perk signal
+        _FOOD_BRANDS = {
+            "doordash", "grubhub", "ubereats", "uber eats", "forkable",
+            "sharebite", "seamless", "instacart", "goldbelly", "gopuff",
+            "sweetgreen", "hungryroot", "misfits market", "caviar", "postmates",
+        }
+        company_lower = norm_name
+        self_referential = any(
+            brand in company_lower and any(brand in kw.lower() for kw in all_kws)
+            for brand in _FOOD_BRANDS
+        )
+        if self_referential:
+            score = max(0, score - 25)
+
         # Account segmentation
-        domain = infer_domain(company_name)
+        # Prefer _domain from records (set by domain_ats_scraper — exact match)
+        # over infer_domain() which guesses from company name
+        verified_domain = next(
+            (r.get("_domain", "") for r in rows if r.get("_domain", "")),
+            ""
+        )
+        domain = verified_domain or infer_domain(company_name)
         seg, acct_row    = account_lookup.lookup(company_name, domain)
         ezcater_vertical = acct_row["ezcater_vertical"] if acct_row else ""
         zi_industry      = acct_row["zi_industry"]      if acct_row else ""

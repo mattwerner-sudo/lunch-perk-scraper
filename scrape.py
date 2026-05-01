@@ -39,12 +39,13 @@ SOURCES = {
     "fc": ("Firecrawl",               "scrapers.firecrawl_scraper", "scrape"),
     "ts": ("TheirStack",              "scrapers.theirstack",        "scrape"),
     "sb": ("Sumble",                  "scrapers.sumble",            "scrape"),
+    "da": ("Domain ATS",              "scrapers.domain_ats_scraper","scrape"),
 }
 
 FIELDNAMES = [
     "source", "company", "title", "location", "remote",
     "food_keywords_matched", "keyword_count", "perk_excerpt",
-    "date_posted", "url",
+    "date_posted", "url", "_domain",
 ]
 
 
