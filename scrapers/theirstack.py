@@ -95,6 +95,68 @@ def _post(payload: dict) -> dict | None:
         return None
 
 
+def debug():
+    """
+    Progressive diagnostic — run with: python3 -c "from scrapers.theirstack import debug; debug()"
+    Tests API connectivity, domain coverage, and description filter independently.
+    Zero credits consumed (all free_count mode).
+    """
+    import json
+    known_domains = ["google.com", "microsoft.com", "salesforce.com", "stripe.com", "airbnb.com"]
+
+    steps = [
+        ("1. API alive — known domains, no keyword filter", {
+            "company_domain_or":      known_domains,
+            "posted_at_max_age_days": 30,
+            "job_country_code_or":    ["US"],
+            "limit": 5,
+        }),
+        ("2. Keyword filter only — no domain filter", {
+            "job_description_pattern_or": ["free lunch", "catered meals", "doordash"],
+            "posted_at_max_age_days":     30,
+            "job_country_code_or":        ["US"],
+            "limit": 5,
+        }),
+        ("3. Combined — known domains + keyword filter", {
+            "company_domain_or":          known_domains,
+            "job_description_pattern_or": ["free lunch", "catered meals", "doordash"],
+            "posted_at_max_age_days":     30,
+            "job_country_code_or":        ["US"],
+            "limit": 5,
+        }),
+        ("4. Title filter only — 'engineer' sanity check", {
+            "job_title_pattern_or":   ["engineer"],
+            "posted_at_max_age_days": 7,
+            "job_country_code_or":    ["US"],
+            "limit": 5,
+        }),
+    ]
+
+    for label, payload in steps:
+        count = _count(payload)
+        # Also try a real fetch (1 credit if count>0, else 0)
+        resp = requests.post(
+            BASE_URL,
+            json={**payload, "limit": 1},
+            headers=HEADERS,
+            timeout=15,
+        )
+        status = resp.status_code
+        try:
+            body = resp.json()
+            jobs = body.get("data") or body.get("jobs") or []
+            sample = jobs[0].get("job_title", "") if jobs else "—"
+            total  = body.get("total", "?")
+        except Exception:
+            sample = resp.text[:80]
+            total  = "?"
+        print(f"\n{label}")
+        print(f"  free_count={count}  real_total={total}  status={status}  sample_title='{sample}'")
+        if status == 422:
+            print(f"  422 body: {resp.text[:300]}")
+        time.sleep(0.3)
+
+
 def _count(payload: dict) -> int:
     """
     Free count mode — returns total matching jobs without consuming credits.
