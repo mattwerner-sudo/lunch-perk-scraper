@@ -12,7 +12,7 @@ Usage:
   python3 scrape.py --no-notify             # skip Slack notification
   python3 scrape.py --dry-run               # preview only, no writes
 
-Sources: gh gd lv ab bn wd js ap wf ex fc ts
+Sources: gh gd lv ab bn wd js ap wf ex fc ts sb
 """
 import argparse
 import csv
@@ -38,6 +38,7 @@ SOURCES = {
     "ex": ("Exa",                     "scrapers.exa_scraper",       "scrape"),
     "fc": ("Firecrawl",               "scrapers.firecrawl_scraper", "scrape"),
     "ts": ("TheirStack",              "scrapers.theirstack",        "scrape"),
+    "sb": ("Sumble",                  "scrapers.sumble",            "scrape"),
 }
 
 FIELDNAMES = [
@@ -185,6 +186,14 @@ def main():
                         help="TheirStack: how many days back to search (default: 7)")
     parser.add_argument("--ts-domains", type=int, default=None,
                         help="TheirStack: cap domain count for testing (e.g. 500)")
+    # Sumble-specific flags
+    parser.add_argument("--sb-mode",    choices=["discovery", "account_monitor"],
+                        default="discovery",
+                        help="Sumble mode: discovery (default) or account_monitor")
+    parser.add_argument("--sb-days",    type=int, default=7,
+                        help="Sumble: how many days back to search (default: 7)")
+    parser.add_argument("--sb-domains", type=int, default=None,
+                        help="Sumble: cap domain count for account_monitor testing")
     args = parser.parse_args()
 
     if args.targeted and args.sources != ["gh", "lv", "ab", "wd", "js", "ap", "wf"]:
@@ -224,6 +233,13 @@ def main():
             "mode":          args.ts_mode,
             "max_age_days":  args.ts_days,
             "domain_limit":  args.ts_domains,
+            "dry_run":       args.dry_run,
+        }
+    if "sb" in args.sources:
+        scraper_kwargs["sb"] = {
+            "mode":          args.sb_mode,
+            "max_age_days":  args.sb_days,
+            "domain_limit":  args.sb_domains,
             "dry_run":       args.dry_run,
         }
 

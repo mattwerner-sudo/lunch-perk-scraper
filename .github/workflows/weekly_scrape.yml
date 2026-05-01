@@ -45,6 +45,7 @@ jobs:
           EXA_API_KEY:                 ${{ secrets.EXA_API_KEY }}
           FIRECRAWL_API_KEY:           ${{ secrets.FIRECRAWL_API_KEY }}
           THEIRSTACK_API_KEY:          ${{ secrets.THEIRSTACK_API_KEY }}
+          SUMBLE_API_KEY:              ${{ secrets.SUMBLE_API_KEY }}
         # Skip glassdoor (403 in cloud) — run it locally if needed
         # Tee output to scraper.log so we can surface the tail on failure
         run: python3 scrape.py --sources gh lv ab bn wd js ap wf ex fc ts --no-verify 2>&1 | tee scraper.log; test ${PIPESTATUS[0]} -eq 0
