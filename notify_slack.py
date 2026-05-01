@@ -14,6 +14,7 @@ import requests
 from datetime import date
 from dotenv import load_dotenv
 import db
+import location_lookup
 
 load_dotenv()
 log = logging.getLogger(__name__)
@@ -83,7 +84,11 @@ def _company_block(co: dict) -> dict:
     keywords   = co.get("top_keywords", co.get("food_keywords_matched", ""))
     url        = co.get("sample_url", co.get("url", ""))
     role_count = co.get("role_count", 1)
-    market     = co.get("market", "")
+    domain     = co.get("inferred_domain", "")
+    # Billing address is authoritative for territory routing
+    market     = location_lookup.get_primary_market(domain) if domain else ""
+    if not market or market == "Other":
+        market = co.get("market", "")
     segment    = co.get("segment", "prospect")
     vertical   = co.get("ezcater_vertical", "")
     perk       = co.get("perk_excerpt", "")[:140]

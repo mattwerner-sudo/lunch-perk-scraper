@@ -429,15 +429,28 @@ function cardHTML(c) {
       <div class="meta-item"><label>Market</label><span>${c.market || '—'}</span></div>
       ${c.ezcater_vertical ? `<div class="meta-item"><label>ezCater Vertical</label><span>${c.ezcater_vertical}</span></div>` : ''}
       <div class="meta-item"><label>Location Signal</label><span class="loc-sig-${c.loc_signal_strength || 'noise'}">${c.loc_signal_strength || 'noise'} (${c.location_jd_count || 0} JDs)</span></div>
+      ${c.known_markets ? `<div class="meta-item"><label>Known Markets</label><span>${c.known_markets}</span></div>` : ''}
     </div>
     ${(() => {
+      // JD-derived location signal breakdown
       let detail = [];
       try { detail = JSON.parse(c.location_detail || '[]'); } catch(e) {}
-      if (!detail.length) return '';
-      const rows = detail.map(d =>
-        `<tr><td>${d.location}</td><td>${d.jd_count} JDs</td><td class="loc-sig-${d.signal_strength}">${d.signal_strength}</td></tr>`
-      ).join('');
-      return `<div class="loc-detail"><strong>Location breakdown</strong><table>${rows}</table></div>`;
+      const sigRows = detail.length
+        ? `<div class="loc-detail"><strong>JD signal by location</strong><table>${
+            detail.map(d => `<tr><td>${d.location}</td><td>${d.jd_count} JDs</td><td class="loc-sig-${d.signal_strength}">${d.signal_strength}</td></tr>`).join('')
+          }</table></div>`
+        : '';
+
+      // Known billing office cities
+      let offices = [];
+      try { offices = JSON.parse(c.office_cities || '[]'); } catch(e) {}
+      const officeRows = offices.length
+        ? `<div class="loc-detail"><strong>Known offices (billing data)</strong><table>${
+            offices.map(o => `<tr><td>${o.city}, ${o.state}</td><td>${o.market !== 'Other' ? o.market : '—'}</td></tr>`).join('')
+          }</table></div>`
+        : '';
+
+      return sigRows + officeRows;
     })()}
     <div class="card-actions">
       ${c.sample_url

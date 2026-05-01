@@ -11,6 +11,7 @@ from pathlib import Path
 from collections import defaultdict
 from config import OUTPUT_CSV, OUTPUT_ENRICHED_CSV
 import account_lookup
+import location_lookup
 
 # ── Scoring rubric ───────────────────────────────────────────────────────────
 KEYWORD_SCORE = {
@@ -318,14 +319,25 @@ def rollup_to_companies(df: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame]:
         else:
             loc_signal_strength = "noise"
 
+        # Market: billing address is authoritative; JD string is fallback
+        known_markets  = location_lookup.get_markets(domain)
+        primary_market = location_lookup.get_primary_market(domain)
+        if primary_market == "Other":
+            primary_market = infer_market(location_str)
+
+        # Known office cities for dashboard display
+        office_cities = location_lookup.get_all_office_cities(domain)
+
         records.append({
             "company":                company_name,
-            "inferred_domain":        infer_domain(company_name),
+            "inferred_domain":        domain,
             "gtm_score":              score,
             "confidence":             get_confidence(score),
             "icp_tier":               _icp_tier(score),
             "segment":                seg,
-            "market":                 infer_market(location_str),
+            "market":                 primary_market,
+            "known_markets":          ", ".join(sorted(known_markets)) if known_markets else "",
+            "office_cities":          json.dumps(office_cities),
             "ezcater_vertical":       ezcater_vertical,
             "zi_industry":            zi_industry,
             "unique_roles_with_perk": len(unique_titles),

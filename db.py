@@ -77,6 +77,8 @@ def init():
         _add_column_if_missing(con, "companies", "possible_locations",   "TEXT")
         _add_column_if_missing(con, "companies", "location_jd_count",    "INTEGER DEFAULT 0")
         _add_column_if_missing(con, "companies", "location_detail",      "TEXT")
+        _add_column_if_missing(con, "companies", "known_markets",        "TEXT")
+        _add_column_if_missing(con, "companies", "office_cities",        "TEXT")
         con.executescript("""
 
         CREATE TABLE IF NOT EXISTS ats_cache (
@@ -144,8 +146,9 @@ def upsert_companies(records: list[dict]) -> tuple[list[dict], list[dict]]:
                          sample_url, location, perk_excerpt, source, notified,
                          segment, market, ezcater_vertical, zi_industry,
                          loc_signal_strength, confirmed_locations,
-                         possible_locations, location_jd_count, location_detail)
-                    VALUES (?,?,?,?,1,1,?,?,?,?,?,?,?,?,0,?,?,?,?,?,?,?,?,?)
+                         possible_locations, location_jd_count, location_detail,
+                         known_markets, office_cities)
+                    VALUES (?,?,?,?,1,1,?,?,?,?,?,?,?,?,0,?,?,?,?,?,?,?,?,?,?,?)
                 """, (
                     name,
                     r.get("inferred_domain", ""),
@@ -167,10 +170,11 @@ def upsert_companies(records: list[dict]) -> tuple[list[dict], list[dict]]:
                     r.get("possible_locations", ""),
                     r.get("location_jd_count", 0),
                     r.get("location_detail", "[]"),
+                    r.get("known_markets", ""),
+                    r.get("office_cities", "[]"),
                 ))
                 new_cos.append(r)
             else:
-                # Update: refresh score/keywords, bump times_seen, clear is_new
                 con.execute("""
                     UPDATE companies SET
                         last_seen            = ?,
@@ -191,7 +195,9 @@ def upsert_companies(records: list[dict]) -> tuple[list[dict], list[dict]]:
                         confirmed_locations  = ?,
                         possible_locations   = ?,
                         location_jd_count    = ?,
-                        location_detail      = ?
+                        location_detail      = ?,
+                        known_markets        = ?,
+                        office_cities        = ?
                     WHERE name = ?
                 """, (
                     today,
@@ -211,6 +217,8 @@ def upsert_companies(records: list[dict]) -> tuple[list[dict], list[dict]]:
                     r.get("possible_locations", ""),
                     r.get("location_jd_count", 0),
                     r.get("location_detail", "[]"),
+                    r.get("known_markets", ""),
+                    r.get("office_cities", "[]"),
                     name,
                 ))
                 updated_cos.append(r)
