@@ -153,12 +153,12 @@ def upsert_companies(records: list[dict]) -> tuple[list[dict], list[dict]]:
                     VALUES (?,?,?,?,1,1,?,?,?,?,?,?,?,?,0,?,?,?,?,?,?,?,?,?,?,?,?,?)
                 """, (
                     name, r.get("inferred_domain", ""), today, today,
-                    r.get("gtm_score", 0), r.get("food_keywords_matched", ""),
+                    r.get("gtm_score", 0), r.get("top_keywords", r.get("food_keywords_matched", "")),
                     r.get("role_count", 1),
                     r.get("sample_title", r.get("title", "")),
                     r.get("sample_url", r.get("url", "")),
                     r.get("location", ""), r.get("perk_excerpt", ""),
-                    r.get("source", ""), r.get("segment", "prospect"),
+                    r.get("best_source", r.get("source", "")), r.get("segment", "prospect"),
                     r.get("market", ""), r.get("ezcater_vertical", ""),
                     r.get("zi_industry", ""), r.get("loc_signal_strength", "noise"),
                     r.get("expansion_confirmed", ""), r.get("expansion_possible", ""),
@@ -184,11 +184,11 @@ def upsert_companies(records: list[dict]) -> tuple[list[dict], list[dict]]:
                         known_markets       = ?, office_cities       = ?
                     WHERE name = ?
                 """, (
-                    today, r.get("gtm_score", 0), r.get("food_keywords_matched", ""),
+                    today, r.get("gtm_score", 0), r.get("top_keywords", r.get("food_keywords_matched", "")),
                     r.get("role_count", 1),
                     r.get("sample_title", r.get("title", "")),
                     r.get("sample_url", r.get("url", "")),
-                    r.get("perk_excerpt", ""), r.get("source", ""),
+                    r.get("perk_excerpt", ""), r.get("best_source", r.get("source", "")),
                     r.get("segment", "prospect"), r.get("market", ""),
                     r.get("ezcater_vertical", ""), r.get("zi_industry", ""),
                     r.get("loc_signal_strength", "noise"),
@@ -288,7 +288,7 @@ def mark_notified(company_names: list[str]):
 def get_all_companies(order_by: str = "gtm_score DESC") -> list[dict]:
     with _conn() as con:
         rows = con.execute(
-            f"SELECT * FROM companies ORDER BY {order_by}"
+            f"SELECT *, name AS company FROM companies ORDER BY {order_by}"
         ).fetchall()
         return [dict(r) for r in rows]
 
