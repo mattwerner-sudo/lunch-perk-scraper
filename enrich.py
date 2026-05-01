@@ -94,6 +94,12 @@ PERSONA_SIGNALS = {
     "human resources": 3, "hr director": 4, "hr manager": 3,
 }
 
+# ── Location signal thresholds ────────────────────────────────────────────────
+# Multiple JDs from the same company+city all mentioning food = confirmed office
+# with an active food program. Single JD is noise; 3+ is signal; 5+ is strong.
+LOCATION_SIG_WEAK   = 3   # "possible" — office likely has food perks
+LOCATION_SIG_STRONG = 5   # "confirmed" — high-confidence target location
+
 CONFIDENCE_TIERS = {
     range(25, 999): "High",
     range(12, 25):  "Medium",
@@ -194,10 +200,57 @@ def infer_domain(company: str) -> str:
     return f"{slug}.com" if slug else "unknown.com"
 
 
+def _location_signals(rows: list[dict]) -> dict:
+    """
+    Stat-sig location model: group job rows by normalized city/market and count
+    how many distinct JDs per location mention food keywords.
+
+    Returns a dict with:
+      confirmed_locations  — list of locations with >= LOCATION_SIG_STRONG JDs
+      possible_locations   — list of locations with >= LOCATION_SIG_WEAK JDs (below strong)
+      location_score_boost — score bonus earned from location signal density
+      location_detail      — list of {location, market, jd_count, signal_strength} for dashboard
+    """
+    loc_counts: dict[str, list[dict]] = defaultdict(list)
+    for r in rows:
+        loc = (r.get("location") or "").strip()
+        if not loc:
+            loc = "Unknown"
+        # Normalize to metro market for grouping — avoids "New York, NY" vs "NYC" splits
+        market = infer_market(loc)
+        key = market if market != "Other" else loc
+        loc_counts[key].append(r)
+
+    confirmed, possible, detail = [], [], []
+    boost = 0
+    for loc_key, loc_rows in loc_counts.items():
+        n = len(loc_rows)
+        if n >= LOCATION_SIG_STRONG:
+            confirmed.append(loc_key)
+            boost += 10
+            strength = "confirmed"
+        elif n >= LOCATION_SIG_WEAK:
+            possible.append(loc_key)
+            boost += 5
+            strength = "possible"
+        else:
+            strength = "noise"
+        detail.append({"location": loc_key, "jd_count": n, "signal_strength": strength})
+
+    detail.sort(key=lambda x: -x["jd_count"])
+    return {
+        "confirmed_locations":  confirmed,
+        "possible_locations":   possible,
+        "location_score_boost": boost,
+        "location_detail":      detail,
+    }
+
+
 def rollup_to_companies(df: pd.DataFrame) -> pd.DataFrame:
     """
     Collapse job-level rows into one row per company.
     Aggregates: role count, all unique keywords, best score, best source, sample role/URL.
+    Applies location stat-sig model: 3+ JDs at same location = possible, 5+ = confirmed.
     """
     df["company"] = df["company"].fillna("").astype(str)
     df["gtm_score"] = df.apply(score_row, axis=1)
@@ -245,6 +298,10 @@ def rollup_to_companies(df: pd.DataFrame) -> pd.DataFrame:
         company_name = best["company"].strip()
         location_str = best.get("location", "")
 
+        # Location stat-sig model: multiple JDs at same city = confirmed food program
+        loc_sig = _location_signals(rows)
+        score += loc_sig["location_score_boost"]
+
         # Account segmentation — domain-first, three tiers
         domain = infer_domain(company_name)
         seg, acct_row = account_lookup.lookup(company_name, domain)
@@ -256,28 +313,42 @@ def rollup_to_companies(df: pd.DataFrame) -> pd.DataFrame:
         elif seg == "unmanaged":
             score += 8
 
+        # Derive overall location signal strength for display
+        if loc_sig["confirmed_locations"]:
+            loc_signal_strength = "confirmed"
+        elif loc_sig["possible_locations"]:
+            loc_signal_strength = "possible"
+        else:
+            loc_signal_strength = "noise"
+
         records.append({
-            "company":             company_name,
-            "inferred_domain":     infer_domain(company_name),
-            "gtm_score":           score,
-            "confidence":          get_confidence(score),
-            "icp_tier":            _icp_tier(score),
-            "segment":             seg,
-            "market":              infer_market(location_str),
-            "ezcater_vertical":    ezcater_vertical,
-            "zi_industry":         zi_industry,
+            "company":                company_name,
+            "inferred_domain":        infer_domain(company_name),
+            "gtm_score":              score,
+            "confidence":             get_confidence(score),
+            "icp_tier":               _icp_tier(score),
+            "segment":                seg,
+            "market":                 infer_market(location_str),
+            "ezcater_vertical":       ezcater_vertical,
+            "zi_industry":            zi_industry,
             "unique_roles_with_perk": len(unique_titles),
-            "role_count":          len(unique_titles),
-            "top_keywords":        ", ".join(sorted(all_kws)),
-            "best_source":         best_source,
-            "all_sources":         all_sources,
-            "location":            location_str,
-            "remote":              best.get("remote", ""),
-            "sample_title":        best.get("title", ""),
-            "sample_url":          best.get("url", ""),
-            "perk_excerpt":        best.get("perk_excerpt", "")[:200],
-            "date_first_seen":     best.get("date_posted", ""),
-            "is_new":              1,  # will be updated by db.py on upsert
+            "role_count":             len(unique_titles),
+            "top_keywords":           ", ".join(sorted(all_kws)),
+            "best_source":            best_source,
+            "all_sources":            all_sources,
+            "location":               location_str,
+            "remote":                 best.get("remote", ""),
+            "sample_title":           best.get("title", ""),
+            "sample_url":             best.get("url", ""),
+            "perk_excerpt":           best.get("perk_excerpt", "")[:200],
+            "date_first_seen":        best.get("date_posted", ""),
+            "is_new":                 1,  # will be updated by db.py on upsert
+            # Location signal fields
+            "loc_signal_strength":    loc_signal_strength,
+            "confirmed_locations":    ", ".join(loc_sig["confirmed_locations"]),
+            "possible_locations":     ", ".join(loc_sig["possible_locations"]),
+            "location_jd_count":      len(rows),  # total JDs with food signals, all locations
+            "location_detail":        json.dumps(loc_sig["location_detail"]),
         })
 
     result = pd.DataFrame(records).sort_values("gtm_score", ascending=False)

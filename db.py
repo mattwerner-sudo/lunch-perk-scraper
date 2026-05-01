@@ -68,10 +68,15 @@ def init():
         );
         """)
         # Non-destructive migrations for existing databases
-        _add_column_if_missing(con, "companies", "segment",          "TEXT DEFAULT 'prospect'")
-        _add_column_if_missing(con, "companies", "market",           "TEXT")
-        _add_column_if_missing(con, "companies", "ezcater_vertical", "TEXT")
-        _add_column_if_missing(con, "companies", "zi_industry",      "TEXT")
+        _add_column_if_missing(con, "companies", "segment",              "TEXT DEFAULT 'prospect'")
+        _add_column_if_missing(con, "companies", "market",               "TEXT")
+        _add_column_if_missing(con, "companies", "ezcater_vertical",     "TEXT")
+        _add_column_if_missing(con, "companies", "zi_industry",          "TEXT")
+        _add_column_if_missing(con, "companies", "loc_signal_strength",  "TEXT DEFAULT 'noise'")
+        _add_column_if_missing(con, "companies", "confirmed_locations",  "TEXT")
+        _add_column_if_missing(con, "companies", "possible_locations",   "TEXT")
+        _add_column_if_missing(con, "companies", "location_jd_count",    "INTEGER DEFAULT 0")
+        _add_column_if_missing(con, "companies", "location_detail",      "TEXT")
         con.executescript("""
 
         CREATE TABLE IF NOT EXISTS ats_cache (
@@ -120,8 +125,10 @@ def upsert_companies(records: list[dict]) -> tuple[list[dict], list[dict]]:
                         (name, domain, first_seen, last_seen, times_seen, is_new,
                          gtm_score, top_keywords, role_count, sample_title,
                          sample_url, location, perk_excerpt, source, notified,
-                         segment, market, ezcater_vertical, zi_industry)
-                    VALUES (?,?,?,?,1,1,?,?,?,?,?,?,?,?,0,?,?,?,?)
+                         segment, market, ezcater_vertical, zi_industry,
+                         loc_signal_strength, confirmed_locations,
+                         possible_locations, location_jd_count, location_detail)
+                    VALUES (?,?,?,?,1,1,?,?,?,?,?,?,?,?,0,?,?,?,?,?,?,?,?,?)
                 """, (
                     name,
                     r.get("inferred_domain", ""),
@@ -138,26 +145,36 @@ def upsert_companies(records: list[dict]) -> tuple[list[dict], list[dict]]:
                     r.get("market", ""),
                     r.get("ezcater_vertical", ""),
                     r.get("zi_industry", ""),
+                    r.get("loc_signal_strength", "noise"),
+                    r.get("confirmed_locations", ""),
+                    r.get("possible_locations", ""),
+                    r.get("location_jd_count", 0),
+                    r.get("location_detail", "[]"),
                 ))
                 new_cos.append(r)
             else:
                 # Update: refresh score/keywords, bump times_seen, clear is_new
                 con.execute("""
                     UPDATE companies SET
-                        last_seen        = ?,
-                        times_seen       = times_seen + 1,
-                        is_new           = 0,
-                        gtm_score        = MAX(gtm_score, ?),
-                        top_keywords     = ?,
-                        role_count       = ?,
-                        sample_title     = ?,
-                        sample_url       = ?,
-                        perk_excerpt     = ?,
-                        source           = ?,
-                        segment          = ?,
-                        market           = ?,
-                        ezcater_vertical = ?,
-                        zi_industry      = ?
+                        last_seen            = ?,
+                        times_seen           = times_seen + 1,
+                        is_new               = 0,
+                        gtm_score            = MAX(gtm_score, ?),
+                        top_keywords         = ?,
+                        role_count           = ?,
+                        sample_title         = ?,
+                        sample_url           = ?,
+                        perk_excerpt         = ?,
+                        source               = ?,
+                        segment              = ?,
+                        market               = ?,
+                        ezcater_vertical     = ?,
+                        zi_industry          = ?,
+                        loc_signal_strength  = ?,
+                        confirmed_locations  = ?,
+                        possible_locations   = ?,
+                        location_jd_count    = ?,
+                        location_detail      = ?
                     WHERE name = ?
                 """, (
                     today,
@@ -172,6 +189,11 @@ def upsert_companies(records: list[dict]) -> tuple[list[dict], list[dict]]:
                     r.get("market", ""),
                     r.get("ezcater_vertical", ""),
                     r.get("zi_industry", ""),
+                    r.get("loc_signal_strength", "noise"),
+                    r.get("confirmed_locations", ""),
+                    r.get("possible_locations", ""),
+                    r.get("location_jd_count", 0),
+                    r.get("location_detail", "[]"),
                     name,
                 ))
                 updated_cos.append(r)

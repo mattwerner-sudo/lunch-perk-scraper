@@ -25,6 +25,15 @@ nav{background:#0d0c22;color:#fff;display:flex;align-items:center;justify-conten
 .badge-new{background:#22c55e;color:#fff;font-size:10px;font-weight:800;padding:2px 7px;border-radius:999px;letter-spacing:.04em;text-transform:uppercase;margin-left:6px}
 .badge-managed{background:#f59e0b;color:#fff;font-size:10px;font-weight:800;padding:2px 7px;border-radius:999px;letter-spacing:.04em;text-transform:uppercase;margin-left:6px}
 .badge-unmanaged{background:#6366f1;color:#fff;font-size:10px;font-weight:800;padding:2px 7px;border-radius:999px;letter-spacing:.04em;text-transform:uppercase;margin-left:6px}
+.badge-loc-confirmed{background:#0ea5e9;color:#fff;font-size:10px;font-weight:800;padding:2px 7px;border-radius:999px;letter-spacing:.04em;text-transform:uppercase;margin-left:6px}
+.badge-loc-possible{background:#e0f2fe;color:#0369a1;font-size:10px;font-weight:800;padding:2px 7px;border-radius:999px;letter-spacing:.04em;text-transform:uppercase;margin-left:6px}
+.loc-detail{margin-top:8px;font-size:12px;color:#6e6d7a}
+.loc-detail table{width:100%;border-collapse:collapse;margin-top:4px}
+.loc-detail td{padding:3px 8px;border-bottom:1px solid #f3f3f4}
+.loc-detail td:first-child{font-weight:600;color:#0d0c22}
+.loc-sig-confirmed{color:#0ea5e9;font-weight:700}
+.loc-sig-possible{color:#a16207;font-weight:700}
+.loc-sig-noise{color:#9ca3af}
 
 /* ── Hero ── */
 .hero{background:#0d0c22;color:#fff;padding:48px 40px 56px;border-bottom:1px solid rgba(255,255,255,0.08)}
@@ -208,6 +217,11 @@ nav{padding:0 16px}
       <div class="chip-group" id="f-confidence"></div>
     </div>
     <div class="filter-card">
+      <h3>Location Signal</h3>
+      <div class="chip-group" id="f-loc-signal"></div>
+      <span class="filter-clear" onclick="clearFilter('loc_signal_strength')">Clear</span>
+    </div>
+    <div class="filter-card">
       <h3>Source</h3>
       <div class="chip-group" id="f-source"></div>
       <span class="filter-clear" onclick="clearFilter('source')">Clear</span>
@@ -240,7 +254,7 @@ nav{padding:0 16px}
 <script>
 // ── If running in CodePen, paste DASHBOARD_DATA and DASHBOARD_STATS above this line ──
 
-const F = { segment: [], market: [], confidence: [], source: [], kw: [] };
+const F = { segment: [], market: [], confidence: [], source: [], kw: [], loc_signal_strength: [] };
 
 function init() {
   if (typeof DASHBOARD_DATA === 'undefined') {
@@ -275,6 +289,7 @@ function init() {
   buildChips('f-market', 'market', markets);
 
   buildChips('f-confidence', 'confidence', ['High', 'Medium', 'Low']);
+  buildChips('f-loc-signal', 'loc_signal_strength', ['confirmed', 'possible', 'noise']);
 
   const sources = [...new Set(DASHBOARD_DATA.map(c => c.best_source || c.source).filter(Boolean))].sort();
   buildChips('f-source', 'source', sources);
@@ -312,7 +327,9 @@ function buildChips(containerId, filterKey, values) {
 
 function clearFilter(key) {
   F[key] = [];
-  document.querySelectorAll(`#f-${key} .chip`).forEach(c => c.classList.remove('on'));
+  // chip group id uses hyphens, key uses underscores
+  const id = `f-${key.replace(/_/g, '-')}`;
+  document.querySelectorAll(`#${id} .chip`).forEach(c => c.classList.remove('on'));
   render();
 }
 
@@ -330,6 +347,7 @@ function render() {
     if (F.confidence.length && !F.confidence.includes(c.confidence)) return false;
     if (F.source.length && !F.source.includes(c.best_source || c.source)) return false;
     if (F.kw.length && !F.kw.some(kw => (c.top_keywords || '').includes(kw))) return false;
+    if (F.loc_signal_strength.length && !F.loc_signal_strength.includes(c.loc_signal_strength || 'noise')) return false;
     if (q) {
       const haystack = `${c.company} ${c.top_keywords} ${c.best_source} ${c.location}`.toLowerCase();
       if (!haystack.includes(q)) return false;
@@ -370,6 +388,11 @@ function cardHTML(c) {
     : c.segment === 'unmanaged'
     ? '<span class="badge-unmanaged">Target</span>'
     : '';
+  const locBadge = c.loc_signal_strength === 'confirmed'
+    ? '<span class="badge-loc-confirmed">📍 Confirmed Location</span>'
+    : c.loc_signal_strength === 'possible'
+    ? '<span class="badge-loc-possible">📍 Possible Location</span>'
+    : '';
   const rolePlural = c.role_count === 1 ? 'role' : 'roles';
   const excerpt = c.perk_excerpt ? `<div class="detail-excerpt">"${c.perk_excerpt}"</div>` : '';
 
@@ -383,7 +406,7 @@ function cardHTML(c) {
     </div>
     <div class="card-main">
       <div class="card-header">
-        <span class="card-company">${c.company}${newBadge}${managedBadge}</span>
+        <span class="card-company">${c.company}${newBadge}${managedBadge}${locBadge}</span>
         <span class="card-score ${scoreClass}">${c.confidence} · ${c.gtm_score}</span>
       </div>
       <div class="card-sub">
@@ -405,7 +428,17 @@ function cardHTML(c) {
       <div class="meta-item"><label>Segment</label><span>${c.segment || 'prospect'}</span></div>
       <div class="meta-item"><label>Market</label><span>${c.market || '—'}</span></div>
       ${c.ezcater_vertical ? `<div class="meta-item"><label>ezCater Vertical</label><span>${c.ezcater_vertical}</span></div>` : ''}
+      <div class="meta-item"><label>Location Signal</label><span class="loc-sig-${c.loc_signal_strength || 'noise'}">${c.loc_signal_strength || 'noise'} (${c.location_jd_count || 0} JDs)</span></div>
     </div>
+    ${(() => {
+      let detail = [];
+      try { detail = JSON.parse(c.location_detail || '[]'); } catch(e) {}
+      if (!detail.length) return '';
+      const rows = detail.map(d =>
+        `<tr><td>${d.location}</td><td>${d.jd_count} JDs</td><td class="loc-sig-${d.signal_strength}">${d.signal_strength}</td></tr>`
+      ).join('');
+      return `<div class="loc-detail"><strong>Location breakdown</strong><table>${rows}</table></div>`;
+    })()}
     <div class="card-actions">
       ${c.sample_url
         ? `<a href="${c.sample_url}" target="_blank" rel="noopener" onclick="event.stopPropagation()">
