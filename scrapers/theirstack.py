@@ -98,62 +98,91 @@ def _post(payload: dict) -> dict | None:
 def debug():
     """
     Progressive diagnostic — run with: python3 -c "from scrapers.theirstack import debug; debug()"
-    Tests API connectivity, domain coverage, and description filter independently.
-    Zero credits consumed (all free_count mode).
+    Prints raw response structure so we can identify exact field names.
+    Tries multiple description filter parameter names to find the working one.
     """
     import json
+
+    def _safe_post(payload, label=""):
+        try:
+            resp = requests.post(BASE_URL, json=payload, headers=HEADERS, timeout=30)
+            try:
+                body = resp.json()
+            except Exception:
+                body = {"_raw": resp.text[:300]}
+            return resp.status_code, body
+        except Exception as e:
+            print(f"  REQUEST FAILED: {e}")
+            return 0, {}
+
     known_domains = ["google.com", "microsoft.com", "salesforce.com", "stripe.com", "airbnb.com"]
 
-    steps = [
-        ("1. API alive — known domains, no keyword filter", {
-            "company_domain_or":      known_domains,
+    # ── Step 1: Show raw response structure ───────────────────────────────────
+    print("\n── Step 1: Raw response structure (known domains, no filters) ──")
+    status, body = _safe_post({
+        "company_domain_or":      known_domains,
+        "posted_at_max_age_days": 30,
+        "job_country_code_or":    ["US"],
+        "limit": 2,
+    })
+    print(f"  status={status}")
+    print(f"  top-level keys: {list(body.keys())}")
+    jobs = body.get("data") or body.get("jobs") or []
+    if jobs:
+        print(f"  job[0] keys: {list(jobs[0].keys())}")
+        print(f"  job[0] title: {jobs[0].get('job_title') or jobs[0].get('title')}")
+        print(f"  job[0] company: {jobs[0].get('company_name') or jobs[0].get('company_object', {}).get('name')}")
+    # Look for total in various places
+    for key in ["total", "total_results", "count", "num_results"]:
+        if key in body:
+            print(f"  total field '{key}': {body[key]}")
+    if "metadata" in body:
+        print(f"  metadata: {body['metadata']}")
+    time.sleep(0.3)
+
+    # ── Step 2: free_count response structure ─────────────────────────────────
+    print("\n── Step 2: free_count response structure ──")
+    try:
+        resp = requests.post(
+            f"{BASE_URL}?free_count=true",
+            json={"company_domain_or": known_domains, "posted_at_max_age_days": 30,
+                  "job_country_code_or": ["US"], "limit": 2},
+            headers=HEADERS, timeout=30,
+        )
+        body_fc = resp.json()
+        print(f"  status={resp.status_code}")
+        print(f"  free_count response keys: {list(body_fc.keys())}")
+        print(f"  full response: {json.dumps(body_fc)[:300]}")
+    except Exception as e:
+        print(f"  FAILED: {e}")
+    time.sleep(0.3)
+
+    # ── Step 3: Try each description filter param name ────────────────────────
+    print("\n── Step 3: Description filter param names ──")
+    food_terms = ["free lunch", "catered meals", "doordash"]
+    for param in [
+        "job_description_pattern_or",
+        "job_description_contains_or",
+        "description_pattern_or",
+        "description_contains_or",
+        "job_description_or",
+        "query",
+    ]:
+        status, body = _safe_post({
+            param:                    food_terms,
             "posted_at_max_age_days": 30,
             "job_country_code_or":    ["US"],
-            "limit": 5,
-        }),
-        ("2. Keyword filter only — no domain filter", {
-            "job_description_pattern_or": ["free lunch", "catered meals", "doordash"],
-            "posted_at_max_age_days":     30,
-            "job_country_code_or":        ["US"],
-            "limit": 5,
-        }),
-        ("3. Combined — known domains + keyword filter", {
-            "company_domain_or":          known_domains,
-            "job_description_pattern_or": ["free lunch", "catered meals", "doordash"],
-            "posted_at_max_age_days":     30,
-            "job_country_code_or":        ["US"],
-            "limit": 5,
-        }),
-        ("4. Title filter only — 'engineer' sanity check", {
-            "job_title_pattern_or":   ["engineer"],
-            "posted_at_max_age_days": 7,
-            "job_country_code_or":    ["US"],
-            "limit": 5,
-        }),
-    ]
-
-    for label, payload in steps:
-        count = _count(payload)
-        # Also try a real fetch (1 credit if count>0, else 0)
-        resp = requests.post(
-            BASE_URL,
-            json={**payload, "limit": 1},
-            headers=HEADERS,
-            timeout=15,
-        )
-        status = resp.status_code
-        try:
-            body = resp.json()
-            jobs = body.get("data") or body.get("jobs") or []
-            sample = jobs[0].get("job_title", "") if jobs else "—"
-            total  = body.get("total", "?")
-        except Exception:
-            sample = resp.text[:80]
-            total  = "?"
-        print(f"\n{label}")
-        print(f"  free_count={count}  real_total={total}  status={status}  sample_title='{sample}'")
+            "limit": 1,
+        })
+        jobs = body.get("data") or body.get("jobs") or []
+        title = (jobs[0].get("job_title") or jobs[0].get("title") or "—") if jobs else "—"
+        err   = body.get("detail") or body.get("error") or ""
+        # A food-relevant title means the filter worked
+        food_hit = any(w in title.lower() for w in ["food", "lunch", "catering", "facility", "facilities", "office", "people", "hr", "chef"])
+        marker = "✓ FOOD HIT" if food_hit else ("✗ wrong results" if jobs else "✗ no results")
+        print(f"  {param:40s} status={status} title='{title[:50]}' {marker}")
         if status == 422:
-            print(f"  422 body: {resp.text[:300]}")
+            print(f"    422: {err[:150]}")
         time.sleep(0.3)
 
 
