@@ -202,6 +202,29 @@ def infer_market(location: str) -> str:
     return "Other"
 
 
+_LEGAL_SUFFIXES = re.compile(
+    r"\s+(inc\.?|llc\.?|ltd\.?|corp\.?|co\.?|group|holdings|markets|"
+    r"worldwide|international|technologies|technology|systems|solutions|"
+    r"services|enterprises|ventures|capital|partners|associates|foundation|"
+    r"corporate|us)$",
+    re.IGNORECASE,
+)
+
+def _canon_company(name) -> str:
+    """Normalize company name for deduplication grouping."""
+    if not name or name != name:
+        return ""
+    s = str(name).strip().lower()
+    s = re.sub(r"[^a-z0-9 ]", " ", s)
+    s = re.sub(r"\s+", " ", s).strip()
+    # Strip legal suffixes repeatedly until stable
+    prev = None
+    while prev != s:
+        prev = s
+        s = _LEGAL_SUFFIXES.sub("", s).strip()
+    return s
+
+
 def infer_domain(company) -> str:
     """
     Best-effort domain inference from company name.
@@ -248,7 +271,7 @@ def rollup_to_companies(df: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame]:
     """
     df = df.copy()
     df["company"] = df["company"].fillna("").astype(str)
-    df["company_norm"] = df["company"].str.strip().str.lower()
+    df["company_norm"] = df["company"].apply(_canon_company)
     df = df[df["company_norm"] != ""]
 
     # Vectorize: compute market and kw_score for every JD row in one pass
