@@ -32,9 +32,11 @@ def _norm_name(name: str) -> str:
     return re.sub(r"\s+", " ", name).strip()
 
 
-def _norm_domain(domain: str) -> str:
+def _norm_domain(domain) -> str:
     """Strip scheme, www, trailing slashes, lowercase."""
-    d = domain.lower().strip().rstrip("/")
+    if not domain or domain != domain:  # None or NaN
+        return ""
+    d = str(domain).lower().strip().rstrip("/")
     d = re.sub(r"^https?://", "", d)
     d = re.sub(r"^www\.", "", d)
     # Take only the root domain (ignore paths like mlb.com/padres)
@@ -100,7 +102,7 @@ def lookup(company_name: str, inferred_domain: str = "") -> tuple[str, dict | No
     Priority: managed > unmanaged > prospect.
     Matching: domain first, then name tokens.
     """
-    nd = _norm_domain(inferred_domain) if inferred_domain else ""
+    nd = _norm_domain(inferred_domain)
     nn = _norm_name(company_name) if company_name else ""
     tokens = set(nn.split())
 
