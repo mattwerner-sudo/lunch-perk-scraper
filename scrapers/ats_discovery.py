@@ -46,16 +46,16 @@ CC_URL = "https://index.commoncrawl.org/{index}-index"
 CC_LIMIT = 15000
 MIN_SLUGS = 500   # stop querying more indexes once we hit this
 
-# ATS domain patterns for CommonCrawl queries
+# ATS domain patterns for CommonCrawl queries (list = multiple patterns merged)
 CC_DOMAINS = {
-    "greenhouse": "job-boards.greenhouse.io/*",
-    "lever":      "jobs.lever.co/*",
-    "ashby":      "jobs.ashbyhq.com/*",
+    "greenhouse": ["job-boards.greenhouse.io/*", "boards.greenhouse.io/*"],
+    "lever":      ["jobs.lever.co/*"],
+    "ashby":      ["jobs.ashbyhq.com/*"],
 }
 
 # Slug extraction regexes
 SLUG_RE = {
-    "greenhouse": re.compile(r'job-boards\.greenhouse\.io/([a-zA-Z0-9_-]+)'),
+    "greenhouse": re.compile(r'(?:job-boards|boards)\.greenhouse\.io/([a-zA-Z0-9_-]+)'),
     "lever":      re.compile(r'jobs\.lever\.co/([a-zA-Z0-9_-]+)'),
     "ashby":      re.compile(r'jobs\.ashbyhq\.com/([a-zA-Z0-9_-]+)'),
 }
@@ -175,26 +175,25 @@ def _fetch_cc_index(cc_index: str, domain_pattern: str) -> list[str]:
 
 
 def _discover(ats_type: str) -> list[str]:
-    """Query CommonCrawl across multiple indexes; return deduplicated slugs."""
-    pattern  = CC_DOMAINS[ats_type]
-    slug_re  = SLUG_RE[ats_type]
+    """Query CommonCrawl across multiple indexes and patterns; return deduplicated slugs."""
+    patterns = CC_DOMAINS[ats_type]
+    if isinstance(patterns, str):
+        patterns = [patterns]
+    slug_re = SLUG_RE[ats_type]
     seen_slugs: set[str] = set()
-    all_urls: list[str] = []
 
     for idx in CC_INDEXES:
-        log.info(f"ATS discovery ({ats_type}): querying {idx}...")
-        urls = _fetch_cc_index(idx, pattern)
-        log.info(f"ATS discovery ({ats_type}): {idx} → {len(urls):,} URLs")
-        all_urls.extend(urls)
-
-        # Extract slugs so far
-        for url in urls:
-            m = slug_re.search(url)
-            if not m:
-                continue
-            slug = m.group(1).lower().strip()
-            if slug and slug not in _SKIP and len(slug) > 1:
-                seen_slugs.add(slug)
+        for pattern in patterns:
+            log.info(f"ATS discovery ({ats_type}): querying {idx} / {pattern}...")
+            urls = _fetch_cc_index(idx, pattern)
+            log.info(f"ATS discovery ({ats_type}): {idx}/{pattern} → {len(urls):,} URLs")
+            for url in urls:
+                m = slug_re.search(url)
+                if not m:
+                    continue
+                slug = m.group(1).lower().strip()
+                if slug and slug not in _SKIP and len(slug) > 1:
+                    seen_slugs.add(slug)
 
         if len(seen_slugs) >= MIN_SLUGS:
             log.info(
