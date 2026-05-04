@@ -421,6 +421,81 @@ def rollup_to_companies(df: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame]:
     # Annotate locations_df with loc_type per company for the DB table
     # (requires re-joining known_markets per company — done lazily at persist time)
     companies_df = pd.DataFrame(records).sort_values("gtm_score", ascending=False).reset_index(drop=True)
+
+    # ── US-only filter ────────────────────────────────────────────────────────
+    # Drop companies whose only known location signals are clearly non-US.
+    # Managed/unmanaged accounts pass through unconditionally (they're already
+    # vetted account list companies — their billing address determines territory).
+    _NON_US = re.compile(
+        r"\b(uk|united kingdom|london|england|amsterdam|netherlands|germany|france|"
+        r"paris|berlin|sydney|australia|singapore|sg|tokyo|japan|india|bangalore|"
+        r"mumbai|toronto|canada|montreal|ireland|dublin|poland|krakow|malta|belgium|"
+        r"leuven|porto|portugal|serbia|belgrade|bogot|medell|colombia|stockholm|"
+        r"sweden|norway|oslo|denmark|copenhagen|switzerland|austria|spain|madrid|"
+        r"barcelona|italy|milan|rome|czech|prague|romania|bucharest|finland|helsinki|"
+        r"reykjavik|iceland|kent|shoreditch|emea|apac|latam)\b",
+        re.IGNORECASE,
+    )
+    _US_SIGNALS = re.compile(
+        r"\b(new york|nyc|ny\b|nj\b|ca\b|tx\b|wa\b|chicago|boston|san francisco|"
+        r"los angeles|seattle|austin|dallas|denver|atlanta|miami|dc\b|washington|"
+        r"remote|united states|usa|u\.s\.|nationwide|north america|amer)\b",
+        re.IGNORECASE,
+    )
+
+    def _is_us_company(row) -> bool:
+        if row.get("segment") in ("managed", "unmanaged"):
+            return True
+        loc = str(row.get("location", "") or "")
+        if _US_SIGNALS.search(loc):
+            return True
+        if loc and _NON_US.search(loc) and not _US_SIGNALS.search(loc):
+            return False
+        return True  # no location signal → keep (benefit of the doubt)
+
+    before = len(companies_df)
+    companies_df = companies_df[companies_df.apply(_is_us_company, axis=1)].reset_index(drop=True)
+    dropped_geo = before - len(companies_df)
+
+    # ── Garbage URL / content-site filter ────────────────────────────────────
+    # Exa and JobSpy occasionally return blog posts, catering vendor sites,
+    # and generic content pages that match food keywords but are not employers.
+    _GARBAGE_DOMAINS = re.compile(
+        r"\b(levels\.fyi|businessinsider\.com|strategy-business\.com|"
+        r"glassdoor\.com|builtin\.com|builtinnyc\.com|joinrise\.co|"
+        r"careersatdoordash\.com|gm\.careers|fooda\.com|foodtrends\.com|"
+        r"sifted\.co|martinandfitch\.com|nuucatering\.com|redtablecatering\.com|"
+        r"metrocateringnyc\.com|elitecaterersny\.com|catercow\.com|eatsopo\.com|"
+        r"mangia\.nyc|deborahmillercatering\.com|trypicnic\.com|blog\.caterplace\.com|"
+        r"zerocater\.com/solutions|cookunity\.com/business|smartrecruiters\.com)\b",
+        re.IGNORECASE,
+    )
+    _GARBAGE_NAMES = re.compile(
+        r"^(free lunch|office food perks|#1 corporate lunch|office catering|"
+        r"lunch catering|corporate catering|lunch delivery|corporate event catering|"
+        r"elite caterers|catercow|menus & prices|office catering nyc|"
+        r"blog\.caterplace|builtinnyc|built in nyc|built in$|glassdoor$|"
+        r"new york @ giga|home$|gm\.careers|top companies on rise|"
+        r"strategy business|sifted$|fellfel$|fooda$|zerocater$|"
+        r"nÃ¼u catering|redtablecatering|metrocateringnyc|martinandfitch|"
+        r"lunch catering nyc|corporate catering nyc|office catering in manhattan)\b",
+        re.IGNORECASE,
+    )
+
+    before2 = len(companies_df)
+    companies_df = companies_df[
+        ~companies_df["sample_url"].fillna("").apply(lambda u: bool(_GARBAGE_DOMAINS.search(u))) &
+        ~companies_df["company"].fillna("").apply(lambda c: bool(_GARBAGE_NAMES.match(c)))
+    ].reset_index(drop=True)
+    dropped_garbage = before2 - len(companies_df)
+
+    if dropped_geo or dropped_garbage:
+        import logging
+        logging.getLogger(__name__).info(
+            f"Post-filter: dropped {dropped_geo} non-US companies, "
+            f"{dropped_garbage} garbage/content rows"
+        )
+
     return companies_df, locations_df
 
 
