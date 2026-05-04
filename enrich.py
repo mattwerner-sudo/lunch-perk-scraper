@@ -21,9 +21,13 @@ KEYWORD_SCORE = {
     "uber eats": 10,
     "forkable": 10,
     "sharebite": 10,
+    "caviar": 10,
     "seamless corporate": 8,
     "catered lunch": 7,
     "catered meals": 7,
+    "catered breakfast": 7,
+    "lunch is on us": 7,
+    "we provide lunch": 7,
     "free lunch": 7,
     "free food": 6,
     "free meals": 6,
@@ -153,7 +157,6 @@ def score_row(row) -> int:
 
     # Food keyword score
     s += sum(v for k, v in KEYWORD_SCORE.items() if k in kws)
-    s += int(row.get("keyword_count", 1)) * 2
 
     # Source bonus
     s += SOURCE_BONUS.get(row.get("source", ""), 0)
@@ -299,6 +302,7 @@ def rollup_to_companies(df: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame]:
     records = []
     for norm_name, rows in groups.items():
         best         = max(rows, key=lambda r: r.get("gtm_score", 0))
+        best_perk    = max(rows, key=lambda r: int(r.get("keyword_count", 0) or 0))
         company_name = str(best["company"] or "").strip()
         location_str = best.get("location", "")
         score        = best["gtm_score"]
@@ -347,9 +351,9 @@ def rollup_to_companies(df: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame]:
         ezcater_vertical = acct_row["ezcater_vertical"] if acct_row else ""
         zi_industry      = acct_row["zi_industry"]      if acct_row else ""
         if seg == "managed":
-            score += 15
+            score += 5
         elif seg == "unmanaged":
-            score += 8
+            score += 12
 
         # ── Expansion detection ────────────────────────────────────────────────
         # Cross-reference JD markets against known billing offices.
@@ -420,16 +424,15 @@ def rollup_to_companies(df: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame]:
             "ezcater_vertical":         ezcater_vertical,
             "zi_industry":              zi_industry,
             "unique_roles_with_perk":   len(unique_titles),
-            "role_count":               len(unique_titles),
             "top_keywords":             ", ".join(sorted(all_kws)),
             "best_source":              best_source,
             "all_sources":              ", ".join(sorted(sources_seen)),
             "location":                 location_str,
             "remote":                   best.get("remote", ""),
-            "sample_title":             best.get("title", ""),
-            "sample_url":               best.get("url", ""),
-            "perk_excerpt":             best.get("perk_excerpt", "")[:200],
-            "date_first_seen":          best.get("date_posted", ""),
+            "sample_title":             best_perk.get("title", ""),
+            "sample_url":               best_perk.get("url", ""),
+            "perk_excerpt":             (lambda e: e if len(e) <= 200 else e[:197] + "...")(best_perk.get("perk_excerpt", "")),
+            "date_first_seen":          min((r.get("date_posted", "") for r in rows if r.get("date_posted", "")), default=""),
             "is_new":                   1,
             # Location signal — split by type
             "loc_signal_strength":      loc_signal_strength,

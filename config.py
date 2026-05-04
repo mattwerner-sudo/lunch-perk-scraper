@@ -11,14 +11,18 @@ FOOD_KEYWORDS = [
     "free meals",
     "catered lunch",
     "catered meals",
+    "catered breakfast",
     "lunch provided",
     "meals provided",
+    "lunch is on us",
+    "we provide lunch",
     "doordash",
     "grubhub",
     "ubereats",
     "uber eats",
     "forkable",
     "sharebite",
+    "caviar",
     "seamless corporate",  # NYC dominant; "seamless" alone is too generic
     "seamless for business",
     "order seamless",
@@ -32,9 +36,7 @@ FOOD_KEYWORDS = [
     "lunch credit",
     "food credit",
     "meal credit",
-    "snacks and meals",
     "fully stocked kitchen",
-    "stocked kitchen",
 ]
 
 # ── Location filtering ───────────────────────────────────────────────────────
@@ -55,24 +57,24 @@ SEARCH_QUERIES = [
     "free lunch",
     "catered lunch",
     "catered meals",
+    "catered breakfast",
     "DoorDash",
     "GrubHub",
     "Uber Eats",
     "Forkable",
     "Sharebite",
+    "Caviar",
     "meal stipend",
     "lunch stipend",
     "food stipend",
     "meal credit",
-    "stocked kitchen",
     "daily lunch",
-    # ── added ──
     "free food",
     "lunch provided",
     "fully stocked kitchen",
     "company lunch",
+    "office lunch",
     "ezCater",
-    "snacks and meals",
 ]
 
 # ── Output ──────────────────────────────────────────────────────────────────
