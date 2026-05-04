@@ -19,8 +19,10 @@ UNMANAGED_CSV = Path(__file__).parent / "unmanaged_accounts.csv"
 
 # ── Normalization helpers ─────────────────────────────────────────────────────
 
-def _norm_name(name: str) -> str:
-    name = name.lower().strip()
+def _norm_name(name) -> str:
+    if not name or name != name:  # None or NaN
+        return ""
+    name = str(name).lower().strip()
     name = re.sub(
         r"\b(inc|llc|ltd|corp|co|group|holdings|international|system|systems"
         r"|university|college|institute|services|solutions|technologies|technology"

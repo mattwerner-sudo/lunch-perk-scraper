@@ -202,12 +202,16 @@ def infer_market(location: str) -> str:
     return "Other"
 
 
-def infer_domain(company: str) -> str:
+def infer_domain(company) -> str:
     """
     Best-effort domain inference from company name.
     Checks account_lookup first (has real domains from CSVs),
     then falls back to slugified full name (not just first word).
     """
+    if not company or company != company:  # None or NaN
+        return "unknown.com"
+    company = str(company)
+
     # Prefer real domain from account lists
     row = account_lookup.lookup(company)
     if row and row[1] and row[1].get("domain"):
@@ -272,7 +276,7 @@ def rollup_to_companies(df: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame]:
     records = []
     for norm_name, rows in groups.items():
         best         = max(rows, key=lambda r: r.get("gtm_score", 0))
-        company_name = best["company"].strip()
+        company_name = str(best["company"] or "").strip()
         location_str = best.get("location", "")
         score        = best["gtm_score"]
 

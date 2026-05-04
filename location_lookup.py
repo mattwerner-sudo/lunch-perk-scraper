@@ -127,19 +127,26 @@ def _build_index() -> dict[str, Counter]:
     return dict(index)
 
 
-def get_markets(domain: str) -> set[str]:
+def _safe_domain(domain) -> str:
+    """Coerce domain to str, return '' for None/NaN/empty."""
+    if domain is None or domain != domain:  # NaN check
+        return ""
+    return str(domain).strip().lower()
+
+
+def get_markets(domain) -> set[str]:
     """All known metro markets for this domain (from billing addresses)."""
-    domain = domain.strip().lower()
+    domain = _safe_domain(domain)
     counter = _build_index().get(domain, {})
     return {m for m in counter if m != "Other"}
 
 
-def get_primary_market(domain: str) -> str:
+def get_primary_market(domain) -> str:
     """
     Single best market for territory routing.
     Returns the market with the most office rows, or 'Other' if unknown.
     """
-    domain = domain.strip().lower()
+    domain = _safe_domain(domain)
     counter = _build_index().get(domain, {})
     if not counter:
         return "Other"
@@ -152,11 +159,11 @@ def get_primary_market(domain: str) -> str:
     return best[0] if best else "Other"
 
 
-def get_all_office_cities(domain: str) -> list[dict]:
+def get_all_office_cities(domain) -> list[dict]:
     """
     Return raw city+state rows for a domain — for dashboard display.
     """
-    domain = domain.strip().lower()
+    domain = _safe_domain(domain)
     results = []
     seen = set()
     for path, domain_col in [
