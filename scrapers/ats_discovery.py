@@ -48,14 +48,14 @@ MIN_SLUGS = 500   # stop querying more indexes once we hit this
 
 # ATS domain patterns for CommonCrawl queries
 CC_DOMAINS = {
-    "greenhouse": "boards.greenhouse.io/*",
+    "greenhouse": "job-boards.greenhouse.io/*",
     "lever":      "jobs.lever.co/*",
     "ashby":      "jobs.ashbyhq.com/*",
 }
 
 # Slug extraction regexes
 SLUG_RE = {
-    "greenhouse": re.compile(r'(?:boards|job-boards)\.greenhouse\.io/([a-zA-Z0-9_-]+)'),
+    "greenhouse": re.compile(r'job-boards\.greenhouse\.io/([a-zA-Z0-9_-]+)'),
     "lever":      re.compile(r'jobs\.lever\.co/([a-zA-Z0-9_-]+)'),
     "ashby":      re.compile(r'jobs\.ashbyhq\.com/([a-zA-Z0-9_-]+)'),
 }
