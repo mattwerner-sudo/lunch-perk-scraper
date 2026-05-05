@@ -220,6 +220,7 @@ def _canon_company(name) -> str:
     s = str(name).strip().lower()
     s = re.sub(r"[^a-z0-9 ]", " ", s)
     s = re.sub(r"\s+", " ", s).strip()
+    s = re.sub(r"^the\s+", "", s)  # strip leading "the"
     # Strip legal suffixes repeatedly until stable
     prev = None
     while prev != s:
@@ -249,10 +250,56 @@ def infer_domain(company) -> str:
     return f"{slug}.com" if slug else "unknown.com"
 
 
+# Synonym groups: keywords in the same group count only once (highest score wins)
+_KW_SYNONYMS: list[frozenset[str]] = [
+    frozenset({"ubereats", "uber eats"}),
+    frozenset({"seamless corporate", "seamless for business", "order seamless", "seamless account"}),
+    frozenset({"stocked kitchen", "fully stocked kitchen"}),
+]
+
+
+def _kw_synonym_group(kw: str) -> int:
+    """Return a group ID for a keyword, or -1 if it's not in a synonym group."""
+    for i, group in enumerate(_KW_SYNONYMS):
+        if kw in group:
+            return i
+    return -1
+
+
 def _kw_score_for_row(kws_matched: str) -> int:
-    """Sum KEYWORD_SCORE values for matched keywords on a single JD."""
+    """Sum KEYWORD_SCORE values for matched keywords on a single JD.
+
+    Two rules:
+    1. Longest-match-wins within the string: "fully stocked kitchen" (4pts) consumed
+       before "stocked kitchen" (3pts) can match the same span.
+    2. Synonym deduplication: "ubereats" and "uber eats" represent the same vendor;
+       only the higher-scoring synonym counts per JD.
+    """
     kws = kws_matched.lower()
-    return sum(v for k, v in KEYWORD_SCORE.items() if k in kws)
+    total = 0
+    consumed: list[tuple[int, int]] = []  # (start, end) spans already counted
+    scored_groups: set[int] = set()       # synonym groups already scored
+
+    for key in sorted(KEYWORD_SCORE, key=len, reverse=True):
+        group = _kw_synonym_group(key)
+        if group >= 0 and group in scored_groups:
+            continue  # already counted a synonym from this group
+
+        start = 0
+        while True:
+            idx = kws.find(key, start)
+            if idx == -1:
+                break
+            end = idx + len(key)
+            if not any(cs <= idx < ce or cs < end <= ce for cs, ce in consumed):
+                total += KEYWORD_SCORE[key]
+                consumed.append((idx, end))
+                if group >= 0:
+                    scored_groups.add(group)
+                break  # one match per key is enough to score it
+            start = idx + 1
+
+    return total
 
 
 def rollup_to_companies(df: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame]:
@@ -326,14 +373,21 @@ def rollup_to_companies(df: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame]:
 
         # Self-referential filter: food platforms whose own name is the keyword
         # e.g. DoorDash matching "doordash" — it's their own product, not a perk signal
+        # "uber" catches "uber technologies" + "uber eats" keyword match
         _FOOD_BRANDS = {
-            "doordash", "grubhub", "ubereats", "uber eats", "forkable",
+            "doordash", "grubhub", "ubereats", "uber eats", "uber", "forkable",
             "sharebite", "seamless", "instacart", "goldbelly", "gopuff",
             "sweetgreen", "hungryroot", "misfits market", "caviar", "postmates",
         }
+        _UBER_FOOD_KWS = {"uber eats", "ubereats"}
         company_lower = norm_name
         self_referential = any(
-            brand in company_lower and any(brand in kw.lower() for kw in all_kws)
+            brand in company_lower and any(
+                # for "uber" root, only trigger on food-specific keywords, not any brand mention
+                (brand == "uber" and any(u in kw.lower() for u in _UBER_FOOD_KWS))
+                or (brand != "uber" and brand in kw.lower())
+                for kw in all_kws
+            )
             for brand in _FOOD_BRANDS
         )
         if self_referential:
@@ -361,7 +415,9 @@ def rollup_to_companies(df: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame]:
         known_markets  = location_lookup.get_markets(domain)   # from billing CSVs
         co_locs = loc_stats[loc_stats["company_norm"] == norm_name].copy()
         co_locs["loc_type"] = co_locs["market"].apply(
-            lambda m: "existing" if (m != "Other" and m in known_markets) else "expansion"
+            lambda m: "existing" if (m != "Other" and m in known_markets) else (
+                "expansion" if m != "Other" else "noise"
+            )
         )
 
         for _, loc_row in co_locs.iterrows():
@@ -459,7 +515,12 @@ def rollup_to_companies(df: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame]:
         r"leuven|porto|portugal|serbia|belgrade|bogot|medell|colombia|stockholm|"
         r"sweden|norway|oslo|denmark|copenhagen|switzerland|austria|spain|madrid|"
         r"barcelona|italy|milan|rome|czech|prague|romania|bucharest|finland|helsinki|"
-        r"reykjavik|iceland|kent|shoreditch|emea|apac|latam)\b",
+        r"reykjavik|iceland|kent|shoreditch|emea|apac|latam|"
+        r"mexico|mexico city|guadalajara|monterrey|brasil|brazil|sao paulo|"
+        r"buenos aires|argentina|chile|santiago|peru|lima|"
+        r"new zealand|auckland|hong kong|hk|beijing|shanghai|china|"
+        r"seoul|south korea|taiwan|taipei|uae|dubai|israel|tel aviv|"
+        r"south africa|johannesburg|cape town|kenya|nairobi)\b",
         re.IGNORECASE,
     )
     _US_SIGNALS = re.compile(
@@ -470,14 +531,16 @@ def rollup_to_companies(df: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame]:
     )
 
     def _is_us_company(row) -> bool:
-        if row.get("segment") in ("managed", "unmanaged"):
-            return True
         loc = str(row.get("location", "") or "")
+        # If any US signal present, keep unconditionally
         if _US_SIGNALS.search(loc):
             return True
-        if loc and _NON_US.search(loc) and not _US_SIGNALS.search(loc):
+        # If explicit non-US signal and no US signal, drop regardless of segment
+        if loc and _NON_US.search(loc):
             return False
-        return True  # no location signal → keep (benefit of the doubt)
+        # No location signal: account list companies get benefit of the doubt;
+        # prospects with no location are also kept (can't determine geo).
+        return True
 
     before = len(companies_df)
     companies_df = companies_df[companies_df.apply(_is_us_company, axis=1)].reset_index(drop=True)
@@ -489,7 +552,11 @@ def rollup_to_companies(df: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame]:
     _GARBAGE_DOMAINS = re.compile(
         r"\b(levels\.fyi|businessinsider\.com|strategy-business\.com|"
         r"glassdoor\.com|builtin\.com|builtinnyc\.com|joinrise\.co|"
-        r"careersatdoordash\.com|gm\.careers|fooda\.com|foodtrends\.com|"
+        r"careersatdoordash\.com|careers\.doordash\.com|doordash\.com/careers|"
+        r"careers\.grubhub\.com|grubhub\.com/careers|"
+        r"ubereats\.com|forkable\.com|sharebite\.com|"
+        r"instacart\.com/careers|sweetgreen\.com/careers|"
+        r"gm\.careers|fooda\.com|foodtrends\.com|"
         r"sifted\.co|martinandfitch\.com|nuucatering\.com|redtablecatering\.com|"
         r"metrocateringnyc\.com|elitecaterersny\.com|catercow\.com|eatsopo\.com|"
         r"mangia\.nyc|deborahmillercatering\.com|trypicnic\.com|blog\.caterplace\.com|"

@@ -34,13 +34,33 @@ HEADERS = {
     )
 }
 
-# Recent CommonCrawl indexes (newest first — stop early once we have enough slugs)
-CC_INDEXES = [
+_CC_FALLBACK_INDEXES = [
     "CC-MAIN-2025-13",
     "CC-MAIN-2024-51",
     "CC-MAIN-2024-42",
     "CC-MAIN-2024-33",
 ]
+
+
+def _get_latest_cc_indexes(n: int = 4) -> list[str]:
+    """Fetch the n most recent CommonCrawl index IDs from the official index list."""
+    try:
+        r = requests.get(
+            "https://index.commoncrawl.org/collinfo.json",
+            headers=HEADERS,
+            timeout=15,
+        )
+        if r.status_code == 200:
+            indexes = [entry["id"] for entry in r.json() if "id" in entry]
+            # collinfo.json is newest-first
+            return indexes[:n]
+    except Exception as e:
+        log.debug(f"CC collinfo fetch failed: {e}")
+    return _CC_FALLBACK_INDEXES
+
+
+# Resolved once at import time; used by _discover()
+CC_INDEXES: list[str] = _get_latest_cc_indexes(4)
 
 CC_URL = "https://index.commoncrawl.org/{index}-index"
 CC_LIMIT = 15000

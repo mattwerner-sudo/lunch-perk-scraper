@@ -173,7 +173,9 @@ nav{padding:0 16px}
       <div class="kpi-item"><div class="k-val" id="kpi-total">—</div><div class="k-label">Companies tracked</div></div>
       <div class="kpi-item"><div class="k-val" id="kpi-new">—</div><div class="k-label">Net new this run</div></div>
       <div class="kpi-item"><div class="k-val" id="kpi-high">—</div><div class="k-label">High confidence</div></div>
-      <div class="kpi-item"><div class="k-val" id="kpi-sources">6</div><div class="k-label">Job board sources</div></div>
+      <div class="kpi-item"><div class="k-val" id="kpi-managed" style="color:#f59e0b">—</div><div class="k-label">Managed accts</div></div>
+      <div class="kpi-item"><div class="k-val" id="kpi-unmanaged" style="color:#818cf8">—</div><div class="k-label">Unmanaged accts</div></div>
+      <div class="kpi-item"><div class="k-val" id="kpi-prospect">—</div><div class="k-label">Prospects</div></div>
     </div>
   </div>
 </div>
@@ -191,6 +193,12 @@ nav{padding:0 16px}
         <option value="company">A → Z</option>
         <option value="new_first">New First</option>
       </select>
+      <button id="expansion-toggle" class="btn btn-secondary" onclick="toggleExpansion()" title="Show only companies expanding into new markets" style="white-space:nowrap">
+        🏗️ Expansion Only
+      </button>
+      <button class="btn btn-secondary" onclick="exportCSV()" title="Download filtered results as CSV" style="white-space:nowrap">
+        ⬇ Export CSV
+      </button>
     </div>
 
     <div class="count-bar">
@@ -258,6 +266,7 @@ nav{padding:0 16px}
 // ── If running in CodePen, paste DASHBOARD_DATA and DASHBOARD_STATS above this line ──
 
 const F = { segment: [], market: [], confidence: [], source: [], kw: [], loc_signal_strength: [] };
+let expansionOnly = false;
 
 function init() {
   if (typeof DASHBOARD_DATA === 'undefined') {
@@ -272,6 +281,9 @@ function init() {
   const total = DASHBOARD_DATA.length;
   const newCount = DASHBOARD_DATA.filter(c => c.is_new).length;
   const highCount = DASHBOARD_DATA.filter(c => c.confidence === 'High').length;
+  const managedCount = DASHBOARD_DATA.filter(c => c.segment === 'managed').length;
+  const unmanagedCount = DASHBOARD_DATA.filter(c => c.segment === 'unmanaged').length;
+  const prospectCount = DASHBOARD_DATA.filter(c => c.segment === 'prospect' || !c.segment).length;
 
   document.getElementById('nav-total').textContent = total;
   document.getElementById('nav-new').textContent = newCount;
@@ -279,6 +291,9 @@ function init() {
   document.getElementById('kpi-total').textContent = total;
   document.getElementById('kpi-new').textContent = newCount;
   document.getElementById('kpi-high').textContent = highCount;
+  document.getElementById('kpi-managed').textContent = managedCount;
+  document.getElementById('kpi-unmanaged').textContent = unmanagedCount;
+  document.getElementById('kpi-prospect').textContent = prospectCount;
 
   if (stats.run_date) {
     document.getElementById('last-updated').textContent =
@@ -345,6 +360,7 @@ function render() {
 
   let results = DASHBOARD_DATA.filter(c => {
     if (newOnly && !c.is_new) return false;
+    if (expansionOnly && !['expansion_confirmed','expansion_possible'].includes(c.loc_signal_strength)) return false;
     if (F.segment.length && !F.segment.includes(c.segment)) return false;
     if (F.market.length && !F.market.includes(c.market)) return false;
     if (F.confidence.length && !F.confidence.includes(c.confidence)) return false;
@@ -414,7 +430,7 @@ function cardHTML(c) {
     <div class="card-main">
       <div class="card-header">
         <span class="card-company">${c.company}${newBadge}${managedBadge}${locBadge}</span>
-        <span class="card-score ${scoreClass}">${c.confidence} · ${c.gtm_score}</span>
+        <span class="card-score ${scoreClass}">${c.confidence} · ${c.gtm_score} · ${c.unique_roles_with_perk || c.role_count || 0} JDs</span>
       </div>
       <div class="card-sub">
         <span class="role-count">${c.role_count} ${rolePlural}</span>
@@ -493,6 +509,48 @@ function copyToClipboard(e, company, domain) {
     btn.textContent = 'Copied!';
     setTimeout(() => btn.textContent = orig, 1500);
   });
+}
+
+function toggleExpansion() {
+  expansionOnly = !expansionOnly;
+  const btn = document.getElementById('expansion-toggle');
+  btn.style.background = expansionOnly ? '#7c3aed' : '';
+  btn.style.color = expansionOnly ? '#fff' : '';
+  btn.style.borderColor = expansionOnly ? '#7c3aed' : '';
+  render();
+}
+
+function exportCSV() {
+  const q = document.getElementById('q').value.toLowerCase().trim();
+  const sort = document.getElementById('sort').value;
+  const newOnly = document.getElementById('new-only').checked;
+
+  let rows = DASHBOARD_DATA.filter(c => {
+    if (newOnly && !c.is_new) return false;
+    if (expansionOnly && !['expansion_confirmed','expansion_possible'].includes(c.loc_signal_strength)) return false;
+    if (F.segment.length && !F.segment.includes(c.segment)) return false;
+    if (F.market.length && !F.market.includes(c.market)) return false;
+    if (F.confidence.length && !F.confidence.includes(c.confidence)) return false;
+    if (F.source.length && !F.source.includes(c.best_source || c.source)) return false;
+    if (F.kw.length && !F.kw.some(kw => (c.top_keywords || '').includes(kw))) return false;
+    if (F.loc_signal_strength.length && !F.loc_signal_strength.includes(c.loc_signal_strength || 'noise')) return false;
+    if (q) {
+      const haystack = `${c.company} ${c.top_keywords} ${c.best_source} ${c.location}`.toLowerCase();
+      if (!haystack.includes(q)) return false;
+    }
+    return true;
+  });
+
+  const cols = ['company','inferred_domain','gtm_score','confidence','segment','market','top_keywords','sample_url','date_first_seen','unique_roles_with_perk','loc_signal_strength','expansion_confirmed'];
+  const escape = v => `"${String(v ?? '').replace(/"/g, '""')}"`;
+  const csv = [cols.join(','), ...rows.map(c => cols.map(k => escape(c[k])).join(','))].join('\n');
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `lunch-perk-companies-${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
 }
 
 init();

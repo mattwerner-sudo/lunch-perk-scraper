@@ -23,13 +23,40 @@ from utils import find_food_keywords, excerpt, clean_text
 log = logging.getLogger(__name__)
 
 # (company_name, tenant_slug, wd_number, board_name)
-# Board names verified working — 422 means the board name has changed
+# Board names verified working — 422 means board_name has changed, skip silently
+# Pattern: https://{slug}.wd{N}.myworkdayjobs.com/wday/cxs/{slug}/{board}/jobs
 WORKDAY_TENANTS = [
-    ("Zendesk",         "zendesk",      1, "Zendesk"),
-    ("Peloton",         "pel",          5, "Peloton"),
-    ("WeWork",          "wework",       5, "WeWork_External"),
-    ("BuzzFeed",        "buzzfeed",     1, "External"),
-    ("Condé Nast",      "condenast",    5, "CNExternalCareerSite"),
+    # Finance
+    ("Goldman Sachs",           "goldmansachs",     1,  "GS_External_Career_Track"),
+    ("JPMorgan Chase",          "jpmc",             5,  "technology"),
+    ("Citi",                    "citi",             5,  "External_Career_Site"),
+    ("Morgan Stanley",          "morganstanley",    1,  "Experienced_Jobs"),
+    # Pharma / Life Sciences
+    ("Pfizer",                  "pfizer",           1,  "Pfizer_External_Careers"),
+    ("Merck",                   "merck",            1,  "External"),
+    ("Johnson & Johnson",       "jnj",              5,  "JohnsonAndJohnson"),
+    ("AstraZeneca",             "astrazeneca",      5,  "External"),
+    ("Bristol Myers Squibb",    "bms",              5,  "External"),
+    ("Regeneron",               "regeneron",        5,  "External"),
+    ("AbbVie",                  "abbvie",           5,  "External"),
+    ("Moderna",                 "modernatx",        5,  "External"),
+    # Tech
+    ("Salesforce",              "salesforce",       5,  "External_Career_Site"),
+    ("ServiceNow",              "servicenow",       5,  "External"),
+    # Consulting / Professional Services
+    ("Deloitte",                "deloitte",         5,  "External_Career_Site"),
+    ("PwC",                     "pwc",              1,  "External_Experienced_Careers"),
+    ("EY",                      "ey",               5,  "EY_External_Careers"),
+    ("KPMG",                    "kpmgus",           5,  "External"),
+    # Defense / Aerospace
+    ("Lockheed Martin",         "lmco",             5,  "Experienced"),
+    ("Raytheon",                "rtx",              5,  "External"),
+    # Insurance / Healthcare
+    ("Cigna",                   "cigna",            5,  "Cigna_Jobs"),
+    # Original tenants (kept — error handling skips dead ones)
+    ("Zendesk",                 "zendesk",          1,  "Zendesk"),
+    ("Peloton",                 "pel",              5,  "Peloton"),
+    ("Condé Nast",              "condenast",        5,  "CNExternalCareerSite"),
 ]
 
 SEARCH_LIMIT = 20   # jobs per page
