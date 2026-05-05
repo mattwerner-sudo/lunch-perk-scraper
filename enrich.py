@@ -432,7 +432,7 @@ def rollup_to_companies(df: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame]:
             "sample_title":             best_perk.get("title", ""),
             "sample_url":               best_perk.get("url", ""),
             "perk_excerpt":             (lambda e: e if len(e) <= 200 else e[:197] + "...")(best_perk.get("perk_excerpt", "")),
-            "date_first_seen":          min((r.get("date_posted", "") for r in rows if r.get("date_posted", "")), default=""),
+            "date_first_seen":          min((str(r["date_posted"]) for r in rows if r.get("date_posted") and r["date_posted"] == r["date_posted"]), default=""),
             "is_new":                   1,
             # Location signal — split by type
             "loc_signal_strength":      loc_signal_strength,
