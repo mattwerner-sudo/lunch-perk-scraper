@@ -53,10 +53,9 @@ WORKDAY_TENANTS = [
     ("Raytheon",                "rtx",              5,  "External"),
     # Insurance / Healthcare
     ("Cigna",                   "cigna",            5,  "Cigna_Jobs"),
-    # Original tenants (kept — error handling skips dead ones)
     ("Zendesk",                 "zendesk",          1,  "Zendesk"),
-    ("Peloton",                 "pel",              5,  "Peloton"),
-    ("Condé Nast",              "condenast",        5,  "CNExternalCareerSite"),
+    # Removed (board names no longer valid; consistent 4xx for months):
+    #   Peloton (HTTP 422), Condé Nast (HTTP 404)
 ]
 
 SEARCH_LIMIT = 20   # jobs per page

@@ -7,3 +7,4 @@ python-dotenv==1.0.1
 lxml==5.2.2
 exa-py>=1.1.0
 firecrawl-py>=1.4.0
+pytest>=8.0.0

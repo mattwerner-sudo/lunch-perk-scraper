@@ -63,9 +63,15 @@ _GARBAGE_NAMES = re.compile(
 
 
 _COMPETITOR_NAMES = re.compile(
-    r"\b(doordash|uber\s*eats|ubereats|grubhub|seamless|sharebite|forkable|"
-    r"caviar|fooda|zerocater|cookunity|catercow|crafty|hungry\b|relish|"
-    r"forage|snackpass|ezcater)\b",
+    # Geographic suffixes (usa/canada/mexico/etc.) appended as one word are
+    # common ATS slugs (e.g. "doordashusa"). Allow them explicitly so we
+    # match those while still rejecting "doordashing".
+    r"\b("
+    r"doordash(?:usa|canada|mexico|australia|brasil|brazil|inc|llc)?|"
+    r"uber\s*eats|ubereats|grubhub(?:inc|llc)?|seamless|sharebite|forkable|"
+    r"caviar|fooda|zerocater|cookunity|catercow|crafty|hungry|relish|"
+    r"forage|snackpass|ezcater"
+    r")\b",
     re.IGNORECASE,
 )
 

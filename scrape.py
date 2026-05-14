@@ -170,7 +170,7 @@ Files
 def main():
     parser = argparse.ArgumentParser(description="Nationwide Lunch Perk Job Scraper")
     parser.add_argument("--sources", nargs="+", choices=list(SOURCES.keys()),
-                    default=["da", "gh", "lv", "ab", "wd", "js", "ap", "wf"])
+                    default=["da", "gh", "lv", "ab", "js"])
     parser.add_argument("--no-verify",  action="store_true")
     parser.add_argument("--no-notify",  action="store_true")
     parser.add_argument("--dry-run",    action="store_true")
