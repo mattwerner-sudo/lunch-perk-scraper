@@ -1,4 +1,9 @@
 .env
+.DS_Store
 lunch_perks.db
 __pycache__/
 .venv/
+lunch_perk_jobs.csv
+dashboard_data.js
+memory/
+logos/

@@ -30,6 +30,9 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
+      - name: Run filter tests
+        run: python -m pytest tests/ -v
+
       - name: Restore database from previous run
         uses: actions/cache@v4
         with:
@@ -48,7 +51,10 @@ jobs:
           SUMBLE_API_KEY:              ${{ secrets.SUMBLE_API_KEY }}
         # Skip glassdoor (403 in cloud) — run it locally if needed
         # Tee output to scraper.log so we can surface the tail on failure
-        run: python3 scrape.py --sources da gh lv ab bn wd js ap wf ex fc ts --no-verify 2>&1 | tee scraper.log; test ${PIPESTATUS[0]} -eq 0
+        # Dropped scrapers: bn (0 results every run), wd (4/N tenants 4xx),
+        # ap (Apify token expired), wf (Wellfound 403), ts (out of credits).
+        # Re-add any of them once the upstream issue is fixed.
+        run: python3 scrape.py --sources da gh lv ab js ex fc --no-verify 2>&1 | tee scraper.log; test ${PIPESTATUS[0]} -eq 0
 
       - name: Show last 150 lines of log on failure
         if: failure()
@@ -65,11 +71,13 @@ jobs:
             scraper.log
           retention-days: 30
 
-      - name: Commit dashboard data back to repo
+      - name: Commit enriched CSV back to repo
+        # dashboard_data.js is gitignored (too large to track); it's still
+        # published to gh-pages via the deploy step below.
         run: |
           git config user.name  "Lunch Perk Bot"
           git config user.email "bot@lunch-perk-scraper"
-          git add dashboard_data.js lunch_perk_jobs_enriched.csv || true
+          git add lunch_perk_jobs_enriched.csv || true
           git diff --staged --quiet || git commit -m "chore: weekly scrape $(date +'%Y-%m-%d')"
           git push || true
 
