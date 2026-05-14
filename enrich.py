@@ -13,6 +13,81 @@ from config import OUTPUT_CSV, OUTPUT_ENRICHED_CSV
 import account_lookup
 import location_lookup
 
+# ── Quality filters (applied to both current run and full DB history) ────────
+_NON_US = re.compile(
+    r"\b(uk|united kingdom|london|england|amsterdam|netherlands|germany|france|"
+    r"paris|berlin|sydney|australia|singapore|sg|tokyo|japan|india|bangalore|"
+    r"mumbai|toronto|canada|montreal|ireland|dublin|poland|krakow|malta|belgium|"
+    r"leuven|porto|portugal|serbia|belgrade|bogot|medell|colombia|stockholm|"
+    r"sweden|norway|oslo|denmark|copenhagen|switzerland|austria|spain|madrid|"
+    r"barcelona|italy|milan|rome|czech|prague|romania|bucharest|finland|helsinki|"
+    r"reykjavik|iceland|kent|shoreditch|emea|apac|latam|"
+    r"mexico|mexico city|guadalajara|monterrey|brasil|brazil|sao paulo|"
+    r"buenos aires|argentina|chile|santiago|peru|lima|"
+    r"new zealand|auckland|hong kong|hk|beijing|shanghai|china|"
+    r"seoul|south korea|taiwan|taipei|uae|dubai|israel|tel aviv|"
+    r"south africa|johannesburg|cape town|kenya|nairobi)\b",
+    re.IGNORECASE,
+)
+_US_SIGNALS = re.compile(
+    r"\b(new york|nyc|ny\b|nj\b|ca\b|tx\b|wa\b|chicago|boston|san francisco|"
+    r"los angeles|seattle|austin|dallas|denver|atlanta|miami|dc\b|washington|"
+    r"remote|united states|usa|u\.s\.|nationwide|north america|amer)\b",
+    re.IGNORECASE,
+)
+_GARBAGE_DOMAINS = re.compile(
+    r"\b(levels\.fyi|businessinsider\.com|strategy-business\.com|"
+    r"glassdoor\.com|builtin\.com|builtinnyc\.com|joinrise\.co|"
+    r"careersatdoordash\.com|careers\.doordash\.com|doordash\.com/careers|"
+    r"careers\.grubhub\.com|grubhub\.com/careers|"
+    r"ubereats\.com|forkable\.com|sharebite\.com|"
+    r"instacart\.com/careers|sweetgreen\.com/careers|"
+    r"gm\.careers|fooda\.com|foodtrends\.com|"
+    r"sifted\.co|martinandfitch\.com|nuucatering\.com|redtablecatering\.com|"
+    r"metrocateringnyc\.com|elitecaterersny\.com|catercow\.com|eatsopo\.com|"
+    r"mangia\.nyc|deborahmillercatering\.com|trypicnic\.com|blog\.caterplace\.com|"
+    r"zerocater\.com/solutions|cookunity\.com/business|smartrecruiters\.com)\b",
+    re.IGNORECASE,
+)
+_GARBAGE_NAMES = re.compile(
+    r"^(free lunch|office food perks|#1 corporate lunch|office catering|"
+    r"lunch catering|corporate catering|lunch delivery|corporate event catering|"
+    r"elite caterers|catercow|menus & prices|office catering nyc|"
+    r"blog\.caterplace|builtinnyc|built in nyc|built in$|glassdoor$|"
+    r"new york @ giga|home$|gm\.careers|top companies on rise|"
+    r"strategy business|sifted$|fellfel$|fooda$|zerocater$|"
+    r"nÃ¼u catering|redtablecatering|metrocateringnyc|martinandfitch|"
+    r"lunch catering nyc|corporate catering nyc|office catering in manhattan)\b",
+    re.IGNORECASE,
+)
+
+
+_COMPETITOR_NAMES = re.compile(
+    r"\b(doordash|uber\s*eats|ubereats|grubhub|seamless|sharebite|forkable|"
+    r"caviar|fooda|zerocater|cookunity|catercow|crafty|hungry\b|relish|"
+    r"forage|snackpass|ezcater)\b",
+    re.IGNORECASE,
+)
+
+
+def _is_us_company(row) -> bool:
+    loc = str(row.get("location", "") or "")
+    if loc and _NON_US.search(loc):
+        return False
+    return True
+
+
+def _is_garbage(row) -> bool:
+    url = str(row.get("sample_url", "") or "")
+    name = str(row.get("company", "") or row.get("name", "") or "")
+    return bool(_GARBAGE_DOMAINS.search(url)) or bool(_GARBAGE_NAMES.match(name))
+
+
+def _is_competitor(row) -> bool:
+    name = str(row.get("company", "") or row.get("name", "") or "")
+    return bool(_COMPETITOR_NAMES.search(name))
+
+
 # ── Scoring rubric ───────────────────────────────────────────────────────────
 KEYWORD_SCORE = {
     "doordash": 10,
@@ -504,89 +579,24 @@ def rollup_to_companies(df: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame]:
     # (requires re-joining known_markets per company — done lazily at persist time)
     companies_df = pd.DataFrame(records).sort_values("gtm_score", ascending=False).reset_index(drop=True)
 
-    # ── US-only filter ────────────────────────────────────────────────────────
-    # Drop companies whose only known location signals are clearly non-US.
-    # Managed/unmanaged accounts pass through unconditionally (they're already
-    # vetted account list companies — their billing address determines territory).
-    _NON_US = re.compile(
-        r"\b(uk|united kingdom|london|england|amsterdam|netherlands|germany|france|"
-        r"paris|berlin|sydney|australia|singapore|sg|tokyo|japan|india|bangalore|"
-        r"mumbai|toronto|canada|montreal|ireland|dublin|poland|krakow|malta|belgium|"
-        r"leuven|porto|portugal|serbia|belgrade|bogot|medell|colombia|stockholm|"
-        r"sweden|norway|oslo|denmark|copenhagen|switzerland|austria|spain|madrid|"
-        r"barcelona|italy|milan|rome|czech|prague|romania|bucharest|finland|helsinki|"
-        r"reykjavik|iceland|kent|shoreditch|emea|apac|latam|"
-        r"mexico|mexico city|guadalajara|monterrey|brasil|brazil|sao paulo|"
-        r"buenos aires|argentina|chile|santiago|peru|lima|"
-        r"new zealand|auckland|hong kong|hk|beijing|shanghai|china|"
-        r"seoul|south korea|taiwan|taipei|uae|dubai|israel|tel aviv|"
-        r"south africa|johannesburg|cape town|kenya|nairobi)\b",
-        re.IGNORECASE,
-    )
-    _US_SIGNALS = re.compile(
-        r"\b(new york|nyc|ny\b|nj\b|ca\b|tx\b|wa\b|chicago|boston|san francisco|"
-        r"los angeles|seattle|austin|dallas|denver|atlanta|miami|dc\b|washington|"
-        r"remote|united states|usa|u\.s\.|nationwide|north america|amer)\b",
-        re.IGNORECASE,
-    )
-
-    def _is_us_company(row) -> bool:
-        loc = str(row.get("location", "") or "")
-        # If any US signal present, keep unconditionally
-        if _US_SIGNALS.search(loc):
-            return True
-        # If explicit non-US signal and no US signal, drop regardless of segment
-        if loc and _NON_US.search(loc):
-            return False
-        # No location signal: account list companies get benefit of the doubt;
-        # prospects with no location are also kept (can't determine geo).
-        return True
-
     before = len(companies_df)
     companies_df = companies_df[companies_df.apply(_is_us_company, axis=1)].reset_index(drop=True)
     dropped_geo = before - len(companies_df)
 
-    # ── Garbage URL / content-site filter ────────────────────────────────────
-    # Exa and JobSpy occasionally return blog posts, catering vendor sites,
-    # and generic content pages that match food keywords but are not employers.
-    _GARBAGE_DOMAINS = re.compile(
-        r"\b(levels\.fyi|businessinsider\.com|strategy-business\.com|"
-        r"glassdoor\.com|builtin\.com|builtinnyc\.com|joinrise\.co|"
-        r"careersatdoordash\.com|careers\.doordash\.com|doordash\.com/careers|"
-        r"careers\.grubhub\.com|grubhub\.com/careers|"
-        r"ubereats\.com|forkable\.com|sharebite\.com|"
-        r"instacart\.com/careers|sweetgreen\.com/careers|"
-        r"gm\.careers|fooda\.com|foodtrends\.com|"
-        r"sifted\.co|martinandfitch\.com|nuucatering\.com|redtablecatering\.com|"
-        r"metrocateringnyc\.com|elitecaterersny\.com|catercow\.com|eatsopo\.com|"
-        r"mangia\.nyc|deborahmillercatering\.com|trypicnic\.com|blog\.caterplace\.com|"
-        r"zerocater\.com/solutions|cookunity\.com/business|smartrecruiters\.com)\b",
-        re.IGNORECASE,
-    )
-    _GARBAGE_NAMES = re.compile(
-        r"^(free lunch|office food perks|#1 corporate lunch|office catering|"
-        r"lunch catering|corporate catering|lunch delivery|corporate event catering|"
-        r"elite caterers|catercow|menus & prices|office catering nyc|"
-        r"blog\.caterplace|builtinnyc|built in nyc|built in$|glassdoor$|"
-        r"new york @ giga|home$|gm\.careers|top companies on rise|"
-        r"strategy business|sifted$|fellfel$|fooda$|zerocater$|"
-        r"nÃ¼u catering|redtablecatering|metrocateringnyc|martinandfitch|"
-        r"lunch catering nyc|corporate catering nyc|office catering in manhattan)\b",
-        re.IGNORECASE,
-    )
-
     before2 = len(companies_df)
-    companies_df = companies_df[
-        ~companies_df["sample_url"].fillna("").apply(lambda u: bool(_GARBAGE_DOMAINS.search(u))) &
-        ~companies_df["company"].fillna("").apply(lambda c: bool(_GARBAGE_NAMES.match(c)))
-    ].reset_index(drop=True)
+    companies_df = companies_df[~companies_df.apply(_is_garbage, axis=1)].reset_index(drop=True)
     dropped_garbage = before2 - len(companies_df)
 
-    if dropped_geo or dropped_garbage:
+    before3 = len(companies_df)
+    companies_df = companies_df[~companies_df.apply(_is_competitor, axis=1)].reset_index(drop=True)
+    dropped_competitor = before3 - len(companies_df)
+
+    if dropped_geo or dropped_garbage or dropped_competitor:
         import logging
         logging.getLogger(__name__).info(
             f"Post-filter: dropped {dropped_geo} non-US companies, "
-            f"{dropped_garbage} garbage/content rows"
+            f"{dropped_garbage} garbage/content rows, "
+            f"{dropped_competitor} competitor companies"
         )
 
     return companies_df, locations_df
@@ -650,6 +660,23 @@ def run():
 
     # Export dashboard JS from FULL DB (all historical companies, not just this run)
     all_companies_df = pd.DataFrame(db.get_all_companies())
+
+    # Apply the same quality filters to the full history — purge stale bad records
+    # that were inserted before these filters existed or were tightened.
+    bad_mask = (
+        ~all_companies_df.apply(_is_us_company, axis=1)
+        | all_companies_df.apply(_is_garbage, axis=1)
+        | all_companies_df.apply(_is_competitor, axis=1)
+    )
+    bad_names = all_companies_df.loc[bad_mask, "name"].tolist()
+    if bad_names:
+        import logging
+        purged = db.delete_companies(bad_names)
+        logging.getLogger(__name__).info(
+            f"Purged {purged} stale non-US/garbage records from DB: {bad_names}"
+        )
+        all_companies_df = all_companies_df[~bad_mask].reset_index(drop=True)
+
     stats = db.get_stats()
     stats["run_date"] = __import__("datetime").date.today().isoformat()
     export_dashboard_js(all_companies_df, stats)

@@ -293,6 +293,17 @@ def get_all_companies(order_by: str = "gtm_score DESC") -> list[dict]:
         return [dict(r) for r in rows]
 
 
+def delete_companies(names: list[str]) -> int:
+    if not names:
+        return 0
+    with _conn() as con:
+        placeholders = ",".join("?" * len(names))
+        result = con.execute(
+            f"DELETE FROM companies WHERE name IN ({placeholders})", names
+        )
+        return result.rowcount
+
+
 def get_new_unnotified() -> list[dict]:
     with _conn() as con:
         rows = con.execute(
