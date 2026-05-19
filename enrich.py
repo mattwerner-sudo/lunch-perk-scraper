@@ -78,10 +78,25 @@ _COMPETITOR_NAMES = re.compile(
 
 
 def _is_us_company(row) -> bool:
+    """
+    Multi-location-aware US filter:
+    - Locations are commonly semicolon- or slash-separated (e.g.
+      "New York, NY; London, UK"). Keep the row if ANY segment is a
+      pure-US location (US signal present, no non-US signal in same segment).
+    - If no segment is purely US and a non-US signal appears anywhere, drop.
+    - Blank / unknown locations are kept (benefit of the doubt).
+    """
     loc = str(row.get("location", "") or "")
-    if loc and _NON_US.search(loc):
-        return False
-    return True
+    if not loc:
+        return True
+    segments = re.split(r"[;/]|\s+or\s+", loc)
+    for seg in segments:
+        seg = seg.strip()
+        if not seg:
+            continue
+        if _US_SIGNALS.search(seg) and not _NON_US.search(seg):
+            return True
+    return not bool(_NON_US.search(loc))
 
 
 def _is_garbage(row) -> bool:

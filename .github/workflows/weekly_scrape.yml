@@ -71,13 +71,13 @@ jobs:
             scraper.log
           retention-days: 30
 
-      - name: Commit enriched CSV back to repo
-        # dashboard_data.js is gitignored (too large to track); it's still
-        # published to gh-pages via the deploy step below.
+      - name: Commit enriched CSV and dashboard back to repo
+        # GitHub Pages serves from main, so dashboard_data.js must be committed
+        # there (no longer gitignored; ~28KB after slimming).
         run: |
           git config user.name  "Lunch Perk Bot"
           git config user.email "bot@lunch-perk-scraper"
-          git add lunch_perk_jobs_enriched.csv || true
+          git add lunch_perk_jobs_enriched.csv dashboard_data.js || true
           git diff --staged --quiet || git commit -m "chore: weekly scrape $(date +'%Y-%m-%d')"
           git push || true
 
