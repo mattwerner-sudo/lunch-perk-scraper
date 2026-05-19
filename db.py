@@ -114,6 +114,25 @@ def init():
             live_count  INTEGER,
             new_count   INTEGER
         );
+
+        -- Decision-maker contacts discovered via the in-house enrichment layer.
+        -- One row per (company, person, title). Email is best-effort inferred.
+        CREATE TABLE IF NOT EXISTS company_contacts (
+            id               INTEGER PRIMARY KEY AUTOINCREMENT,
+            company_name     TEXT NOT NULL,
+            full_name        TEXT,
+            title            TEXT,
+            persona          TEXT,        -- office_manager|people_ops|exec_admin|finance|facilities
+            email            TEXT,
+            email_confidence TEXT,        -- high|medium|low
+            source           TEXT,        -- jd|team_page|search|inferred
+            first_seen       TEXT NOT NULL,
+            last_seen        TEXT NOT NULL,
+            UNIQUE(company_name, full_name, title)
+        );
+
+        CREATE INDEX IF NOT EXISTS idx_contacts_company
+            ON company_contacts(company_name);
         """)
     cleanup_stale()
 
@@ -365,6 +384,57 @@ def get_confirmed_offices(market: str | None = None, min_strength: str = "confir
     query += " ORDER BY cl.jd_count DESC, c.gtm_score DESC"
     with _conn() as con:
         rows = con.execute(query, params).fetchall()
+    return [dict(r) for r in rows]
+
+
+def upsert_contacts(records: list[dict]) -> int:
+    """
+    Insert/update discovered decision-maker contacts.
+    Each record: company_name, full_name, title, persona, email, email_confidence, source.
+    Returns number of rows written.
+    """
+    if not records:
+        return 0
+    today = date.today().isoformat()
+    written = 0
+    with _conn() as con:
+        for r in records:
+            company = (r.get("company_name") or "").strip()
+            name    = (r.get("full_name") or "").strip()
+            title   = (r.get("title") or "").strip()
+            if not company or not name:
+                continue
+            con.execute("""
+                INSERT INTO company_contacts
+                    (company_name, full_name, title, persona, email, email_confidence,
+                     source, first_seen, last_seen)
+                VALUES (?,?,?,?,?,?,?,?,?)
+                ON CONFLICT(company_name, full_name, title) DO UPDATE SET
+                    persona          = excluded.persona,
+                    email            = COALESCE(NULLIF(excluded.email, ''), company_contacts.email),
+                    email_confidence = excluded.email_confidence,
+                    source           = excluded.source,
+                    last_seen        = excluded.last_seen
+            """, (
+                company, name, title,
+                r.get("persona", ""),
+                r.get("email", ""),
+                r.get("email_confidence", "low"),
+                r.get("source", ""),
+                today, today,
+            ))
+            written += 1
+    return written
+
+
+def get_contacts(company_name: str) -> list[dict]:
+    """Return all stored contacts for a company, highest-confidence first."""
+    order = "CASE email_confidence WHEN 'high' THEN 0 WHEN 'medium' THEN 1 ELSE 2 END"
+    with _conn() as con:
+        rows = con.execute(
+            f"SELECT * FROM company_contacts WHERE company_name = ? ORDER BY {order}, last_seen DESC",
+            (company_name,),
+        ).fetchall()
     return [dict(r) for r in rows]
 
 

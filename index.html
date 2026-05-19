@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>NYC Lunch Perk Companies — ezcater</title>
+  <title>Lunch Perk Companies — ezcater</title>
   <style>
     :root {
       --brand:  #1a3a5c;
@@ -141,9 +141,9 @@
 <body>
 
 <header>
-  <div class="eyebrow">ezcater — NYC Sales Intelligence</div>
-  <h1>NYC Lunch Perk Companies</h1>
-  <p>Companies actively advertising food perks (catered meals, DoorDash, stipends, stocked kitchens) in NYC job postings — scored and ranked for outreach priority.</p>
+  <div class="eyebrow">ezcater — Sales Intelligence</div>
+  <h1>Lunch Perk Companies</h1>
+  <p>Companies actively advertising food perks (catered meals, DoorDash, stipends, stocked kitchens) in US job postings — scored and ranked for outreach priority.</p>
   <div class="meta" id="last-run">Last run: —</div>
 </header>
 
@@ -360,7 +360,7 @@ document.getElementById("download-btn").addEventListener("click", e => {
   const blob = new Blob([csv], { type: "text/csv" });
   const url  = URL.createObjectURL(blob);
   const a    = document.createElement("a");
-  a.href = url; a.download = "nyc_lunch_perk_companies.csv"; a.click();
+  a.href = url; a.download = "lunch_perk_companies.csv"; a.click();
   URL.revokeObjectURL(url);
 });
 
