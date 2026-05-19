@@ -665,12 +665,17 @@ def run():
     # Only enrich High-confidence companies to bound runtime + politeness budget.
     high_conf = [r for r in records if r.get("gtm_score", 0) >= ENRICH_MIN_SCORE]
     if high_conf:
-        import contact_enrichment
-        print(f"Enriching contacts: {len(high_conf)} high-confidence companies...")
-        contacts_by_company = contact_enrichment.enrich_batch(high_conf)
-        flat = [c for cs in contacts_by_company.values() for c in cs]
-        written = db.upsert_contacts(flat)
-        print(f"Contacts discovered: {written} across {sum(1 for v in contacts_by_company.values() if v)} companies")
+        try:
+            import contact_enrichment
+        except ImportError:
+            contact_enrichment = None
+            print("Contact enrichment module not deployed — skipping.")
+        if contact_enrichment is not None:
+            print(f"Enriching contacts: {len(high_conf)} high-confidence companies...")
+            contacts_by_company = contact_enrichment.enrich_batch(high_conf)
+            flat = [c for cs in contacts_by_company.values() for c in cs]
+            written = db.upsert_contacts(flat)
+            print(f"Contacts discovered: {written} across {sum(1 for v in contacts_by_company.values() if v)} companies")
 
     # Velocity tracking — record weekly signal counts
     db.record_velocity(records)

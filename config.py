@@ -85,3 +85,28 @@ OUTPUT_ENRICHED_CSV = "lunch_perk_jobs_enriched.csv"  # after dedup + scoring
 REQUEST_TIMEOUT = 15       # seconds per HTTP request
 DELAY_BETWEEN_REQUESTS = 1.2  # seconds; be a good citizen
 MAX_RETRIES = 3
+
+# ── Contact enrichment ──────────────────────────────────────────────────────
+# In-house decision-maker discovery for high-confidence companies.
+# Runs after scoring; only companies with gtm_score >= ENRICH_MIN_SCORE are enriched.
+ENRICH_MIN_SCORE   = 25   # matches "High" confidence tier in enrich.py
+ENRICH_MAX_WORKERS = 4    # parallel enrichers per company
+ENRICH_PER_COMPANY = 3    # max contacts returned per company
+ENRICH_TIMEOUT     = 12   # seconds per discovery source
+
+# Persona regex → normalized persona key. Order matters: first match wins.
+# Drives both title-based filtering and downstream Slack/dashboard labels.
+TARGET_PERSONAS: list[tuple[str, str]] = [
+    (r"office\s+manager|office\s+admin|office\s+coordinator|office\s+ops|"
+     r"office\s+operations|workplace\s+(experience|operations|coordinator|manager)|"
+     r"facilit(y|ies)\s+(manager|coordinator|director)",                "office_manager"),
+    (r"people\s+(ops|operations)|people\s+experience|"
+     r"employee\s+experience|head\s+of\s+people|chief\s+people|"
+     r"(vp|vice\s+president|director)\s+(of\s+)?people|"
+     r"hr\s+(director|manager|lead)|human\s+resources",                 "people_ops"),
+    (r"executive\s+assistant|exec\s+admin|chief\s+of\s+staff",          "exec_admin"),
+    (r"\bcfo\b|chief\s+financial|controller|"
+     r"head\s+of\s+finance|vp\s+(of\s+)?finance",                       "finance"),
+    (r"\bcoo\b|chief\s+operating|head\s+of\s+ops|vp\s+(of\s+)?operations","operations"),
+    (r"total\s+rewards|benefits\s+(manager|director|lead)",             "benefits"),
+]
